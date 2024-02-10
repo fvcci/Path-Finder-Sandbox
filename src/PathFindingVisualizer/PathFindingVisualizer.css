@@ -1,0 +1,19 @@
+.screen-container {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.screen-container .header {
+  flex: 0 1 auto;
+}
+
+.screen-container .content {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.screen-container .footer {
+  flex: 0 1 40px;
+  background-color: var(--dark-blue);
+}
