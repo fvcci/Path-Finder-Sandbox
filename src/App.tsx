@@ -1,9 +1,9 @@
-import PathFindingVisualizer from "./PathFinderSandbox";
+import PathFinderSandbox from "./PathFinderSandbox";
 
 function App() {
   return (
-    <div className="h-screen">
-      <PathFindingVisualizer />
+    <div className="w-screen h-screen bg-background">
+      <PathFinderSandbox />
     </div>
   )
 }

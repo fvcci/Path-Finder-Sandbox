@@ -1,7 +1,6 @@
 import React, { useState, useLayoutEffect, createRef } from "react";
 
 // local imports
-import "./PathFinderSandbox.css";
 import ToolBar from "./ToolBar";
 import Grid from "./Grid";
 import AStar from "../algorithms/Astar";
@@ -10,16 +9,19 @@ import { GRID_PADDING, NODE_SIZE, SM } from "../constants";
 // Find the dimensions of a div element
 const useRefDimensions = (ref: React.RefObject<HTMLDivElement>) => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
   useLayoutEffect(() => {
     if (!ref.current) {
       console.error("ref.current is null");
       return;
     }
-    const boundingRect = ref.current.getBoundingClientRect();
-    const { width, height } = boundingRect;
+    if (dimensions.width !== 0 && dimensions.height !== 0) {
+      return;
+    }
+
+    const { width, height } = ref.current.getBoundingClientRect();
     setDimensions({ width: Math.round(width), height: Math.round(height) });
-    console.log(width, height);
-  }, []);
+  }, [dimensions, ref]);
 
   return dimensions;
 };
@@ -42,8 +44,8 @@ const PathFindingVisualizer: React.FC = () => {
   const { width: contentWidth, height: contentHeight } = useRefDimensions(ref);
 
   return (
-    <div className="screen-container">
-      <header className="header">
+    <div className="flex flex-col h-full">
+      <header className="flex-initial">
         <ToolBar
           runButton={{ val: isRunning, set: setIsRunning }}
           droppedObstruction={{
@@ -58,7 +60,7 @@ const PathFindingVisualizer: React.FC = () => {
           }}
         />
       </header>
-      <div className="content" ref={ref}>
+      <div className="flex-auto relative" ref={ref}>
         <Grid
           isRunning={isRunning}
           setIsRunning={setIsRunning}
@@ -84,7 +86,6 @@ const PathFindingVisualizer: React.FC = () => {
           animationSpeed={animationSpeed}
         />
       </div>
-      <div className="footer">I hate css</div>
     </div>
   );
 };

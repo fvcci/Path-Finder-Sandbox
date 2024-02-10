@@ -1,7 +1,4 @@
-import React from "react";
-
-// local imports
-import "./Toolbar.css";
+import { FC } from "react";
 
 interface State<T> {
   val: T;
@@ -16,7 +13,7 @@ interface ToolBarProps {
   isErasingAlgorithm: State<boolean>;
 }
 
-const ToolBar: React.FC<ToolBarProps> = ({
+const ToolBar: FC<ToolBarProps> = ({
   runButton,
   droppedObstruction,
   isBrushing,
@@ -50,7 +47,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
   }
 
   return (
-    <div className="tool-bar">
+    <div className="bg-dark-blue">
       <button onClick={() => runButton.set(!runButton.val)}>{playButtonText}</button>
       <button onClick={() => selectTool(isBrushing)}>{isBrushingText}</button>
       {/* make a button to add weighted nodes */}

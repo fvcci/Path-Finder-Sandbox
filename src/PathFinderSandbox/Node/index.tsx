@@ -31,6 +31,7 @@ export const Node: React.FC<NodeProps> = ({
 }) => {
   return (
     <td
+      className="table-cell relative p-0 min-w-6 min-h-6 border-[1px]"
       onMouseDown={() => onMouseDown(row, col)}
       onMouseUp={onMouseUp}
       onMouseEnter={() => onMouseEnter(row, col)}

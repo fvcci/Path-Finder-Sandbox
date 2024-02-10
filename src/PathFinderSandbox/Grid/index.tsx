@@ -198,7 +198,7 @@ const Grid: React.FC<GridProps> = ({
   const handleMouseLeave = (row: number, col: number) => {
     if (!draggedNode || !mouseIsPressed) return;
     // if start, then end else start
-    let oppositeSide =
+    const oppositeSide =
       draggedNode.state === NODE_STATE.START
         ? NODE_STATE.END
         : NODE_STATE.START;
@@ -254,10 +254,10 @@ const Grid: React.FC<GridProps> = ({
   }, [rows, cols]);
 
   return (
-    <div className="grid-container">
-      <div className="grid-border" onMouseUp={handleMouseUp}>
-        <table cellSpacing="0">
-          <tbody className="grid">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-darkest-blue">
+      <div className="outline outline-4 outline-pale-blue p-1" onMouseUp={handleMouseUp}>
+        <table className="outline outline-1 outline-pale-blue p-1 border-spacing-0 border-collapse" cellSpacing="0">
+          <tbody className="whitespace-pre">
             {grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, nodeIdx) => (

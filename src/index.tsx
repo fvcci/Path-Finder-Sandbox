@@ -1,12 +1,10 @@
-import React from 'react'
+import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import PathFinderSandbox from './PathFinderSandbox'
+import App from './App'
 import './global.styles.css'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <div className="h-screen">
-      <PathFinderSandbox />
-    </div>
-  </React.StrictMode>
+  <StrictMode>
+    <App />
+  </StrictMode>
 )
