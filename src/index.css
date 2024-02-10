@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* you can use these variables in any css file */
 :root {
   --fontSuperBig: 2.5rem;
