@@ -1,4 +1,4 @@
-import { NodeType } from "../PathFindingVisualizer/Node";
+import { NodeType } from "../PathFinderSandbox/Node";
 
 export default abstract class Algorithm {
   name: string;

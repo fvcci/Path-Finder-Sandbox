@@ -1,9 +1,8 @@
-import PathFindingVisualizer from "./PathFindingVisualizer";
+import PathFindingVisualizer from "./PathFinderSandbox";
 
 function App() {
-
   return (
-    <div className="h-100">
+    <div className="h-screen">
       <PathFindingVisualizer />
     </div>
   )

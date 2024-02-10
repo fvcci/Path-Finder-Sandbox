@@ -1,5 +1,4 @@
 import React from "react";
-import Algorithm from "../../algorithms/Algorithm";
 
 // local imports
 import "./Toolbar.css";
@@ -15,8 +14,6 @@ interface ToolBarProps {
   isBrushing: State<boolean>;
   isErasing: State<boolean>;
   isErasingAlgorithm: State<boolean>;
-  algorithm: State<Algorithm>;
-  setAnimationSpeed: (speed: number) => void;
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({
@@ -25,8 +22,6 @@ const ToolBar: React.FC<ToolBarProps> = ({
   isBrushing,
   isErasing,
   isErasingAlgorithm,
-  algorithm,
-  setAnimationSpeed,
 }) => {
   const playButtonText = runButton.val ? "ABORT" : "PLAY";
   const isBrushingText = isBrushing.val ? "BIG BRUSH" : "SMALL BRUSH";
@@ -40,6 +35,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
 
   // When selecting eraser, deslect everything else
   // When selecting something else, deselect eraser
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const selectTool = (tool: State<any>) => {
     if (tool == isErasing) {
       isErasing.set(!isErasing.val);

@@ -1,5 +1,3 @@
-import React, { useState, useEffect, useCallback } from "react";
-
 // import local files
 import { NodeType } from "../Node";
 import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../../constants";
@@ -45,7 +43,7 @@ const useDraw = (
     col: number,
     droppedObstruction: number
   ) => {
-    let [weight, obstruction] =
+    const [weight, obstruction] =
       grid[row][col].state === NODE_STATE.OBSTRUCTION[droppedObstruction]
         ? [1, NODE_STATE.OBSTRUCTION[droppedObstruction]]
         : [3 ** droppedObstruction, NODE_STATE.OBSTRUCTION_REVERSE[droppedObstruction]];
@@ -63,9 +61,9 @@ const useDraw = (
     col: number,
     state: string
   ) => {
-    let newGrid = new Array(grid.length);
+    const newGrid = new Array(grid.length);
     for (let r = 0; r < grid.length; ++r) {
-      let newGridRow = [...grid[r]];
+      const newGridRow = [...grid[r]];
 
       for (let c = 0; c < grid[r].length; ++c) {
         // Write a wall if the node is within the brush radius
@@ -74,7 +72,7 @@ const useDraw = (
           !SPECIAL_STATES.includes(grid[r][c].state) &&
           (row - r) ** 2 + (col - c) ** 2 <= BIG_RADIUS ** 2
         ) {
-          let droppedObstruction = NODE_STATE.OBSTRUCTION.indexOf(state);
+          const droppedObstruction = NODE_STATE.OBSTRUCTION.indexOf(state);
           newGridRow[c] = {
             ...grid[r][c],
             weight: droppedObstruction === -1 ? 1 : 3 ** droppedObstruction,

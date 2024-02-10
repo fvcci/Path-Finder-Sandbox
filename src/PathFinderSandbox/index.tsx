@@ -1,12 +1,9 @@
 import React, { useState, useLayoutEffect, createRef } from "react";
 
 // local imports
-import "./PathFindingVisualizer.css";
+import "./PathFinderSandbox.css";
 import ToolBar from "./ToolBar";
 import Grid from "./Grid";
-import Algorithm from "../algorithms/Algorithm";
-import Dijkstra from "../algorithms/Dijkstra";
-import BFS from "../algorithms/BFS";
 import AStar from "../algorithms/Astar";
 import { GRID_PADDING, NODE_SIZE, SM } from "../constants";
 
@@ -36,8 +33,10 @@ const PathFindingVisualizer: React.FC = () => {
   const [isErasing, setIsErasing] = useState(false);
   const [isErasingAlgorithm, setIsErasingAlgorithm] = useState(false);
 
-  const [algorithm, setAlgorithm] = useState(new AStar());
-  const [animationSpeed, setAnimationSpeed] = useState(1);
+  // const [algorithm, setAlgorithm] = useState(new AStar());
+  // const [animationSpeed, setAnimationSpeed] = useState(1);
+  const algorithm = new AStar();
+  const animationSpeed = 1;
 
   const ref = createRef<HTMLDivElement>();
   const { width: contentWidth, height: contentHeight } = useRefDimensions(ref);
@@ -57,8 +56,6 @@ const PathFindingVisualizer: React.FC = () => {
             val: isErasingAlgorithm,
             set: setIsErasingAlgorithm,
           }}
-          algorithm={{ val: algorithm, set: setAlgorithm }}
-          setAnimationSpeed={setAnimationSpeed}
         />
       </header>
       <div className="content" ref={ref}>

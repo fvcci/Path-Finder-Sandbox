@@ -1,9 +1,7 @@
 import { NODE_STATE, DELTA } from "../constants";
-import { Node } from "../PathFindingVisualizer/Node";
 import Algorithm from "./Algorithm";
-import { NodeType } from "../PathFindingVisualizer/Node";
+import { NodeType } from "../PathFinderSandbox/Node";
 import { inBounds, findShortestPath, PriorityQueue } from "./util";
-import Grid from "../PathFindingVisualizer/Grid";
 
 interface AStarNode {
   f: number;
@@ -44,13 +42,13 @@ export default class Astar extends Algorithm {
     startNode: NodeType
   ): { steps: NodeType[]; shortestPath: NodeType[] } {
     // Initialize the lists
-    let visited: boolean[][] = new Array(grid.length);
-    let aStarGrid: AStarNode[][] = new Array(grid.length);
-    let steps: NodeType[] = [];
-    let parents: NodeType[][] = [];
+    const visited: boolean[][] = new Array(grid.length);
+    const aStarGrid: AStarNode[][] = new Array(grid.length);
+    const steps: NodeType[] = [];
+    const parents: NodeType[][] = [];
 
     for (let r = 0; r < grid.length; ++r) {
-      let parentsRow = new Array(grid[0].length);
+      const parentsRow = new Array(grid[0].length);
       visited[r] = new Array(grid[0].length);
       aStarGrid[r] = new Array(grid[0].length);
       for (let c = 0; c < grid[0].length; ++c) {
@@ -69,13 +67,13 @@ export default class Astar extends Algorithm {
     aStarGrid[startNode.row][startNode.col] = { f: 0, g: 0, h: 0 };
 
     // open list using priority queue of type F
-    let openList = new PriorityQueue<F>((a: F, b: F) => a.f < b.f);
+    const openList = new PriorityQueue<F>((a: F, b: F) => a.f < b.f);
     openList.push({ f: 0, r: startNode.row, c: startNode.col });
 
     const endNode = this.findEnd(grid);
 
     while (!openList.isEmpty()) {
-      const { f, r, c } = openList.pop();
+      const { r, c } = openList.pop();
       visited[r][c] = true;
 
       if (startNode.row !== r || startNode.col !== c) {
@@ -84,8 +82,7 @@ export default class Astar extends Algorithm {
 
       // use delta to find neighbours
       for (const [dr, dc] of DELTA) {
-        let [rr, cc] = [r + dr, c + dc];
-        let adjNode = grid[r]?.[c];
+        const [rr, cc] = [r + dr, c + dc];
 
         // Invalid if out of bounds or a wall or is already visited
         if (
@@ -100,9 +97,9 @@ export default class Astar extends Algorithm {
           return { steps, shortestPath: findShortestPath(parents, endNode) };
         }
 
-        let gNew = aStarGrid[r][c].g + grid[rr][cc].weight;
-        let hNew = this.heuristic(grid[rr][cc], endNode);
-        let fNew = gNew + hNew;
+        const gNew = aStarGrid[r][c].g + grid[rr][cc].weight;
+        const hNew = this.heuristic(grid[rr][cc], endNode);
+        const fNew = gNew + hNew;
 
         if (aStarGrid[rr][cc].f >= fNew) {
           // update neighbour node
