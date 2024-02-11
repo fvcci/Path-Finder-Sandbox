@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { NodeType } from "../Node";
+import { NodeType } from "../components/Node";
 
 // import local files
-import { NODE_STATE } from "../../constants";
+import { NODE_STATE } from "../constants";
 
 interface useDragType {
   draggedNode: NodeType | null;

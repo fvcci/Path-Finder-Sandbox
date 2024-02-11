@@ -1,4 +1,4 @@
-import { NodeType } from "../PathFinderSandbox/Node";
+import { NodeType } from "../components/Node";
 
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 // Thank you stack overflow very cool

@@ -7,13 +7,12 @@ import {
   NODE_STATE,
   SPECIAL_STATES,
   ANIMATION_SPEED,
-} from "../../constants";
-import useGrid from "./useGrid";
-import useDraggedNode from "./useDraggedNode";
-import useDraw from "./useDraw";
-import Algorithm from "../../algorithms/Algorithm";
-import { Node, NodeType } from "../Node";
-import "./Grid.css";
+} from "../constants";
+import useGrid from "../hooks/useGrid";
+import useDraggedNode from "../hooks/useDraggedNode";
+import useDraw from "../hooks/useDraw";
+import Algorithm from "../algorithms/Algorithm";
+import { Node, NodeType } from "./Node";
 
 interface GridProps {
   isRunning: boolean;

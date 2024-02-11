@@ -3,7 +3,7 @@ import { NODE_STATE, DELTA } from "../constants";
 // Local files
 import Algorithm from "./Algorithm";
 import { PriorityQueue, inBounds, findShortestPath } from "./util";
-import { NodeType } from "../PathFinderSandbox/Node";
+import { NodeType } from "../components/Node";
 
 export default class Dijkstra extends Algorithm {
   constructor() {

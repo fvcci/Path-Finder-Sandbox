@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { NodeType } from "../Node";
+import { NodeType } from "../components/Node";
 
 // import local files
-import { START_END_RATIO, NODE_STATE } from "../../constants";
+import { START_END_RATIO, NODE_STATE } from "../constants";
 
 interface useGridType {
   grid: NodeType[][];
@@ -66,7 +66,7 @@ const useGrid = (rows: number, cols: number): useGridType => {
       col: Math.floor(cols * START_END_RATIO.END.COL),
     };
 
-    let grid = new Array(rows);
+    const grid = new Array(rows);
     for (let r = 0; r < grid.length; ++r) {
       grid[r] = new Array(cols);
       for (let c = 0; c < grid[r].length; ++c) {
@@ -74,12 +74,12 @@ const useGrid = (rows: number, cols: number): useGridType => {
       }
     }
     return grid;
-  }, [rows, cols]);
+  }, [rows, cols, initNode]);
 
   // Create a new grid with grid[row][col] modified to value
   const setCell = useCallback(
     (node: NodeType) => {
-      let newGrid = new Array(grid.length);
+      const newGrid = new Array(grid.length);
       for (let r = 0; r < grid.length; ++r) {
         newGrid[r] = [...grid[r]];
       }
@@ -111,7 +111,7 @@ const useGrid = (rows: number, cols: number): useGridType => {
           const { row, col } = initNodeFromDOM(r, c);
           const node = document.getElementById(`top-node-${row}-${col}`)!;
 
-          for (let stateToClear of statesToClear) {
+          for (const stateToClear of statesToClear) {
             // Toggle the current node's state to its reverse animation unless
             // it is the dragged node then don't.
             if (

@@ -1,6 +1,6 @@
 // import local files
-import { NodeType } from "../Node";
-import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../../constants";
+import { NodeType } from "../components/Node";
+import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../constants";
 
 interface useDrawType {
   toggleCellWall: (

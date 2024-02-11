@@ -1,4 +1,4 @@
-import PathFinderSandbox from "./PathFinderSandbox";
+import PathFinderSandbox from "./components/PathFinderSandbox";
 
 function App() {
   return (
