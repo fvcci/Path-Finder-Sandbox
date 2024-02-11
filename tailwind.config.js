@@ -19,7 +19,7 @@ export default {
         "weight-1": "rgba(103, 58, 182, 0.75)",
         "weight-2": "rgba(155, 39, 176, 0.75)",
         "weight-3": "rgba(233, 30, 99, 0.75)",
-      }
+      },
     },
   },
   plugins: [],
