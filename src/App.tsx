@@ -6,26 +6,23 @@ import Grid from "./components/Grid";
 import AStar from "./algorithms/Astar";
 import { GRID_PADDING, NODE_SIZE, SM } from "./constants";
 
-const useRefDimensions = () => {
-  const ref = createRef<HTMLDivElement>();
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+const useDimensions = (ref: React.RefObject<HTMLDivElement>) => {
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useLayoutEffect(() => {
     if (!ref.current) {
       console.error("ref.current is null");
       return;
     }
-    if (width !== 0 && height !== 0) {
+    if (dimensions.width !== 0 && dimensions.height !== 0) {
       return;
     }
 
-    const { width: newWidth, height: newHeight } = ref.current.getBoundingClientRect();
-    setWidth(Math.round(newWidth));
-    setHeight(Math.round(newHeight));
-  }, [ref, width, height]);
+    const { width, height } = ref.current.getBoundingClientRect();
+    setDimensions({ width: Math.round(width), height: Math.round(height) });
+  }, [dimensions, ref]);
 
-  return { ref, width, height };
+  return dimensions;
 };
 
 const App: React.FC = () => {
@@ -41,7 +38,9 @@ const App: React.FC = () => {
   // const [animationSpeed, setAnimationSpeed] = useState(1);
   const algorithm = new AStar();
   const animationSpeed = 1;
-  const { ref, width: contentWidth, height: contentHeight } = useRefDimensions();
+
+  const ref = createRef<HTMLDivElement>();
+  const { width: contentWidth, height: contentHeight } = useDimensions(ref);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-background">
