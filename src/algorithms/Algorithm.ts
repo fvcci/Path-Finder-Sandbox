@@ -1,4 +1,4 @@
-import { NodeType } from "../components/Node";
+import { NodeType } from "../components/NodeType";
 
 export default abstract class Algorithm {
   name: string;

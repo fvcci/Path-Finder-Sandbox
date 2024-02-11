@@ -1,5 +1,5 @@
 // import local files
-import { NodeType } from "../components/Node";
+import { NodeType } from "../components/NodeType";
 import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../constants";
 
 interface useDrawType {

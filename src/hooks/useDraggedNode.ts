@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NodeType } from "../components/Node";
+import { NodeType } from "../components/NodeType";
 
 // import local files
 import { NODE_STATE } from "../constants";

@@ -12,7 +12,8 @@ import useGrid from "../hooks/useGrid";
 import useDraggedNode from "../hooks/useDraggedNode";
 import useDraw from "../hooks/useDraw";
 import Algorithm from "../algorithms/Algorithm";
-import { Node, NodeType } from "./Node";
+import { NodeType } from "./NodeType";
+import "./Node.css";
 
 interface GridProps {
   isRunning: boolean;
@@ -260,16 +261,33 @@ const Grid: React.FC<GridProps> = ({
             {grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, nodeIdx) => (
-                  <Node
+                  // <Node
+                  //   key={nodeIdx}
+                  //   row={node.row}
+                  //   col={node.col}
+                  //   state={node.state!}
+                  //   onMouseDown={(row, col) => handleMouseDown(row, col)}
+                  //   onMouseUp={handleMouseUp}
+                  //   onMouseEnter={(row, col) => handleMouseEnter(row, col)}
+                  //   onMouseLeave={(row, col) => handleMouseLeave(row, col)}
+                  // />
+                  <td
                     key={nodeIdx}
-                    row={node.row}
-                    col={node.col}
-                    state={node.state!}
-                    onMouseDown={(row, col) => handleMouseDown(row, col)}
+                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-pale-blue"
+                    onMouseDown={() => handleMouseDown(node.row, node.col)}
                     onMouseUp={handleMouseUp}
-                    onMouseEnter={(row, col) => handleMouseEnter(row, col)}
-                    onMouseLeave={(row, col) => handleMouseLeave(row, col)}
-                  />
+                    onMouseEnter={() => handleMouseEnter(node.row, node.col)}
+                    onMouseLeave={() => handleMouseLeave(node.row, node.col)}
+                  >
+                    <div
+                      id={`top-node-${node.row}-${node.col}`}
+                      className={`top ${NODE_STATE.DEFAULT}`}
+                    />
+                    <div
+                      id={`node-${node.row}-${node.col}`}
+                      className={`${NODE_STATE.DEFAULT} ${node.state}`}
+                    />
+                  </td>
                 ))}
               </tr>
             ))}

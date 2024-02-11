@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { NodeType } from "../components/Node";
+import { NodeType } from "../components/NodeType";
 
 // import local files
 import { START_END_RATIO, NODE_STATE } from "../constants";

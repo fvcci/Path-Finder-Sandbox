@@ -1,6 +1,6 @@
 import { NODE_STATE, DELTA } from "../constants";
 import Algorithm from "./Algorithm";
-import { NodeType } from "../components/Node";
+import { NodeType } from "../components/NodeType";
 import { inBounds, findShortestPath, PriorityQueue } from "./util";
 
 interface AStarNode {
