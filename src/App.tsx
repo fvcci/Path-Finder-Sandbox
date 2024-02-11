@@ -7,22 +7,25 @@ import AStar from "./algorithms/Astar";
 import { GRID_PADDING, NODE_SIZE, SM } from "./constants";
 
 const useDimensions = (ref: React.RefObject<HTMLDivElement>) => {
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
 
   useLayoutEffect(() => {
     if (!ref.current) {
-      console.error("ref.current is null");
-      return;
-    }
-    if (dimensions.width !== 0 && dimensions.height !== 0) {
       return;
     }
 
-    const { width, height } = ref.current.getBoundingClientRect();
-    setDimensions({ width: Math.round(width), height: Math.round(height) });
-  }, [dimensions, ref]);
+    if (width !== 0 && height !== 0) {
+      return;
+    }
 
-  return dimensions;
+    const { width: newWidth, height: newHeight } =
+      ref.current.getBoundingClientRect();
+    setWidth(Math.round(newWidth));
+    setHeight(Math.round(newHeight));
+  }, [ref, width, height]);
+
+  return { isLoaded: width !== 0 && height !== 0, width, height };
 };
 
 const App: React.FC = () => {
@@ -40,7 +43,7 @@ const App: React.FC = () => {
   const animationSpeed = 1;
 
   const ref = createRef<HTMLDivElement>();
-  const { width: contentWidth, height: contentHeight } = useDimensions(ref);
+  const { isLoaded, width, height } = useDimensions(ref);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-background">
@@ -70,15 +73,15 @@ const App: React.FC = () => {
           setIsErasingAlgorithm={setIsErasingAlgorithm}
           // scuffed responsive layout
           rows={
-            contentHeight
-              ? Math.floor(contentHeight / NODE_SIZE) -
-                (contentWidth >= SM ? GRID_PADDING.ROW : GRID_PADDING.ROW_SM)
+            isLoaded
+              ? Math.floor(height / NODE_SIZE) -
+                (width >= SM ? GRID_PADDING.ROW : GRID_PADDING.ROW_SM)
               : 0
           }
           cols={
-            contentWidth
-              ? Math.floor(contentWidth / NODE_SIZE) -
-                (contentWidth >= SM ? GRID_PADDING.COL : GRID_PADDING.COL_SM)
+            isLoaded
+              ? Math.floor(width / NODE_SIZE) -
+                (width >= SM ? GRID_PADDING.COL : GRID_PADDING.COL_SM)
               : 0
           }
           algorithm={algorithm}
@@ -87,6 +90,6 @@ const App: React.FC = () => {
       </main>
     </div>
   );
-}
+};
 
 export default App;

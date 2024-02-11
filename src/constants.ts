@@ -18,7 +18,7 @@ export const GRID_PADDING = {
   COL_SM: 5,
 };
 
-export const NODE_SIZE = 23;
+export const NODE_SIZE = 24;
 
 export const NODE_STATE = {
   DEFAULT: "node",
