@@ -3,26 +3,26 @@ import { assert } from "../asserts";
 
 type ObjectValues<T> = T[keyof T];
 
-const OBSTRUCTIONS = {
+const OBSTRUCTION = {
   WALL: "Wall",
   WEIGHT_1: "Weight 1",
   WEIGHT_2: "Weight 2",
   WEIGHT_3: "Weight 3",
 } as const;
-type OBSTRUCTION = ObjectValues<typeof OBSTRUCTIONS>;
+type Obstruction = ObjectValues<typeof OBSTRUCTION>;
 
-const TOOL_BAR_TOOLS = {
-  OBSTRUCTIONS: "Obstructions",
-  ERASERS: "Erasers",
+const TOOL_BAR_OPTION = {
+  OBSTRUCTION: "Obstructions",
+  ERASER: "Erasers",
 } as const;
-type TOOL_BAR_TOOL = ObjectValues<typeof TOOL_BAR_TOOLS>;
+type ToolBarOption = ObjectValues<typeof TOOL_BAR_OPTION>;
 
 interface ToolBarContextType {
-  selected: TOOL_BAR_TOOL;
-  setSelected: React.Dispatch<React.SetStateAction<TOOL_BAR_TOOL>>;
+  selected: ToolBarOption;
+  setSelected: React.Dispatch<React.SetStateAction<ToolBarOption>>;
   mouseTools: {
-    obstruction: ReturnType<typeof useMouseTool<OBSTRUCTION>>;
-    eraser: ReturnType<typeof useMouseTool<typeof TOOL_BAR_TOOLS.ERASERS>>;
+    obstruction: ReturnType<typeof useMouseTool<Obstruction>>;
+    eraser: ReturnType<typeof useMouseTool<typeof TOOL_BAR_OPTION.ERASER>>;
   };
 }
 
@@ -47,13 +47,13 @@ export const ToolBarContextProvider = ({
 }: {
   children?: ReactNode[];
 }) => {
-  const [selected, setSelected] = useState<TOOL_BAR_TOOL>(
-    TOOL_BAR_TOOLS.OBSTRUCTIONS
+  const [selected, setSelected] = useState<ToolBarOption>(
+    TOOL_BAR_OPTION.OBSTRUCTION
   );
   const mouseTools = {
-    obstruction: useMouseTool<OBSTRUCTION>(Object.values(OBSTRUCTIONS), 2),
-    eraser: useMouseTool<typeof TOOL_BAR_TOOLS.ERASERS>(
-      [TOOL_BAR_TOOLS.ERASERS],
+    obstruction: useMouseTool<Obstruction>(Object.values(OBSTRUCTION), 2),
+    eraser: useMouseTool<typeof TOOL_BAR_OPTION.ERASER>(
+      [TOOL_BAR_OPTION.ERASER],
       2
     ),
   };
