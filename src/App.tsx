@@ -25,7 +25,7 @@ const useDimensions = (ref: React.RefObject<HTMLDivElement>) => {
     setHeight(Math.round(newHeight));
   }, [ref, width, height]);
 
-  return { isLoaded: width !== 0 && height !== 0, width, height };
+  return { success: width !== 0 && height !== 0, width, height };
 };
 
 const App: React.FC = () => {
@@ -43,7 +43,7 @@ const App: React.FC = () => {
   const animationSpeed = 1;
 
   const ref = createRef<HTMLDivElement>();
-  const { isLoaded, width, height } = useDimensions(ref);
+  const { success: dimensionsAreLoaded, width, height } = useDimensions(ref);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-background">
@@ -73,13 +73,13 @@ const App: React.FC = () => {
           setIsErasingAlgorithm={setIsErasingAlgorithm}
           // scuffed responsive layout
           rows={
-            isLoaded
+            dimensionsAreLoaded
               ? Math.floor(height / NODE_SIZE) -
                 (width >= SM ? GRID_PADDING.ROW : GRID_PADDING.ROW_SM)
               : 0
           }
           cols={
-            isLoaded
+            dimensionsAreLoaded
               ? Math.floor(width / NODE_SIZE) -
                 (width >= SM ? GRID_PADDING.COL : GRID_PADDING.COL_SM)
               : 0

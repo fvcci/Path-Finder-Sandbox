@@ -1,18 +1,28 @@
 import { ReactNode, createContext, useState } from "react";
 import { assert } from "../asserts";
 
-const OBSTRUCTIONS = ["Wall", "Weight 1", "Weight 2", "Weight 3"];
-type OBSTRUCTION = (typeof OBSTRUCTIONS)[number];
+type ObjectValues<T> = T[keyof T];
 
-const TOOL_BAR_TOOLS = ["Obstructions", "Eraser"];
-type TOOL_BAR_TOOL = (typeof TOOL_BAR_TOOLS)[number];
+const OBSTRUCTIONS = {
+  WALL: "Wall",
+  WEIGHT_1: "Weight 1",
+  WEIGHT_2: "Weight 2",
+  WEIGHT_3: "Weight 3",
+} as const;
+type OBSTRUCTION = ObjectValues<typeof OBSTRUCTIONS>;
+
+const TOOL_BAR_TOOLS = {
+  OBSTRUCTIONS: "Obstructions",
+  ERASERS: "Erasers",
+} as const;
+type TOOL_BAR_TOOL = ObjectValues<typeof TOOL_BAR_TOOLS>;
 
 interface ToolBarContextType {
-  tool: TOOL_BAR_TOOL;
-  setTool: React.Dispatch<React.SetStateAction<TOOL_BAR_TOOL>>;
+  selected: TOOL_BAR_TOOL;
+  setSelected: React.Dispatch<React.SetStateAction<TOOL_BAR_TOOL>>;
   mouseTools: {
     obstruction: ReturnType<typeof useMouseTool<OBSTRUCTION>>;
-    eraser: ReturnType<typeof useMouseTool<TOOL_BAR_TOOL>>;
+    eraser: ReturnType<typeof useMouseTool<typeof TOOL_BAR_TOOLS.ERASERS>>;
   };
 }
 
@@ -30,23 +40,26 @@ const useMouseTool = <T,>(tools: T[], sizeLimitExclusive: number) => {
   };
 };
 
-export const ToolBarContext = createContext<ToolBarContextType | undefined>(
-  undefined
-);
+export const ToolBarContext = createContext<ToolBarContextType | null>(null);
 
 export const ToolBarContextProvider = ({
   children,
 }: {
-  children: ReactNode;
+  children?: ReactNode[];
 }) => {
-  const [tool, setTool] = useState<TOOL_BAR_TOOL>("Obstructions");
+  const [selected, setSelected] = useState<TOOL_BAR_TOOL>(
+    TOOL_BAR_TOOLS.OBSTRUCTIONS
+  );
   const mouseTools = {
-    obstruction: useMouseTool<OBSTRUCTION>(OBSTRUCTIONS, 2),
-    eraser: useMouseTool<TOOL_BAR_TOOL>(["Eraser"], 2),
+    obstruction: useMouseTool<OBSTRUCTION>(Object.values(OBSTRUCTIONS), 2),
+    eraser: useMouseTool<typeof TOOL_BAR_TOOLS.ERASERS>(
+      [TOOL_BAR_TOOLS.ERASERS],
+      2
+    ),
   };
 
   return (
-    <ToolBarContext.Provider value={{ tool, setTool, mouseTools }}>
+    <ToolBarContext.Provider value={{ selected, setSelected, mouseTools }}>
       {children}
     </ToolBarContext.Provider>
   );
