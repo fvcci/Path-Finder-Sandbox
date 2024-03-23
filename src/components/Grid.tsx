@@ -255,8 +255,14 @@ const Grid: React.FC<GridProps> = ({
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-darkest-blue">
-      <div className="outline outline-4 outline-pale-blue p-1" onMouseUp={handleMouseUp}>
-        <table className="outline outline-1 outline-pale-blue p-1 border-spacing-0 border-collapse" cellSpacing="0">
+      <div
+        className="outline outline-4 outline-pale-blue p-1"
+        onMouseUp={handleMouseUp}
+      >
+        <table
+          className="outline outline-1 outline-pale-blue p-1 border-spacing-0 border-collapse"
+          cellSpacing="0"
+        >
           <tbody className="whitespace-pre">
             {grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
