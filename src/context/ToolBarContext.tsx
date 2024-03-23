@@ -1,7 +1,12 @@
 import { ReactNode, createContext, useState } from "react";
 import { assert } from "../asserts";
+import { ObjectValues } from "../type_helpers";
 
-type ObjectValues<T> = T[keyof T];
+const GRAPH_MODIFIER = {
+  OBSTRUCTION: "Obstruction",
+  ERASER: "Eraser",
+} as const;
+export type GraphModifier = ObjectValues<typeof GRAPH_MODIFIER>;
 
 const OBSTRUCTION = {
   WALL: "Wall",
@@ -9,24 +14,54 @@ const OBSTRUCTION = {
   WEIGHT_2: "Weight 2",
   WEIGHT_3: "Weight 3",
 } as const;
-type Obstruction = ObjectValues<typeof OBSTRUCTION>;
-
-const TOOL_BAR_OPTION = {
-  OBSTRUCTION: "Obstructions",
-  ERASER: "Erasers",
-} as const;
-type ToolBarOption = ObjectValues<typeof TOOL_BAR_OPTION>;
+export type Obstruction = ObjectValues<typeof OBSTRUCTION>;
 
 interface ToolBarContextType {
-  selected: ToolBarOption;
-  setSelected: React.Dispatch<React.SetStateAction<ToolBarOption>>;
-  mouseTools: {
-    obstruction: ReturnType<typeof useMouseTool<Obstruction>>;
-    eraser: ReturnType<typeof useMouseTool<typeof TOOL_BAR_OPTION.ERASER>>;
-  };
+  selected: GraphModifier;
+  setSelected: React.Dispatch<React.SetStateAction<GraphModifier>>;
+  // graphModifiers: {
+  //   obstruction: ReturnType<typeof useGraphModifier<Obstruction>>;
+  //   eraser: ReturnType<typeof useGraphModifier<typeof GRAPH_MODIFIER.ERASER>>;
+  // };
 }
+export const ToolBarContext = createContext<ToolBarContextType | null>(null);
 
-const useMouseTool = <T,>(tools: T[], sizeLimitExclusive: number) => {
+export const ToolBarContextProvider = ({
+  children,
+}: {
+  children?: ReactNode[];
+}) => {
+  const [selected, setSelected] = useState<GraphModifier>(
+    GRAPH_MODIFIER.OBSTRUCTION
+  );
+
+  const graphModifiers = new Map<
+    GraphModifier,
+    | ReturnType<typeof useGraphModifier<Obstruction>>
+    | ReturnType<typeof useGraphModifier<typeof GRAPH_MODIFIER.ERASER>>
+  >();
+  graphModifiers.set(
+    GRAPH_MODIFIER.OBSTRUCTION,
+    useGraphModifier<Obstruction>(Object.values(OBSTRUCTION), 2)
+  );
+  graphModifiers.set(
+    GRAPH_MODIFIER.ERASER,
+    useGraphModifier<typeof GRAPH_MODIFIER.ERASER>([GRAPH_MODIFIER.ERASER], 2)
+  );
+  // const graphModifier = {
+  //   selected,
+  //   setSelected,
+  //   get: () => graphModifiers[selected],
+  // };
+
+  return (
+    <ToolBarContext.Provider value={{ selected, setSelected }}>
+      {children}
+    </ToolBarContext.Provider>
+  );
+};
+
+const useGraphModifier = <T,>(tools: T[], sizeLimitExclusive: number) => {
   assert(tools.length === 0 && sizeLimitExclusive === 0);
 
   const [toolIdx, setToolIdx] = useState(0);
@@ -38,29 +73,4 @@ const useMouseTool = <T,>(tools: T[], sizeLimitExclusive: number) => {
     cycleMouseTool: () => setToolIdx((toolIdx + 1) % tools.length),
     cycleSize: () => setSize(((size + 1) % sizeLimitExclusive) + 1),
   };
-};
-
-export const ToolBarContext = createContext<ToolBarContextType | null>(null);
-
-export const ToolBarContextProvider = ({
-  children,
-}: {
-  children?: ReactNode[];
-}) => {
-  const [selected, setSelected] = useState<ToolBarOption>(
-    TOOL_BAR_OPTION.OBSTRUCTION
-  );
-  const mouseTools = {
-    obstruction: useMouseTool<Obstruction>(Object.values(OBSTRUCTION), 2),
-    eraser: useMouseTool<typeof TOOL_BAR_OPTION.ERASER>(
-      [TOOL_BAR_OPTION.ERASER],
-      2
-    ),
-  };
-
-  return (
-    <ToolBarContext.Provider value={{ selected, setSelected, mouseTools }}>
-      {children}
-    </ToolBarContext.Provider>
-  );
 };
