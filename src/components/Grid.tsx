@@ -2,18 +2,36 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 // local imports
-import {
-  START_END_RATIO,
-  NODE_STATE,
-  SPECIAL_STATES,
-  ANIMATION_SPEED,
-} from "../constants";
+import { NODE_STATE, SPECIAL_STATES, ANIMATION_SPEED } from "../constants";
 import useGrid from "../hooks/useGrid";
 import useDraggedNode from "../hooks/useDraggedNode";
 import useDraw from "../hooks/useDraw";
 import Algorithm from "../algorithms/Algorithm";
 import { NodeType } from "./NodeType";
 import "./Node.css";
+
+const useInitialPositionNode = (rows: number, cols: number) => {
+  const [node, setNode] = useState<NodeType>({
+    row: Math.floor(rows * 0.15),
+    col: Math.floor(cols * 0.2),
+    weight: 1,
+    state: NODE_STATE.START,
+  });
+
+  useEffect(() => {
+    if (node.row !== 0 && node.col !== 0) {
+      return;
+    }
+
+    setNode({
+      ...node,
+      row: Math.floor(rows * 0.15),
+      col: Math.floor(cols * 0.2),
+    });
+  }, [node, rows, cols]);
+
+  return { node, setNode };
+};
 
 interface GridProps {
   isRunning: boolean;
@@ -48,12 +66,7 @@ const Grid: React.FC<GridProps> = ({
   const [hasProcessedSteps, setHasProcessedSteps] = useState(false);
   const [hasDisplayedPath, setHasDisplayedPath] = useState(false);
   const [pendingAnimations, setPendingAnimations] = useState<number[]>([]);
-  const [startNode, setStartNode] = useState<NodeType>({
-    row: Math.floor(rows * START_END_RATIO.START.ROW),
-    col: Math.floor(cols * START_END_RATIO.START.COL),
-    weight: 1,
-    state: NODE_STATE.START,
-  });
+  const start = useInitialPositionNode(rows, cols);
   const {
     draggedNode,
     setDraggedNode,
@@ -62,7 +75,7 @@ const Grid: React.FC<GridProps> = ({
     dragStart,
     dragEnd,
     dragOver,
-  } = useDraggedNode(setCell, setCellDOM, setStartNode, clearGridState);
+  } = useDraggedNode(setCell, setCellDOM, start.setNode, clearGridState);
   const { toggleCellWall, brush, erase } = useDraw(setGrid, setCell);
 
   // Clear state and states that prevent grid interaction after visualization
@@ -95,7 +108,7 @@ const Grid: React.FC<GridProps> = ({
       await new Promise((r) => setTimeout(r, 1500));
     }
 
-    const { steps, shortestPath } = algorithm.run(grid, startNode);
+    const { steps, shortestPath } = algorithm.run(grid, start.node);
     const animations = [];
 
     // Animate the steps to the algorithm
@@ -135,7 +148,7 @@ const Grid: React.FC<GridProps> = ({
     algorithm,
     animationSpeed,
     clearGridState,
-    startNode,
+    start.node,
   ]);
 
   const handleMouseDown = (row: number, col: number) => {
@@ -243,15 +256,6 @@ const Grid: React.FC<GridProps> = ({
     }
     setIsErasingAlgorithm(false);
   }, [isErasingAlgorithm]);
-
-  // update start node
-  useEffect(() => {
-    setStartNode({
-      ...startNode,
-      row: Math.floor(rows * START_END_RATIO.START.ROW),
-      col: Math.floor(cols * START_END_RATIO.START.COL),
-    });
-  }, [rows, cols]);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-darkest-blue">

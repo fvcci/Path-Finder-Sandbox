@@ -14,3 +14,8 @@ export default abstract class Algorithm {
     startNode: NodeType
   ): { steps: NodeType[]; shortestPath: NodeType[] };
 }
+
+export interface IAlgorithm {
+  name: string;
+  info: string;
+}

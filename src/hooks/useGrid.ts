@@ -16,30 +16,6 @@ interface useGridType {
 const useGrid = (rows: number, cols: number): useGridType => {
   const [grid, setGrid] = useState<NodeType[][]>([]);
 
-  const initNode = useCallback(
-    (
-      row: number,
-      col: number,
-      start: { row: number; col: number },
-      end: { row: number; col: number }
-    ): NodeType => {
-      let state = "";
-      if (row === start.row && col === start.col) {
-        state = NODE_STATE.START;
-      } else if (row === end.row && col === end.col) {
-        state = NODE_STATE.END;
-      }
-
-      return {
-        row,
-        col,
-        weight: 1,
-        state,
-      };
-    },
-    []
-  );
-
   const initNodeFromDOM = (row: number, col: number): NodeType => {
     let state = "";
     const node = document
@@ -70,11 +46,22 @@ const useGrid = (rows: number, cols: number): useGridType => {
     for (let r = 0; r < grid.length; ++r) {
       grid[r] = new Array(cols);
       for (let c = 0; c < grid[r].length; ++c) {
-        grid[r][c] = initNode(r, c, start, end);
+        grid[r][c] = {
+          row: r,
+          col: c,
+          weight: 1,
+          state: "",
+        };
       }
     }
+
+    if (rows !== 0 && cols !== 0) {
+      grid[start.row][start.col].state = NODE_STATE.START;
+      grid[end.row][end.col].state = NODE_STATE.END;
+    }
+
     return grid;
-  }, [rows, cols, initNode]);
+  }, [rows, cols]);
 
   // Create a new grid with grid[row][col] modified to value
   const setCell = useCallback(
