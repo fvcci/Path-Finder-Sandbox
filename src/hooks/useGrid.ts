@@ -54,8 +54,8 @@ const useGrid = (rows: number, cols: number) => {
   );
 
   useEffect(() => {
-    setGrid(initGrid(rows, cols, start, end));
-  }, [rows, cols, start, end]);
+    setGrid(initGrid(rows, cols, start.node, end.node));
+  }, [rows, cols, start.node, end.node]);
 
   return {
     start,
@@ -102,8 +102,8 @@ const useInitialPositionNode = (
 const initGrid = (
   rows: number,
   cols: number,
-  start: ReturnType<typeof useInitialPositionNode>,
-  end: ReturnType<typeof useInitialPositionNode>
+  startNode: NodeType,
+  endNode: NodeType
 ) => {
   const grid = new Array<NodeType[]>(rows);
   for (let r = 0; r < grid.length; ++r) {
@@ -119,8 +119,8 @@ const initGrid = (
   }
 
   if (rows !== 0 && cols !== 0) {
-    grid[start.node.row][start.node.col].state = NODE_STATE.START;
-    grid[end.node.row][end.node.col].state = NODE_STATE.END;
+    grid[startNode.row][startNode.col].state = NODE_STATE.START;
+    grid[endNode.row][endNode.col].state = NODE_STATE.END;
   }
 
   return grid;

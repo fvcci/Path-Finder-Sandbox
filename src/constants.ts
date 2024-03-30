@@ -1,14 +1,3 @@
-export const START_END_RATIO = {
-  START: {
-    ROW: 0.15,
-    COL: 0.2,
-  },
-  END: {
-    ROW: 0.5,
-    COL: 0.6,
-  },
-};
-
 export const SM = 640;
 
 export const GRID_PADDING = {
