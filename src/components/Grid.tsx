@@ -36,16 +36,8 @@ const Grid: React.FC<GridProps> = ({
   algorithm,
   animationSpeed,
 }) => {
-  const {
-    start,
-    end,
-    grid,
-    setGrid,
-    setCell,
-    setCellTopDOM,
-    setCellDOM,
-    clearGridState,
-  } = useGrid(rows, cols);
+  const { start, end, grid, setGrid, setCell, setCellTopDOM, clearGridState } =
+    useGrid(rows, cols);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [hasProcessedSteps, setHasProcessedSteps] = useState(false);
   const [hasDisplayedPath, setHasDisplayedPath] = useState(false);
@@ -58,7 +50,7 @@ const Grid: React.FC<GridProps> = ({
     dragStart,
     dragEnd,
     dragOver,
-  } = useDraggedNode(setCell, setCellDOM, start.setNode, clearGridState);
+  } = useDraggedNode(setCell, setCellTopDOM, start.setNode, clearGridState);
   const { toggleCellWall, brush, erase } = useDraw(setGrid, setCell);
 
   // Clear state and states that prevent grid interaction after visualization
@@ -201,7 +193,7 @@ const Grid: React.FC<GridProps> = ({
 
     // don't remove previous node if it's START or END
     if (grid[row][col].state !== oppositeSide) {
-      setCellDOM(grid[row][col]);
+      setCellTopDOM(grid[row][col]);
     }
   };
 

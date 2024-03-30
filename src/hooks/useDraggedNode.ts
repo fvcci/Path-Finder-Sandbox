@@ -16,7 +16,7 @@ interface useDragType {
 
 const useDraggedNode = (
   setCell: (node: NodeType) => void,
-  setCellDOM: (node: NodeType) => void,
+  setCellTopDOM: (node: NodeType) => void,
   setStartNode: (node: NodeType) => void,
   clearState: (state: string[], node: NodeType) => void
 ): useDragType => {
@@ -36,7 +36,7 @@ const useDraggedNode = (
       [draggedNode!.state, grid[row][col].state].includes(NODE_STATE.START) &&
       [draggedNode!.state, grid[row][col].state].includes(NODE_STATE.END)
     ) {
-      setCellDOM(draggedNode!);
+      setCellTopDOM(draggedNode!);
       return;
     }
 
@@ -44,12 +44,12 @@ const useDraggedNode = (
     const newDraggedNode = { ...draggedNode!, row: row, col: col };
     setDraggedNode(newDraggedNode);
     setCell(newDraggedNode);
-    setCellDOM(newDraggedNode);
+    setCellTopDOM(newDraggedNode);
 
     // Remove the previous node and update it to the current node
     // * case it went over a start/end node previously, this removes the copy
     setCell(previousNode!);
-    setCellDOM(previousNode!);
+    setCellTopDOM(previousNode!);
 
     // If there is a reverse at the end, remove it
     if (grid[row][col].state!.includes("reverse")) {

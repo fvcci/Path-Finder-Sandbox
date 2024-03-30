@@ -64,7 +64,6 @@ const useGrid = (rows: number, cols: number) => {
     setGrid,
     setCell,
     setCellTopDOM,
-    setCellDOM,
     clearGridState,
   };
 };
@@ -146,10 +145,4 @@ const setCellTopDOM = (node: NodeType) => {
   document.getElementById(
     `top-node-${node.row}-${node.col}`
   )!.className = `top ${NODE_STATE.DEFAULT} ${node.state}`;
-};
-
-const setCellDOM = (node: NodeType) => {
-  document.getElementById(
-    `node-${node.row}-${node.col}`
-  )!.className = `${NODE_STATE.DEFAULT} ${node.state}`;
 };
