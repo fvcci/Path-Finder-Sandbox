@@ -9,28 +9,6 @@ const useGrid = (rows: number, cols: number) => {
   const end = useInitialPositionNode(rows, cols, 0.5, 0.6);
   const [grid, setGrid] = useState<NodeType[][]>([]);
 
-  const initGrid = useCallback(() => {
-    const grid = new Array<NodeType[]>(rows);
-    for (let r = 0; r < grid.length; ++r) {
-      grid[r] = new Array(cols);
-      for (let c = 0; c < grid[r].length; ++c) {
-        grid[r][c] = {
-          row: r,
-          col: c,
-          weight: 1,
-          state: "",
-        };
-      }
-    }
-
-    if (rows !== 0 && cols !== 0) {
-      grid[start.node.row][start.node.col].state = NODE_STATE.START;
-      grid[end.node.row][end.node.col].state = NODE_STATE.END;
-    }
-
-    return grid;
-  }, [cols, rows, start, end]);
-
   // Create a new grid with grid[row][col] modified to value
   const setCell = useCallback(
     (node: NodeType) => {
@@ -76,8 +54,8 @@ const useGrid = (rows: number, cols: number) => {
   );
 
   useEffect(() => {
-    setGrid(initGrid());
-  }, [initGrid]);
+    setGrid(initGrid(rows, cols, start, end));
+  }, [rows, cols, start, end]);
 
   return {
     start,
@@ -119,6 +97,33 @@ const useInitialPositionNode = (
   }, [node, rows, cols, initialRowPercent, initialColPercent]);
 
   return { node, setNode };
+};
+
+const initGrid = (
+  rows: number,
+  cols: number,
+  start: ReturnType<typeof useInitialPositionNode>,
+  end: ReturnType<typeof useInitialPositionNode>
+) => {
+  const grid = new Array<NodeType[]>(rows);
+  for (let r = 0; r < grid.length; ++r) {
+    grid[r] = new Array(cols);
+    for (let c = 0; c < grid[r].length; ++c) {
+      grid[r][c] = {
+        row: r,
+        col: c,
+        weight: 1,
+        state: "",
+      };
+    }
+  }
+
+  if (rows !== 0 && cols !== 0) {
+    grid[start.node.row][start.node.col].state = NODE_STATE.START;
+    grid[end.node.row][end.node.col].state = NODE_STATE.END;
+  }
+
+  return grid;
 };
 
 const initNodeFromDOM = (row: number, col: number): NodeType => {
