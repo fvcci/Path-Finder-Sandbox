@@ -1,48 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NodeType } from "../components/NodeType";
 
 // import local files
-import { START_END_RATIO, NODE_STATE } from "../constants";
+import { NODE_STATE } from "../constants";
 
-interface useGridType {
-  grid: NodeType[][];
-  setGrid: React.Dispatch<React.SetStateAction<NodeType[][]>>;
-  setCell: (node: NodeType) => void;
-  setCellTopDOM: (node: NodeType) => void;
-  setCellDOM: (node: NodeType) => void;
-  clearGridState: (statesToClear: string[], draggedNode: NodeType) => boolean;
-}
-
-const useGrid = (rows: number, cols: number): useGridType => {
+const useGrid = (rows: number, cols: number) => {
+  const start = useInitialPositionNode(rows, cols, 0.15, 0.2);
+  const end = useInitialPositionNode(rows, cols, 0.5, 0.6);
   const [grid, setGrid] = useState<NodeType[][]>([]);
 
-  const initNodeFromDOM = (row: number, col: number): NodeType => {
-    let state = "";
-    const node = document
-      .getElementById(`node-${row}-${col}`)
-      ?.className.substring(NODE_STATE.DEFAULT.length + 1);
-    if (node === NODE_STATE.START || node === NODE_STATE.END) {
-      state = node;
-    }
-    return {
-      row,
-      col,
-      weight: 1,
-      state,
-    };
-  };
-
   const initGrid = useCallback(() => {
-    const start = {
-      row: Math.floor(rows * START_END_RATIO.START.ROW),
-      col: Math.floor(cols * START_END_RATIO.START.COL),
-    };
-    const end = {
-      row: Math.floor(rows * START_END_RATIO.END.ROW),
-      col: Math.floor(cols * START_END_RATIO.END.COL),
-    };
-
-    const grid = new Array(rows);
+    const grid = new Array<NodeType[]>(rows);
     for (let r = 0; r < grid.length; ++r) {
       grid[r] = new Array(cols);
       for (let c = 0; c < grid[r].length; ++c) {
@@ -56,12 +24,12 @@ const useGrid = (rows: number, cols: number): useGridType => {
     }
 
     if (rows !== 0 && cols !== 0) {
-      grid[start.row][start.col].state = NODE_STATE.START;
-      grid[end.row][end.col].state = NODE_STATE.END;
+      grid[start.node.row][start.node.col].state = NODE_STATE.START;
+      grid[end.node.row][end.node.col].state = NODE_STATE.END;
     }
 
     return grid;
-  }, [rows, cols]);
+  }, [cols, rows, start, end]);
 
   // Create a new grid with grid[row][col] modified to value
   const setCell = useCallback(
@@ -75,18 +43,6 @@ const useGrid = (rows: number, cols: number): useGridType => {
     },
     [grid]
   );
-
-  const setCellTopDOM = (node: NodeType) => {
-    document.getElementById(
-      `top-node-${node.row}-${node.col}`
-    )!.className = `top ${NODE_STATE.DEFAULT} ${node.state}`;
-  };
-
-  const setCellDOM = (node: NodeType) => {
-    document.getElementById(
-      `node-${node.row}-${node.col}`
-    )!.className = `${NODE_STATE.DEFAULT} ${node.state}`;
-  };
 
   // Takes a list of states to clear from the grid
   const clearGridState = useCallback(
@@ -123,7 +79,72 @@ const useGrid = (rows: number, cols: number): useGridType => {
     setGrid(initGrid());
   }, [initGrid]);
 
-  return { grid, setGrid, setCell, setCellTopDOM, setCellDOM, clearGridState };
+  return {
+    start,
+    end,
+    grid,
+    setGrid,
+    setCell,
+    setCellTopDOM,
+    setCellDOM,
+    clearGridState,
+  };
 };
 
 export default useGrid;
+
+const useInitialPositionNode = (
+  rows: number,
+  cols: number,
+  initialRowPercent: number,
+  initialColPercent: number
+) => {
+  const [node, setNode] = useState<NodeType>({
+    row: Math.floor(rows * initialRowPercent),
+    col: Math.floor(cols * initialColPercent),
+    weight: 1,
+    state: NODE_STATE.START,
+  });
+
+  useEffect(() => {
+    if (node.row !== 0 && node.col !== 0) {
+      return;
+    }
+
+    setNode({
+      ...node,
+      row: Math.floor(rows * initialRowPercent),
+      col: Math.floor(cols * initialColPercent),
+    });
+  }, [node, rows, cols, initialRowPercent, initialColPercent]);
+
+  return { node, setNode };
+};
+
+const initNodeFromDOM = (row: number, col: number): NodeType => {
+  let state = "";
+  const node = document
+    .getElementById(`node-${row}-${col}`)
+    ?.className.substring(NODE_STATE.DEFAULT.length + 1);
+  if (node === NODE_STATE.START || node === NODE_STATE.END) {
+    state = node;
+  }
+  return {
+    row,
+    col,
+    weight: 1,
+    state,
+  };
+};
+
+const setCellTopDOM = (node: NodeType) => {
+  document.getElementById(
+    `top-node-${node.row}-${node.col}`
+  )!.className = `top ${NODE_STATE.DEFAULT} ${node.state}`;
+};
+
+const setCellDOM = (node: NodeType) => {
+  document.getElementById(
+    `node-${node.row}-${node.col}`
+  )!.className = `${NODE_STATE.DEFAULT} ${node.state}`;
+};

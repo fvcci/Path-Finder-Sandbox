@@ -7,31 +7,7 @@ import useGrid from "../hooks/useGrid";
 import useDraggedNode from "../hooks/useDraggedNode";
 import useDraw from "../hooks/useDraw";
 import Algorithm from "../algorithms/Algorithm";
-import { NodeType } from "./NodeType";
 import "./Node.css";
-
-const useInitialPositionNode = (rows: number, cols: number) => {
-  const [node, setNode] = useState<NodeType>({
-    row: Math.floor(rows * 0.15),
-    col: Math.floor(cols * 0.2),
-    weight: 1,
-    state: NODE_STATE.START,
-  });
-
-  useEffect(() => {
-    if (node.row !== 0 && node.col !== 0) {
-      return;
-    }
-
-    setNode({
-      ...node,
-      row: Math.floor(rows * 0.15),
-      col: Math.floor(cols * 0.2),
-    });
-  }, [node, rows, cols]);
-
-  return { node, setNode };
-};
 
 interface GridProps {
   isRunning: boolean;
@@ -60,13 +36,20 @@ const Grid: React.FC<GridProps> = ({
   algorithm,
   animationSpeed,
 }) => {
-  const { grid, setGrid, setCell, setCellTopDOM, setCellDOM, clearGridState } =
-    useGrid(rows, cols);
+  const {
+    start,
+    end,
+    grid,
+    setGrid,
+    setCell,
+    setCellTopDOM,
+    setCellDOM,
+    clearGridState,
+  } = useGrid(rows, cols);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [hasProcessedSteps, setHasProcessedSteps] = useState(false);
   const [hasDisplayedPath, setHasDisplayedPath] = useState(false);
   const [pendingAnimations, setPendingAnimations] = useState<number[]>([]);
-  const start = useInitialPositionNode(rows, cols);
   const {
     draggedNode,
     setDraggedNode,
