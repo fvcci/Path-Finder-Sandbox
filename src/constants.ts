@@ -1,14 +1,3 @@
-export const SM = 640;
-
-export const GRID_PADDING = {
-  ROW: 15,
-  COL: 10,
-  ROW_SM: 5,
-  COL_SM: 5,
-};
-
-export const NODE_SIZE = 24;
-
 export const NODE_STATE = {
   DEFAULT: "node",
   START: "node-start",
