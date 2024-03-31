@@ -83,8 +83,8 @@ const useDimensions = (
 
   return width !== 0 && height !== 0
     ? {
-        width: Math.floor(width / compression) + addend,
-        height: Math.floor(height / compression) + addend,
+        width: Math.floor(width * compression) + addend,
+        height: Math.floor(height * compression) + addend,
       }
     : { width: 0, height: 0 };
 };
