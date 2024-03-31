@@ -1,5 +1,5 @@
-import { NODE_STATE, DELTA } from "../constants";
-import Algorithm from "./Algorithm";
+import { NODE_STATE } from "../constants";
+import LAlgorithm, { DELTA } from "./Algorithm";
 import { NodeType } from "../components/NodeType";
 import { inBounds, findShortestPath, PriorityQueue } from "./util";
 
@@ -15,7 +15,7 @@ interface F {
   c: number;
 }
 
-export default class Astar extends Algorithm {
+export default class Astar extends LAlgorithm {
   constructor() {
     super("A*", "placeholder");
   }

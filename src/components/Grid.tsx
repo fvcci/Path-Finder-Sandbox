@@ -6,7 +6,7 @@ import { NODE_STATE, SPECIAL_STATES, ANIMATION_SPEED } from "../constants";
 import useGrid from "../hooks/useGrid";
 import useDraggedNode from "../hooks/useDraggedNode";
 import useDraw from "../hooks/useDraw";
-import Algorithm from "../algorithms/Algorithm";
+import LAlgorithm from "../algorithms/Algorithm";
 import "./Node.css";
 
 interface GridProps {
@@ -19,7 +19,7 @@ interface GridProps {
   setIsErasingAlgorithm: (isErasingAlgorithm: boolean) => void;
   rows: number;
   cols: number;
-  algorithm: Algorithm;
+  algorithm: LAlgorithm;
   animationSpeed: number;
 }
 

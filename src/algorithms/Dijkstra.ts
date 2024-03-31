@@ -1,13 +1,13 @@
-import { NODE_STATE, DELTA } from "../constants";
+import { NODE_STATE } from "../constants";
 
 // Local files
-import Algorithm from "./Algorithm";
+import LAlgorithm, { DELTA } from "./Algorithm";
 import { PriorityQueue, inBounds, findShortestPath } from "./util";
 import { NodeType } from "../components/NodeType";
 
-export default class Dijkstra extends Algorithm {
+export default class Dijkstra extends LAlgorithm {
   constructor() {
-    super("Dijkstra's Algorithm", "placeholder");
+    super("Dijkstra's LAlgorithm", "placeholder");
   }
 
   // Run the algorithm and return the steps and shortest path

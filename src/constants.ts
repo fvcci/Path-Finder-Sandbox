@@ -24,13 +24,6 @@ export const NODE_STATE = {
 
 export const SPECIAL_STATES = [NODE_STATE.START, NODE_STATE.END];
 
-export const DELTA = [
-  [-1, 0],
-  [0, -1],
-  [0, 1],
-  [1, 0],
-];
-
 export const ANIMATION_SPEED = {
   STEPS: 8,
   SHORTEST_PATH: 30,

@@ -48,7 +48,6 @@ const App: React.FC = () => {
           isErasing={isErasing}
           isErasingAlgorithm={isErasingAlgorithm}
           setIsErasingAlgorithm={setIsErasingAlgorithm}
-          // scuffed responsive layout
           rows={Math.max(height, 0)}
           cols={Math.max(width, 0)}
           algorithm={algorithm}

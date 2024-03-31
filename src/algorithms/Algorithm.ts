@@ -1,6 +1,6 @@
 import { NodeType } from "../components/NodeType";
 
-export default abstract class Algorithm {
+export default abstract class LAlgorithm {
   name: string;
   info: string;
 
@@ -16,6 +16,17 @@ export default abstract class Algorithm {
 }
 
 export interface IAlgorithm {
-  name: string;
-  info: string;
+  getName: () => string;
+  getInfo: () => string;
+  run: (
+    grid: NodeType[][],
+    startNode: NodeType
+  ) => { steps: NodeType[]; shortestPath: NodeType[] };
 }
+
+export const DELTA = [
+  [-1, 0],
+  [0, -1],
+  [0, 1],
+  [1, 0],
+];

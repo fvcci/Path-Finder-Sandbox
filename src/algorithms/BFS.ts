@@ -1,14 +1,17 @@
-import { NODE_STATE, DELTA } from "../constants";
-import Algorithm from "./Algorithm";
+import { NODE_STATE } from "../constants";
+import LAlgorithm, { DELTA } from "./Algorithm";
 import { NodeType } from "../components/NodeType";
 import { Queue, inBounds, findShortestPath } from "./util";
 
-export default class BFS extends Algorithm {
+export default class BFS extends LAlgorithm {
   constructor() {
     super("Breadth First Search", "placeholder");
   }
 
-  run(grid: NodeType[][], start: NodeType): { steps: NodeType[]; shortestPath: NodeType[] } {
+  run(
+    grid: NodeType[][],
+    start: NodeType
+  ): { steps: NodeType[]; shortestPath: NodeType[] } {
     let steps: NodeType[] = [];
     let parents: NodeType[][] = new Array(grid.length);
     let visited: boolean[][] = new Array(grid.length);
@@ -39,7 +42,12 @@ export default class BFS extends Algorithm {
 
         let adjNode = grid[r]?.[c];
 
-        if (!inBounds(grid, r, c) || adjNode.state === NODE_STATE.WALL || visited[r][c]) continue;
+        if (
+          !inBounds(grid, r, c) ||
+          adjNode.state === NODE_STATE.WALL ||
+          visited[r][c]
+        )
+          continue;
 
         visited[r][c] = true;
         parents[r][c] = prevNode;
@@ -57,4 +65,3 @@ export default class BFS extends Algorithm {
     return { steps, shortestPath: [] };
   }
 }
-
