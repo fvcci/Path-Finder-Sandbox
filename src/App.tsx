@@ -3,7 +3,7 @@ import React, { useState, useLayoutEffect, createRef } from "react";
 // local imports
 import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
-import AStar from "./algorithms/Astar";
+import AStar from "./algorithms/AStar";
 
 const App: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
@@ -16,7 +16,7 @@ const App: React.FC = () => {
 
   // const [algorithm, setAlgorithm] = useState(new AStar());
   // const [animationSpeed, setAnimationSpeed] = useState(1);
-  const algorithm = new AStar();
+  const algorithm = AStar();
   const animationSpeed = 1;
 
   const ref = createRef<HTMLDivElement>();

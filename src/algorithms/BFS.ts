@@ -1,67 +1,65 @@
 import { NODE_STATE } from "../constants";
-import LAlgorithm, { DELTA } from "./Algorithm";
+import Algorithm, { DELTA } from "./Algorithm";
 import { NodeType } from "../components/NodeType";
 import { Queue, inBounds, findShortestPath } from "./util";
 
-export default class BFS extends LAlgorithm {
-  constructor() {
-    super("Breadth First Search", "placeholder");
-  }
+const BFS = (): Algorithm => {
+  return {
+    getName: () => "Breadth First Search",
+    run: (grid: NodeType[][], start: NodeType) => {
+      const steps: NodeType[] = [];
+      const parents: NodeType[][] = new Array(grid.length);
+      const visited: boolean[][] = new Array(grid.length);
 
-  run(
-    grid: NodeType[][],
-    start: NodeType
-  ): { steps: NodeType[]; shortestPath: NodeType[] } {
-    let steps: NodeType[] = [];
-    let parents: NodeType[][] = new Array(grid.length);
-    let visited: boolean[][] = new Array(grid.length);
-
-    for (let i = 0; i < grid.length; i++) {
-      let parentsRow = new Array(grid[i].length);
-      let visitedRow = new Array(grid[i].length);
-      for (let j = 0; j < grid.length; j++) {
-        parentsRow[j] = null;
-        visitedRow[j] = false;
-      }
-      parents[i] = parentsRow;
-      visited[i] = visitedRow;
-    }
-
-    let queue = new Queue();
-    queue.push(start);
-    visited[start.row][start.col] = true;
-
-    while (queue.size() > 0) {
-      const prevNode = queue.pop()!;
-      if (prevNode !== start) {
-        steps.push(prevNode);
+      for (let i = 0; i < grid.length; i++) {
+        const parentsRow = new Array(grid[i].length);
+        const visitedRow = new Array(grid[i].length);
+        for (let j = 0; j < grid.length; j++) {
+          parentsRow[j] = null;
+          visitedRow[j] = false;
+        }
+        parents[i] = parentsRow;
+        visited[i] = visitedRow;
       }
 
-      for (const [dr, dc] of DELTA) {
-        let [r, c] = [prevNode.row + dr, prevNode.col + dc];
+      const queue = new Queue();
+      queue.push(start);
+      visited[start.row][start.col] = true;
 
-        let adjNode = grid[r]?.[c];
+      while (queue.size() > 0) {
+        const prevNode = queue.pop()!;
+        if (prevNode !== start) {
+          steps.push(prevNode);
+        }
 
-        if (
-          !inBounds(grid, r, c) ||
-          adjNode.state === NODE_STATE.WALL ||
-          visited[r][c]
-        )
-          continue;
+        for (const [dr, dc] of DELTA) {
+          const [r, c] = [prevNode.row + dr, prevNode.col + dc];
 
-        visited[r][c] = true;
-        parents[r][c] = prevNode;
+          const adjNode = grid[r]?.[c];
 
-        queue.push(adjNode);
+          if (
+            !inBounds(grid, r, c) ||
+            adjNode.state === NODE_STATE.WALL ||
+            visited[r][c]
+          )
+            continue;
 
-        if (adjNode.state !== NODE_STATE.END) {
+          visited[r][c] = true;
+          parents[r][c] = prevNode;
+
           queue.push(adjNode);
-        } else {
-          return { steps, shortestPath: findShortestPath(parents, adjNode) };
+
+          if (adjNode.state !== NODE_STATE.END) {
+            queue.push(adjNode);
+          } else {
+            return { steps, shortestPath: findShortestPath(parents, adjNode) };
+          }
         }
       }
-    }
 
-    return { steps, shortestPath: [] };
-  }
-}
+      return { steps, shortestPath: [] };
+    },
+  };
+};
+
+export default BFS;
