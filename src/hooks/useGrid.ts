@@ -24,7 +24,7 @@ const useGrid = (rows: number, cols: number) => {
 
   // Takes a list of states to clear from the grid
   const clearGridState = useCallback(
-    (statesToClear: string[], draggedNode: NodeType): boolean => {
+    (statesToClear: string[]): boolean => {
       let hasToggled = false;
 
       for (let r = 0; r < grid.length; ++r) {
@@ -35,12 +35,7 @@ const useGrid = (rows: number, cols: number) => {
           for (const stateToClear of statesToClear) {
             // Toggle the current node's state to its reverse animation unless
             // it is the dragged node then don't.
-            if (
-              node.className.split(" ").includes(stateToClear) &&
-              (!draggedNode ||
-                draggedNode.row !== row ||
-                draggedNode.col !== col)
-            ) {
+            if (node.className.split(" ").includes(stateToClear)) {
               node.className = node.className + "-reverse";
               hasToggled = true;
             }

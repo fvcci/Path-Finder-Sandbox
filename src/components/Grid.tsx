@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 // local imports
 import { NODE_STATE, SPECIAL_STATES, ANIMATION_SPEED } from "../constants";
 import useGrid from "../hooks/useGrid";
-import useDraggedNode from "../hooks/useDraggedNode";
 import useDraw from "../hooks/useDraw";
 import LAlgorithm from "../algorithms/Algorithm";
 import "./Node.css";
@@ -42,23 +41,11 @@ const Grid: React.FC<GridProps> = ({
   const [hasProcessedSteps, setHasProcessedSteps] = useState(false);
   const [hasDisplayedPath, setHasDisplayedPath] = useState(false);
   const [pendingAnimations, setPendingAnimations] = useState<number[]>([]);
-  const {
-    draggedNode,
-    setDraggedNode,
-    previousNode,
-    setPreviousNode,
-    dragStart,
-    dragEnd,
-    dragOver,
-  } = useDraggedNode(setCell, setCellTopDOM, start.setNode, clearGridState);
   const { toggleCellWall, brush, erase } = useDraw(setGrid, setCell);
 
   // Clear state and states that prevent grid interaction after visualization
   const clearCache = useCallback(() => {
-    clearGridState(
-      [NODE_STATE.VISITED, NODE_STATE.SHORTEST_PATH],
-      draggedNode!
-    );
+    clearGridState([NODE_STATE.VISITED, NODE_STATE.SHORTEST_PATH]);
     for (let i = 0; i < pendingAnimations.length; ++i) {
       clearTimeout(pendingAnimations[i]);
     }
@@ -72,10 +59,10 @@ const Grid: React.FC<GridProps> = ({
   // ! grid, startCoords, algorithm, and animationSpeed cannot be changed while running
   const visualizeAlgorithm = useCallback(async () => {
     // Clear the grid and stop any previous animation
-    const hasDisplayedAlgo = clearGridState(
-      [NODE_STATE.VISITED, NODE_STATE.SHORTEST_PATH],
-      draggedNode!
-    );
+    const hasDisplayedAlgo = clearGridState([
+      NODE_STATE.VISITED,
+      NODE_STATE.SHORTEST_PATH,
+    ]);
 
     // Sleep for the animation time (1.5s)
     // Only sleep when there are toggled nodes
@@ -133,7 +120,6 @@ const Grid: React.FC<GridProps> = ({
 
     // Set the dragged item
     if (SPECIAL_STATES.includes(grid[row][col].state)) {
-      dragStart(grid, row, col);
       if (hasDisplayedPath) {
         clearCache();
       }
@@ -147,7 +133,6 @@ const Grid: React.FC<GridProps> = ({
       } else {
         toggleCellWall(grid, row, col, droppedObstruction);
       }
-      setPreviousNode(grid[row][col]);
     }
   };
 
@@ -156,19 +141,12 @@ const Grid: React.FC<GridProps> = ({
     // Move the start node around with the mouse
     if (!mouseIsPressed) return;
 
-    // When you are dragging the start/end node
-    if (draggedNode) {
-      dragOver(grid, row, col);
-
-      // Toggle the entered cell between a wall or none
-    } else if (
+    // Toggle the entered cell between a wall or none
+    if (
       !isRunning &&
       !hasDisplayedPath &&
       !hasProcessedSteps &&
-      !SPECIAL_STATES.includes(grid[row][col].state) &&
-      // There's a bug that registers 2 enters in a square when you enter
-      // only once. So this prevents that.
-      (previousNode!.row !== row || previousNode!.col !== col)
+      !SPECIAL_STATES.includes(grid[row][col].state)
     ) {
       if (isBrushing) {
         brush(grid, row, col, droppedObstruction);
@@ -177,34 +155,18 @@ const Grid: React.FC<GridProps> = ({
       } else {
         toggleCellWall(grid, row, col, droppedObstruction);
       }
-      setPreviousNode(grid[row][col]);
     }
   };
 
   // Replace current cell with og state after changed to start/end node
   // * executed before handleMouseEnter
   const handleMouseLeave = (row: number, col: number) => {
-    if (!draggedNode || !mouseIsPressed) return;
-    // if start, then end else start
-    const oppositeSide =
-      draggedNode.state === NODE_STATE.START
-        ? NODE_STATE.END
-        : NODE_STATE.START;
-
-    // don't remove previous node if it's START or END
-    if (grid[row][col].state !== oppositeSide) {
-      setCellTopDOM(grid[row][col]);
-    }
+    if (!mouseIsPressed) return;
+    setCellTopDOM(grid[row][col]);
   };
 
   // Stop toggling cells between wall and none
   const handleMouseUp = () => {
-    // Set the new start/end node position
-    if (draggedNode) {
-      dragEnd();
-    }
-
-    setDraggedNode(null);
     setMouseIsPressed(false);
   };
 

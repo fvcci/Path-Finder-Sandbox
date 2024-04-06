@@ -31,7 +31,7 @@ const DISAPPEAR_STATES = [
   "node-weighted-3-reverse",
 ] as const;
 
-export const appearInto = new Map<State, AppearState>([
+export const appearFrom = new Map<State, AppearState>([
   ["node", "node"],
   ["node-start", "node-start"],
   ["node-end", "node-end"],
@@ -49,7 +49,7 @@ export const appearInto = new Map<State, AppearState>([
   ["node-weighted-3-reverse", "node-weighted-3"],
 ]);
 
-export const disappeawInto = new Map<State, DisappearState>([
+export const disappeawFrom = new Map<State, DisappearState>([
   ["node", "node"],
   ["node-start", "node-start"],
   ["node-end", "node-end"],
