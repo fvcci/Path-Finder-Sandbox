@@ -31,7 +31,7 @@ export default {
         "100%": { transform: "scale(0)" },
       },
 
-      visitedNode: {
+      visitedNodeAppear: {
         "25%": {
           transform: "scale(0.3)",
           borderRadius: "100%",
@@ -48,7 +48,7 @@ export default {
           backgroundColor: "var(--turquoise)",
         },
       },
-      unVisitedNode: {
+      visitedNodeDisappear: {
         "25%": {
           backgroundColor: "var(--turquoise)",
         },
@@ -63,7 +63,7 @@ export default {
         },
       },
 
-      shortestPathNode: {
+      shortestPathNodeAppear: {
         "0%": {
           backgroundColor: "var(--green)",
         },
@@ -75,7 +75,7 @@ export default {
           transform: "scale(1)",
         },
       },
-      shortestPathNodeReverse: {
+      shortestPathNodeDisappear: {
         "0%": {
           backgroundColor: "var(--yellow)",
         },
