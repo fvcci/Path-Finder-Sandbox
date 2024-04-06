@@ -19,19 +19,19 @@ export default {
       },
     },
     keyframes: {
-      popInCell: {
+      popInNode: {
         "0%": { transform: "scale(0.3)" },
         "50%": { transform: "scale(1.2)" },
         "100%": { transform: "scale(1)" },
       },
-      popOutCell: {
+      popOutNode: {
         "0%": { transform: "scale(1)" },
         "33%": { transform: "scale(1.2)" },
         "66%": { transform: "scale(0.3)" },
         "100%": { transform: "scale(0)" },
       },
 
-      visitedCell: {
+      visitedNode: {
         "25%": {
           transform: "scale(0.3)",
           borderRadius: "100%",
@@ -48,7 +48,7 @@ export default {
           backgroundColor: "var(--turquoise)",
         },
       },
-      unVisitedCell: {
+      unVisitedNode: {
         "25%": {
           backgroundColor: "var(--turquoise)",
         },
@@ -63,7 +63,7 @@ export default {
         },
       },
 
-      shortestPathCell: {
+      shortestPathNode: {
         "0%": {
           backgroundColor: "var(--green)",
         },
@@ -75,7 +75,7 @@ export default {
           transform: "scale(1)",
         },
       },
-      shortestPathCellReverse: {
+      shortestPathNodeReverse: {
         "0%": {
           backgroundColor: "var(--yellow)",
         },

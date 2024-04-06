@@ -46,7 +46,10 @@ const useDraw = (
     const [weight, obstruction] =
       grid[row][col].state === NODE_STATE.OBSTRUCTION[droppedObstruction]
         ? [1, NODE_STATE.OBSTRUCTION[droppedObstruction]]
-        : [3 ** droppedObstruction, NODE_STATE.OBSTRUCTION_REVERSE[droppedObstruction]];
+        : [
+            3 ** droppedObstruction,
+            NODE_STATE.OBSTRUCTION_REVERSE[droppedObstruction],
+          ];
     setCell({
       ...grid[row][col],
       weight,
