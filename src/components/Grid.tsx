@@ -2,11 +2,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 // local imports
-import { NODE_STATE, SPECIAL_STATES, ANIMATION_SPEED } from "../constants";
+import * as Node from "./Node";
+import { NODE_STATE, SPECIAL_STATES } from "../constants";
 import useGrid from "../hooks/useGrid";
 import useDraw from "../hooks/useDraw";
 import LAlgorithm from "../algorithms/Algorithm";
 import "./Node.css";
+
+const ANIMATION_SPEED = {
+  STEPS: 8,
+  SHORTEST_PATH: 30,
+};
 
 interface GridProps {
   isRunning: boolean;
@@ -70,14 +76,20 @@ const Grid: React.FC<GridProps> = ({
       await new Promise((r) => setTimeout(r, 1500));
     }
 
-    const { steps, shortestPath } = algorithm.run(grid, start.node);
+    const { steps, shortestPath } = algorithm.run(grid, start.position);
     const animations = [];
 
     // Animate the steps to the algorithm
     for (let i = 0; i < steps.length; ++i) {
       animations.push(
         setTimeout(() => {
-          setCellTopDOM({ ...steps[i], state: NODE_STATE.VISITED });
+          setCellTopDOM(
+            {
+              weight: grid[steps[i].row][steps[i].col].weight,
+              state: NODE_STATE.VISITED,
+            },
+            steps[i]
+          );
         }, ANIMATION_SPEED.STEPS * i * animationSpeed)
       );
     }
@@ -86,10 +98,13 @@ const Grid: React.FC<GridProps> = ({
     for (let i = 0; i < shortestPath.length; ++i) {
       animations.push(
         setTimeout(() => {
-          setCellTopDOM({
-            ...shortestPath[i],
-            state: NODE_STATE.SHORTEST_PATH,
-          });
+          setCellTopDOM(
+            {
+              weight: grid[shortestPath[i].row][shortestPath[i].col].weight,
+              state: NODE_STATE.SHORTEST_PATH,
+            },
+            shortestPath[i]
+          );
         }, (ANIMATION_SPEED.SHORTEST_PATH * i + ANIMATION_SPEED.STEPS * steps.length) * animationSpeed)
       );
     }
@@ -110,16 +125,16 @@ const Grid: React.FC<GridProps> = ({
     algorithm,
     animationSpeed,
     clearGridState,
-    start.node,
+    start.position,
   ]);
 
-  const handleMouseDown = (row: number, col: number) => {
+  const handleMouseDown = (pos: Node.Position) => {
     console.log("mouse down", grid);
     if (isRunning) return;
     setMouseIsPressed(true);
 
     // Set the dragged item
-    if (SPECIAL_STATES.includes(grid[row][col].state)) {
+    if (SPECIAL_STATES.includes(grid[pos.row][pos.col].state)) {
       if (hasDisplayedPath) {
         clearCache();
       }
@@ -127,17 +142,17 @@ const Grid: React.FC<GridProps> = ({
       // Start toggling cells between wall and none
     } else if (!hasDisplayedPath) {
       if (isBrushing) {
-        brush(grid, row, col, droppedObstruction);
+        brush(grid, pos, droppedObstruction);
       } else if (isErasing) {
-        erase(grid, row, col);
+        erase(grid, pos);
       } else {
-        toggleCellWall(grid, row, col, droppedObstruction);
+        toggleCellWall(grid, pos, droppedObstruction);
       }
     }
   };
 
   // * executed after handleMouseLeave
-  const handleMouseEnter = (row: number, col: number) => {
+  const handleMouseEnter = (pos: Node.Position) => {
     // Move the start node around with the mouse
     if (!mouseIsPressed) return;
 
@@ -146,23 +161,23 @@ const Grid: React.FC<GridProps> = ({
       !isRunning &&
       !hasDisplayedPath &&
       !hasProcessedSteps &&
-      !SPECIAL_STATES.includes(grid[row][col].state)
+      !SPECIAL_STATES.includes(grid[pos.row][pos.col].state)
     ) {
       if (isBrushing) {
-        brush(grid, row, col, droppedObstruction);
+        brush(grid, pos, droppedObstruction);
       } else if (isErasing) {
-        erase(grid, row, col);
+        erase(grid, pos);
       } else {
-        toggleCellWall(grid, row, col, droppedObstruction);
+        toggleCellWall(grid, pos, droppedObstruction);
       }
     }
   };
 
   // Replace current cell with og state after changed to start/end node
   // * executed before handleMouseEnter
-  const handleMouseLeave = (row: number, col: number) => {
+  const handleMouseLeave = (pos: Node.Position) => {
     if (!mouseIsPressed) return;
-    setCellTopDOM(grid[row][col]);
+    setCellTopDOM(grid[pos.row][pos.col], pos);
   };
 
   // Stop toggling cells between wall and none
@@ -207,25 +222,28 @@ const Grid: React.FC<GridProps> = ({
           <tbody className="whitespace-pre">
             {grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
-                {rowNodes.map((node, nodeIdx) => (
-                  <td
-                    key={nodeIdx}
-                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-pale-blue"
-                    onMouseDown={() => handleMouseDown(node.row, node.col)}
-                    onMouseUp={handleMouseUp}
-                    onMouseEnter={() => handleMouseEnter(node.row, node.col)}
-                    onMouseLeave={() => handleMouseLeave(node.row, node.col)}
-                  >
-                    <div
-                      id={`top-node-${node.row}-${node.col}`}
-                      className={`top ${NODE_STATE.DEFAULT}`}
-                    />
-                    <div
-                      id={`node-${node.row}-${node.col}`}
-                      className={`${NODE_STATE.DEFAULT} ${node.state}`}
-                    />
-                  </td>
-                ))}
+                {rowNodes.map((node, colIdx) => {
+                  const pos: Node.Position = { row: rowIdx, col: colIdx };
+                  return (
+                    <td
+                      key={colIdx}
+                      className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-pale-blue"
+                      onMouseDown={() => handleMouseDown(pos)}
+                      onMouseUp={handleMouseUp}
+                      onMouseEnter={() => handleMouseEnter(pos)}
+                      onMouseLeave={() => handleMouseLeave(pos)}
+                    >
+                      <div
+                        id={`top-node-${pos.row}-${pos.col}`}
+                        className={`top ${NODE_STATE.DEFAULT}`}
+                      />
+                      <div
+                        id={`node-${pos.row}-${pos.col}`}
+                        className={`${NODE_STATE.DEFAULT} ${node.state}`}
+                      />
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

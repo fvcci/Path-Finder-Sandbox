@@ -1,11 +1,12 @@
-import { NodeType } from "../components/NodeType";
+import { Position } from "../components/Node";
+import { Node } from "../components/Node";
 
 export default interface Algorithm {
   getName: () => string;
   run: (
-    grid: NodeType[][],
-    start: NodeType
-  ) => { steps: NodeType[]; shortestPath: NodeType[] };
+    grid: Node[][],
+    start: Position
+  ) => { steps: Position[]; shortestPath: Position[] };
 }
 
 export const DELTA = [

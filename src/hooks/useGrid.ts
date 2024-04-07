@@ -1,22 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
-import { NodeType } from "../components/NodeType";
+import * as Node from "../components/Node";
 
 // import local files
 import { NODE_STATE } from "../constants";
 
 const useGrid = (rows: number, cols: number) => {
-  const start = useInitialPositionNode(rows, cols, 0.15, 0.2);
-  const end = useInitialPositionNode(rows, cols, 0.5, 0.6);
-  const [grid, setGrid] = useState<NodeType[][]>([]);
+  const start = useInitialPosition(rows, cols, 0.15, 0.2);
+  const end = useInitialPosition(rows, cols, 0.5, 0.6);
+  const [grid, setGrid] = useState<Node.Node[][]>([]);
 
   // Create a new grid with grid[row][col] modified to value
   const setCell = useCallback(
-    (node: NodeType) => {
+    (node: Node.Node, pos: Node.Position) => {
       const newGrid = new Array(grid.length);
       for (let r = 0; r < grid.length; ++r) {
         newGrid[r] = [...grid[r]];
       }
-      newGrid[node.row][node.col] = node;
+      newGrid[pos.row][pos.col] = node;
       setGrid(newGrid);
     },
     [grid]
@@ -29,8 +29,7 @@ const useGrid = (rows: number, cols: number) => {
 
       for (let r = 0; r < grid.length; ++r) {
         for (let c = 0; c < grid[r].length; ++c) {
-          const { row, col } = initNodeFromDOM(r, c);
-          const node = document.getElementById(`top-node-${row}-${col}`)!;
+          const node = document.getElementById(`top-node-${r}-${c}`)!;
 
           for (const stateToClear of statesToClear) {
             // Toggle the current node's state to its reverse animation unless
@@ -49,8 +48,8 @@ const useGrid = (rows: number, cols: number) => {
   );
 
   useEffect(() => {
-    setGrid(initGrid(rows, cols, start.node, end.node));
-  }, [rows, cols, start.node, end.node]);
+    setGrid(initGrid(rows, cols, start.position, end.position));
+  }, [rows, cols, start.position, end.position]);
 
   return {
     start,
@@ -65,47 +64,42 @@ const useGrid = (rows: number, cols: number) => {
 
 export default useGrid;
 
-const useInitialPositionNode = (
+const useInitialPosition = (
   rows: number,
   cols: number,
   initialRowPercent: number,
   initialColPercent: number
 ) => {
-  const [node, setNode] = useState<NodeType>({
+  const [pos, setPosition] = useState<Node.Position>({
     row: Math.floor(rows * initialRowPercent),
     col: Math.floor(cols * initialColPercent),
-    weight: 1,
-    state: NODE_STATE.START,
   });
 
   useEffect(() => {
-    if (node.row !== 0 && node.col !== 0) {
+    if (pos.row !== 0 && pos.col !== 0) {
       return;
     }
 
-    setNode({
-      ...node,
+    setPosition({
       row: Math.floor(rows * initialRowPercent),
       col: Math.floor(cols * initialColPercent),
     });
-  }, [node, rows, cols, initialRowPercent, initialColPercent]);
+  }, [pos, rows, cols, initialRowPercent, initialColPercent]);
 
-  return { node, setNode };
+  return { position: pos, setPosition };
 };
 
 const initGrid = (
   rows: number,
   cols: number,
-  startNode: NodeType,
-  endNode: NodeType
+  startNode: Node.Position,
+  endNode: Node.Position
 ) => {
-  const grid = new Array<NodeType[]>(rows);
+  const grid = new Array<Node.Node[]>(rows);
   for (let r = 0; r < grid.length; ++r) {
     grid[r] = new Array(cols);
     for (let c = 0; c < grid[r].length; ++c) {
       grid[r][c] = {
-        row: r,
-        col: c,
         weight: 1,
         state: "",
       };
@@ -120,24 +114,8 @@ const initGrid = (
   return grid;
 };
 
-const initNodeFromDOM = (row: number, col: number): NodeType => {
-  let state = "";
-  const node = document
-    .getElementById(`node-${row}-${col}`)
-    ?.className.substring(NODE_STATE.DEFAULT.length + 1);
-  if (node === NODE_STATE.START || node === NODE_STATE.END) {
-    state = node;
-  }
-  return {
-    row,
-    col,
-    weight: 1,
-    state,
-  };
-};
-
-const setCellTopDOM = (node: NodeType) => {
+const setCellTopDOM = (node: Node.Node, position: Node.Position) => {
   document.getElementById(
-    `top-node-${node.row}-${node.col}`
+    `top-node-${position.row}-${position.col}`
   )!.className = `top ${NODE_STATE.DEFAULT} ${node.state}`;
 };

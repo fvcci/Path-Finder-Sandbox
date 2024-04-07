@@ -3,14 +3,14 @@ import { NODE_STATE } from "../constants";
 // Local files
 import Algorithm, { DELTA } from "./Algorithm";
 import { PriorityQueue, inBounds, findShortestPath } from "./util";
-import { NodeType } from "../components/NodeType";
+import { Node, Position } from "../components/Node";
 
 const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
-    run: (grid: NodeType[][], start: NodeType) => {
-      const steps: NodeType[] = [];
-      const parents: NodeType[][] = new Array(grid.length);
+    run: (grid: Node[][], start: Position) => {
+      const steps: Position[] = [];
+      const parents: Position[][] = new Array(grid.length);
 
       const dis: number[][] = new Array(grid.length);
 
@@ -26,8 +26,10 @@ const Dijkstra = (): Algorithm => {
       }
 
       // Start fro the start node
-      const queue = new PriorityQueue<NodeType>((a, b) => a.weight < b.weight);
-      queue.push(start);
+      const queue = new PriorityQueue<Node & Position>(
+        (a, b) => a.weight < b.weight
+      );
+      queue.push({ ...start, weight: -1, state: "node-start" });
       dis[start.row][start.col] = 0;
 
       while (queue.size() > 0) {
@@ -44,7 +46,7 @@ const Dijkstra = (): Algorithm => {
 
           // Invalid if out of bounds or a wall or is already visited
           if (
-            !inBounds(grid, r, c) ||
+            !inBounds(grid.length, grid[0].length, r, c) ||
             adjNode.state === NODE_STATE.WALL ||
             dis[r][c] <= dis[prevNode.row][prevNode.col] + adjNode.weight
           )
@@ -56,9 +58,17 @@ const Dijkstra = (): Algorithm => {
           parents[r][c] = prevNode;
 
           if (adjNode.state !== NODE_STATE.END) {
-            queue.push({ ...adjNode, weight: dis[r][c] });
+            queue.push({
+              weight: dis[r][c],
+              state: adjNode.state,
+              row: r,
+              col: c,
+            });
           } else {
-            return { steps, shortestPath: findShortestPath(parents, adjNode) };
+            return {
+              steps,
+              shortestPath: findShortestPath(parents, { row: r, col: c }),
+            };
           }
         }
       }

@@ -26,9 +26,4 @@ export const NODE_STATE = {
 
 export const SPECIAL_STATES = [NODE_STATE.START, NODE_STATE.END];
 
-export const ANIMATION_SPEED = {
-  STEPS: 8,
-  SHORTEST_PATH: 30,
-};
-
 export const BIG_RADIUS = 1;

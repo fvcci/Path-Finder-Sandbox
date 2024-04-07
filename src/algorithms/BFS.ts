@@ -1,14 +1,14 @@
 import { NODE_STATE } from "../constants";
 import Algorithm, { DELTA } from "./Algorithm";
-import { NodeType } from "../components/NodeType";
+import { Node, Position } from "../components/Node";
 import { Queue, inBounds, findShortestPath } from "./util";
 
 const BFS = (): Algorithm => {
   return {
     getName: () => "Breadth First Search",
-    run: (grid: NodeType[][], start: NodeType) => {
-      const steps: NodeType[] = [];
-      const parents: NodeType[][] = new Array(grid.length);
+    run: (grid: Node[][], start: Position) => {
+      const steps: Position[] = [];
+      const parents: Position[][] = new Array(grid.length);
       const visited: boolean[][] = new Array(grid.length);
 
       for (let i = 0; i < grid.length; i++) {
@@ -38,7 +38,7 @@ const BFS = (): Algorithm => {
           const adjNode = grid[r]?.[c];
 
           if (
-            !inBounds(grid, r, c) ||
+            !inBounds(grid.length, grid[0].length, r, c) ||
             adjNode.state === NODE_STATE.WALL ||
             visited[r][c]
           )
@@ -47,12 +47,15 @@ const BFS = (): Algorithm => {
           visited[r][c] = true;
           parents[r][c] = prevNode;
 
-          queue.push(adjNode);
+          queue.push({ row: r, col: c });
 
           if (adjNode.state !== NODE_STATE.END) {
-            queue.push(adjNode);
+            queue.push({ row: r, col: c });
           } else {
-            return { steps, shortestPath: findShortestPath(parents, adjNode) };
+            return {
+              steps,
+              shortestPath: findShortestPath(parents, { row: r, col: c }),
+            };
           }
         }
       }

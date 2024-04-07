@@ -1,4 +1,4 @@
-import { NodeType } from "../components/NodeType";
+import { Position } from "../components/Node";
 
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 // Thank you stack overflow very cool
@@ -92,7 +92,7 @@ export class PriorityQueue<T> {
 }
 
 export class Queue {
-  _queue: NodeType[];
+  _queue: Position[];
   constructor() {
     this._queue = [];
   }
@@ -109,7 +109,7 @@ export class Queue {
     return this._queue[0];
   }
 
-  push(...values: NodeType[]) {
+  push(...values: Position[]) {
     values.forEach((value) => {
       this._queue.push(value);
     });
@@ -121,14 +121,19 @@ export class Queue {
   }
 }
 
-export const inBounds = (grid: NodeType[][], r: number, c: number) => {
-  return 0 <= r && r < grid.length && 0 <= c && c < grid[r].length;
+export const inBounds = (
+  maxBoundRow: number,
+  maxBoundCol: number,
+  row: number,
+  col: number
+) => {
+  return 0 <= row && row < maxBoundRow && 0 <= col && col < maxBoundCol;
 };
 
 export const findShortestPath = (
-  parents: NodeType[][],
-  end: NodeType
-): NodeType[] => {
+  parents: Position[][],
+  end: Position
+): Position[] => {
   let current = end;
   const shortestPath = [];
 

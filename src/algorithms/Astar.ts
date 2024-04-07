@@ -1,7 +1,9 @@
 import { NODE_STATE } from "../constants";
 import Algorithm, { DELTA } from "./Algorithm";
-import { NodeType } from "../components/NodeType";
+import { Node } from "../components/Node";
 import { inBounds, findShortestPath, PriorityQueue } from "./util";
+import { Position } from "../components/Node";
+import { assert } from "../asserts";
 
 interface AStarNode {
   f: number;
@@ -15,32 +17,32 @@ interface F {
   c: number;
 }
 
-const findEnd = (grid: NodeType[][]): NodeType => {
+const findEnd = (grid: Node[][]): Position | null => {
   for (let r = 0; r < grid.length; ++r) {
     for (let c = 0; c < grid[0].length; ++c) {
       if (grid[r][c].state === NODE_STATE.END) {
-        return grid[r][c];
+        return { row: r, col: c };
       }
     }
   }
 
-  return { row: -1, col: -1, weight: 1, state: "" };
+  return null;
 };
 
 // measurement of how far node a is to node b
-const heuristic = (a: NodeType, b: NodeType) => {
+const heuristic = (a: Position, b: Position) => {
   return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 };
 
 const AStar = (): Algorithm => {
   return {
     getName: () => "A*",
-    run: (grid: NodeType[][], start: NodeType) => {
+    run: (grid: Node[][], start: Position) => {
       // Initialize the lists
       const visited: boolean[][] = new Array(grid.length);
       const aStarGrid: AStarNode[][] = new Array(grid.length);
-      const steps: NodeType[] = [];
-      const parents: NodeType[][] = [];
+      const steps: Position[] = [];
+      const parents: Position[][] = [];
 
       for (let r = 0; r < grid.length; ++r) {
         const parentsRow = new Array(grid[0].length);
@@ -65,14 +67,15 @@ const AStar = (): Algorithm => {
       const openList = new PriorityQueue<F>((a: F, b: F) => a.f < b.f);
       openList.push({ f: 0, r: start.row, c: start.col });
 
-      const endNode = findEnd(grid);
+      const endNode = findEnd(grid)!;
+      assert(!!endNode);
 
       while (!openList.isEmpty()) {
         const { r, c } = openList.pop();
         visited[r][c] = true;
 
         if (start.row !== r || start.col !== c) {
-          steps.push(grid[r][c]);
+          steps.push({ row: r, col: c });
         }
 
         // use delta to find neighbours
@@ -81,19 +84,19 @@ const AStar = (): Algorithm => {
 
           // Invalid if out of bounds or a wall or is already visited
           if (
-            !inBounds(grid, rr, cc) ||
+            !inBounds(grid.length, grid[0].length, rr, cc) ||
             grid[rr][cc].state === NODE_STATE.WALL ||
             visited[rr][cc]
           )
             continue;
           // if destination cell is the same as current successor
           else if (rr === endNode.row && cc === endNode.col) {
-            parents[rr][cc] = grid[r][c];
+            parents[rr][cc] = { row: r, col: c };
             return { steps, shortestPath: findShortestPath(parents, endNode) };
           }
 
           const gNew = aStarGrid[r][c].g + grid[rr][cc].weight;
-          const hNew = heuristic(grid[rr][cc], endNode);
+          const hNew = heuristic({ row: rr, col: cc }, endNode);
           const fNew = gNew + hNew;
 
           if (aStarGrid[rr][cc].f >= fNew) {
@@ -104,7 +107,7 @@ const AStar = (): Algorithm => {
               h: hNew,
             };
             openList.push({ f: fNew, r: rr, c: cc });
-            parents[rr][cc] = grid[r][c];
+            parents[rr][cc] = { row: r, col: c };
           }
         }
       }
