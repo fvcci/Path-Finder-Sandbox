@@ -30,6 +30,7 @@ const useDraw = (
     //     NODE_STATE.WALL_REVERSE].includes(newState)) {
     //   return `${NODE_STATE.DEFAULT} ${newState.substring(0, newState.length-"-reverse".length)}`;
     // }
+
     if (state.includes("-reverse")) {
       return state.substring(0, state.length - "-reverse".length);
     }

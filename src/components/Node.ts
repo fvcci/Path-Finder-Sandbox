@@ -31,7 +31,10 @@ const DISAPPEAR_STATES = [
   "node-weighted-3-reverse",
 ] as const;
 
-export const appearFrom = new Map<State, AppearState>([
+export const appearFrom = (state: State) => {
+  return appearMap.get(state) as AppearState;
+};
+const appearMap = new Map<State, AppearState>([
   ["node", "node"],
   ["node-start", "node-start"],
   ["node-end", "node-end"],
@@ -49,7 +52,10 @@ export const appearFrom = new Map<State, AppearState>([
   ["node-weighted-3-reverse", "node-weighted-3"],
 ]);
 
-export const disappeawFrom = new Map<State, DisappearState>([
+export const disappearFrom = (state: State): State => {
+  return disappearMap.get(state) as DisappearState;
+};
+const disappearMap = new Map<State, DisappearState>([
   ["node", "node"],
   ["node-start", "node-start"],
   ["node-end", "node-end"],
@@ -65,4 +71,25 @@ export const disappeawFrom = new Map<State, DisappearState>([
   ["node-weighted-1-reverse", "node-weighted-1-reverse"],
   ["node-weighted-2-reverse", "node-weighted-2-reverse"],
   ["node-weighted-3-reverse", "node-weighted-3-reverse"],
+]);
+
+export const toggleFrom = (state: State) => {
+  return toggleMap.get(state) as State;
+};
+const toggleMap = new Map<State, State>([
+  ["node", "node"],
+  ["node-start", "node-start"],
+  ["node-end", "node-end"],
+  ["node-visited", "node-visited-reverse"],
+  ["node-shortest-path", "node-shortest-path-reverse"],
+  ["node-wall", "node-wall-reverse"],
+  ["node-weighted-1", "node-weighted-1-reverse"],
+  ["node-weighted-2", "node-weighted-2-reverse"],
+  ["node-weighted-3", "node-weighted-3-reverse"],
+  ["node-visited-reverse", "node-visited"],
+  ["node-shortest-path-reverse", "node-shortest-path"],
+  ["node-wall-reverse", "node-wall"],
+  ["node-weighted-1-reverse", "node-weighted-1"],
+  ["node-weighted-2-reverse", "node-weighted-2"],
+  ["node-weighted-3-reverse", "node-weighted-3"],
 ]);
