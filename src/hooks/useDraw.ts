@@ -1,6 +1,6 @@
 // import local files
 import * as Node from "../components/Node";
-import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../constants";
+import { NODE_STATE } from "../constants";
 
 const useDraw = (
   setGrid: (grid: Node.Node[][]) => void,
@@ -43,8 +43,8 @@ const useDraw = (
         // Write a wall if the node is within the brush radius
         // and it's not a start or end node
         if (
-          !SPECIAL_STATES.includes(grid[r][c].state) &&
-          (pos.row - r) ** 2 + (pos.col - c) ** 2 <= BIG_RADIUS ** 2
+          ![NODE_STATE.START, NODE_STATE.END].includes(grid[r][c].state) &&
+          (pos.row - r) ** 2 + (pos.col - c) ** 2 <= 1 ** 2
         ) {
           const droppedObstruction = NODE_STATE.OBSTRUCTION.indexOf(state);
           newGridRow[c] = {

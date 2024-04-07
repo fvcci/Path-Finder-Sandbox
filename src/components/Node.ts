@@ -52,21 +52,21 @@ const appearMap = new Map<string, AppearState>([
   ["node-weighted-3-reverse", "node-weighted-3"],
 ] as [State, AppearState][]);
 
-export const disappearFrom = (className: string) => {
-  return applyForEachClass(className, (x) =>
-    disappearMap.has(x)
-      ? (toggleMap.get(x as DisappearState) as DisappearState)
-      : x
-  );
-};
-const disappearMap = new Map<string, DisappearState>([
-  ["node-visited", "node-visited-reverse"],
-  ["node-shortest-path", "node-shortest-path-reverse"],
-  ["node-wall", "node-wall-reverse"],
-  ["node-weighted-1", "node-weighted-1-reverse"],
-  ["node-weighted-2", "node-weighted-2-reverse"],
-  ["node-weighted-3", "node-weighted-3-reverse"],
-] as [State, DisappearState][]);
+// export const disappearFrom = (className: string) => {
+//   return applyForEachClass(className, (x) =>
+//     disappearMap.has(x)
+//       ? (toggleMap.get(x as DisappearState) as DisappearState)
+//       : x
+//   );
+// };
+// const disappearMap = new Map<string, DisappearState>([
+//   ["node-visited", "node-visited-reverse"],
+//   ["node-shortest-path", "node-shortest-path-reverse"],
+//   ["node-wall", "node-wall-reverse"],
+//   ["node-weighted-1", "node-weighted-1-reverse"],
+//   ["node-weighted-2", "node-weighted-2-reverse"],
+//   ["node-weighted-3", "node-weighted-3-reverse"],
+// ] as [State, DisappearState][]);
 
 export const toggleFrom = (className: string) => {
   return applyForEachClass(className, (x) =>

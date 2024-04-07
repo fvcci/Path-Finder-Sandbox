@@ -3,10 +3,10 @@ import React, { useState, useEffect, useCallback } from "react";
 
 // local imports
 import * as Node from "./Node";
-import { NODE_STATE, SPECIAL_STATES } from "../constants";
+import { NODE_STATE } from "../constants";
 import useGrid from "../hooks/useGrid";
 import useDraw from "../hooks/useDraw";
-import LAlgorithm from "../algorithms/Algorithm";
+import Algorithm from "../algorithms/Algorithm";
 import "./Node.css";
 
 const ANIMATION_SPEED = {
@@ -24,7 +24,7 @@ interface GridProps {
   setIsErasingAlgorithm: (isErasingAlgorithm: boolean) => void;
   rows: number;
   cols: number;
-  algorithm: LAlgorithm;
+  algorithm: Algorithm;
   animationSpeed: number;
 }
 
@@ -134,7 +134,9 @@ const Grid: React.FC<GridProps> = ({
     setMouseIsPressed(true);
 
     // Set the dragged item
-    if (SPECIAL_STATES.includes(grid[pos.row][pos.col].state)) {
+    if (
+      [NODE_STATE.START, NODE_STATE.END].includes(grid[pos.row][pos.col].state)
+    ) {
       if (hasDisplayedPath) {
         clearCache();
       }
@@ -161,7 +163,7 @@ const Grid: React.FC<GridProps> = ({
       !isRunning &&
       !hasDisplayedPath &&
       !hasProcessedSteps &&
-      !SPECIAL_STATES.includes(grid[pos.row][pos.col].state)
+      ![NODE_STATE.START, NODE_STATE.END].includes(grid[pos.row][pos.col].state)
     ) {
       if (isBrushing) {
         brush(grid, pos, droppedObstruction);

@@ -23,7 +23,3 @@ export const NODE_STATE = {
     "node-weighted-3-reverse" as State,
   ],
 };
-
-export const SPECIAL_STATES = [NODE_STATE.START, NODE_STATE.END];
-
-export const BIG_RADIUS = 1;
