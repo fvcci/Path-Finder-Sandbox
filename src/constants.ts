@@ -1,24 +1,26 @@
+import { State } from "./components/Node";
+
 export const NODE_STATE = {
-  DEFAULT: "node",
-  START: "node-start",
-  END: "node-end",
-  VISITED: "node-visited",
-  VISITED_REVERSE: "node-visited-reverse",
-  SHORTEST_PATH: "node-shortest-path",
-  SHORTEST_PATH_REVERSE: "node-shortest-path-reverse",
-  WALL: "node-wall",
-  WALL_REVERSE: "node-wall-reverse",
+  DEFAULT: "node" as State,
+  START: "node-start" as State,
+  END: "node-end" as State,
+  VISITED: "node-visited" as State,
+  VISITED_REVERSE: "node-visited-reverse" as State,
+  SHORTEST_PATH: "node-shortest-path" as State,
+  SHORTEST_PATH_REVERSE: "node-shortest-path-reverse" as State,
+  WALL: "node-wall" as State,
+  WALL_REVERSE: "node-wall-reverse" as State,
   OBSTRUCTION: [
-    "node-wall",
-    "node-weighted-1",
-    "node-weighted-2",
-    "node-weighted-3",
+    "node-wall" as State,
+    "node-weighted-1" as State,
+    "node-weighted-2" as State,
+    "node-weighted-3" as State,
   ],
   OBSTRUCTION_REVERSE: [
-    "node-wall-reverse",
-    "node-weighted-1-reverse",
-    "node-weighted-2-reverse",
-    "node-weighted-3-reverse",
+    "node-wall-reverse" as State,
+    "node-weighted-1-reverse" as State,
+    "node-weighted-2-reverse" as State,
+    "node-weighted-3-reverse" as State,
   ],
 };
 

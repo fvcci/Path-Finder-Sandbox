@@ -3,7 +3,12 @@ export interface Node {
   state: string;
 }
 
-type State = AppearState | DisappearState;
+export interface Position {
+  row: number;
+  col: number;
+}
+
+export type State = AppearState | DisappearState;
 
 type AppearState = (typeof APPEAR_STATES)[number];
 const APPEAR_STATES = [

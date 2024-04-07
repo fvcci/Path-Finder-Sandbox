@@ -1,4 +1,5 @@
 // import local files
+import { toggleFrom } from "../components/Node";
 import { NodeType } from "../components/NodeType";
 import { NODE_STATE, SPECIAL_STATES, BIG_RADIUS } from "../constants";
 
@@ -22,21 +23,6 @@ const useDraw = (
   setGrid: (grid: NodeType[][]) => void,
   setCell: (node: NodeType) => void
 ): useDrawType => {
-  const toggleReverseState = (state: string): string => {
-    // const newState = state.split(" ")[1];
-    // if ([NODE_STATE.VISITED, NODE_STATE.SHORTEST_PATH, NODE_STATE.WALL].includes(newState)) {
-    //   return `${NODE_STATE.DEFAULT} ${newState}-reverse`;
-    // } else if ([NODE_STATE.VISITED_REVERSE, NODE_STATE.SHORTEST_PATH_REVERSE,
-    //     NODE_STATE.WALL_REVERSE].includes(newState)) {
-    //   return `${NODE_STATE.DEFAULT} ${newState.substring(0, newState.length-"-reverse".length)}`;
-    // }
-
-    if (state.includes("-reverse")) {
-      return state.substring(0, state.length - "-reverse".length);
-    }
-    return state + "-reverse";
-  };
-
   // Create a new grid with grid[row][col] toggled between a wall or none
   const toggleCellWall = (
     grid: NodeType[][],
@@ -54,7 +40,7 @@ const useDraw = (
     setCell({
       ...grid[row][col],
       weight,
-      state: toggleReverseState(obstruction),
+      state: toggleFrom(obstruction),
     });
   };
 
