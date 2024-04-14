@@ -26,26 +26,20 @@ const AStar = (): Algorithm => {
     getName: () => "A*",
     run: (grid: Node[][], start: Position, end: Position) => {
       // Initialize the lists
-      const visited: boolean[][] = new Array(grid.length);
-      const aStarGrid: AStarNode[][] = new Array(grid.length);
+      const visited: boolean[][] = new Array(grid.length).fill(
+        new Array(grid[0].length).fill(false)
+      );
+      const aStarGrid: AStarNode[][] = new Array(grid.length).fill(
+        new Array(grid[0].length).fill({
+          f: Number.MAX_VALUE,
+          g: Number.MAX_VALUE,
+          h: Number.MAX_VALUE,
+        })
+      );
       const steps: Position[] = [];
-      const parents: Position[][] = [];
-
-      for (let r = 0; r < grid.length; ++r) {
-        const parentsRow = new Array(grid[0].length);
-        visited[r] = new Array(grid[0].length);
-        aStarGrid[r] = new Array(grid[0].length);
-        for (let c = 0; c < grid[0].length; ++c) {
-          visited[r][c] = false;
-          aStarGrid[r][c] = {
-            f: Number.MAX_VALUE,
-            g: Number.MAX_VALUE,
-            h: Number.MAX_VALUE,
-          };
-          parentsRow[c] = null;
-        }
-        parents[r] = parentsRow;
-      }
+      const parents: Position[][] = new Array(grid.length).fill(
+        new Array(grid[0].length).fill(null)
+      );
 
       // Initialize first node
       aStarGrid[start.row][start.col] = { f: 0, g: 0, h: 0 };

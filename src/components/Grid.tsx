@@ -65,7 +65,7 @@ const Grid: React.FC<GridProps> = ({
     // Sleep for the animation time (1.5s)
     // Only sleep when there are toggled nodes
     if (hasDisplayedAlgo) {
-      await new Promise((r) => setTimeout(r, 1500));
+      await new Promise(() => setTimeout(() => {}, 1500));
     }
 
     const { steps, shortestPath } = algorithm.run(
