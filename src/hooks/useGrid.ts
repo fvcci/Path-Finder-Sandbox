@@ -4,13 +4,16 @@ import * as Node from "../components/Node";
 // import local files
 import { NODE_STATE } from "../constants";
 
-const useGrid = (rows: number, cols: number) => {
-  const start = useInitialPosition(rows, cols, 0.15, 0.2);
-  const end = useInitialPosition(rows, cols, 0.5, 0.6);
+export default function useGrid(
+  rows: number,
+  cols: number,
+  start: Node.Position,
+  end: Node.Position
+) {
   const [grid, setGrid] = useState<Node.Node[][]>([]);
 
   // Create a new grid with grid[row][col] modified to value
-  const setCell = useCallback(
+  const setNode = useCallback(
     (node: Node.Node, pos: Node.Position) => {
       const newGrid = new Array(grid.length);
       for (let r = 0; r < grid.length; ++r) {
@@ -48,46 +51,15 @@ const useGrid = (rows: number, cols: number) => {
   );
 
   useEffect(() => {
-    setGrid(initGrid(rows, cols, start.position, end.position));
-  }, [rows, cols, start.position, end.position]);
+    setGrid(initGrid(rows, cols, start, end));
+  }, [rows, cols, start, end]);
 
   return {
-    start,
-    end,
     grid,
-    setGrid,
-    setCell,
-    setCellTopDOM,
+    setNode,
     clearGridState,
   };
-};
-
-export default useGrid;
-
-const useInitialPosition = (
-  rows: number,
-  cols: number,
-  initialRowPercent: number,
-  initialColPercent: number
-) => {
-  const [pos, setPosition] = useState<Node.Position>({
-    row: Math.floor(rows * initialRowPercent),
-    col: Math.floor(cols * initialColPercent),
-  });
-
-  useEffect(() => {
-    if (pos.row !== 0 && pos.col !== 0) {
-      return;
-    }
-
-    setPosition({
-      row: Math.floor(rows * initialRowPercent),
-      col: Math.floor(cols * initialColPercent),
-    });
-  }, [pos, rows, cols, initialRowPercent, initialColPercent]);
-
-  return { position: pos, setPosition };
-};
+}
 
 const initGrid = (
   rows: number,
@@ -112,10 +84,4 @@ const initGrid = (
   }
 
   return grid;
-};
-
-const setCellTopDOM = (node: Node.Node, position: Node.Position) => {
-  document.getElementById(
-    `top-node-${position.row}-${position.col}`
-  )!.className = `top ${NODE_STATE.DEFAULT} ${node.state}`;
 };

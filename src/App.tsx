@@ -5,7 +5,7 @@ import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
 import AStar from "./algorithms/AStar";
 
-const App: React.FC = () => {
+export default function App() {
   const [isRunning, setIsRunning] = useState(false);
 
   // Tools
@@ -14,7 +14,6 @@ const App: React.FC = () => {
   // const [algorithm, setAlgorithm] = useState(new AStar());
   // const [animationSpeed, setAnimationSpeed] = useState(1);
   const algorithm = AStar();
-  const animationSpeed = 1;
 
   const ref = createRef<HTMLDivElement>();
   const { width, height } = useDimensions(ref, 1 / 24, -10);
@@ -31,20 +30,11 @@ const App: React.FC = () => {
         />
       </header>
       <main className="flex-auto relative" ref={ref}>
-        <Grid
-          isRunning={isRunning}
-          setIsRunning={setIsRunning}
-          isErasingAlgorithm={isErasingAlgorithm}
-          setIsErasingAlgorithm={setIsErasingAlgorithm}
-          rows={Math.max(height, 0)}
-          cols={Math.max(width, 0)}
-          algorithm={algorithm}
-          animationSpeed={animationSpeed}
-        />
+        <Grid rows={Math.max(height, 0)} cols={Math.max(width, 0)} />
       </main>
     </div>
   );
-};
+}
 
 const useDimensions = (
   ref: React.RefObject<HTMLDivElement>,
@@ -76,5 +66,3 @@ const useDimensions = (
       }
     : { width: 0, height: 0 };
 };
-
-export default App;

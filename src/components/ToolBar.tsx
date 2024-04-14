@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 interface State<T> {
   val: T;
   set: (val: T) => void;
@@ -10,7 +8,10 @@ interface ToolBarProps {
   isErasingAlgorithm: State<boolean>;
 }
 
-const ToolBar: FC<ToolBarProps> = ({ runButton, isErasingAlgorithm }) => {
+export default function ToolBar({
+  runButton,
+  isErasingAlgorithm,
+}: ToolBarProps) {
   const playButtonText = runButton.val ? "ABORT" : "PLAY";
   const isErasingAlgorithmText = "ERASE ALGORITHM";
 
@@ -27,6 +28,4 @@ const ToolBar: FC<ToolBarProps> = ({ runButton, isErasingAlgorithm }) => {
       </button>
     </div>
   );
-};
-
-export default ToolBar;
+}
