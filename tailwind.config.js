@@ -19,19 +19,23 @@ export default {
       },
     },
     keyframes: {
-      popInNode: {
+      "pop-in-node": {
         "0%": { transform: "scale(0.3)" },
         "50%": { transform: "scale(1.2)" },
         "100%": { transform: "scale(1)" },
       },
-      popOutNode: {
+      "pop-out-node": {
         "0%": { transform: "scale(1)" },
         "33%": { transform: "scale(1.2)" },
         "66%": { transform: "scale(0.3)" },
         "100%": { transform: "scale(0)" },
       },
-
-      visitedNodeAppear: {
+      "destination-node": {
+        "0%": { transform: "scale(1)" },
+        "50%": { transform: "scale(1.3)" },
+        "100%": { transform: "scale(1)" },
+      },
+      "visited-node-appear": {
         "25%": {
           transform: "scale(0.3)",
           borderRadius: "100%",
@@ -48,7 +52,7 @@ export default {
           backgroundColor: "var(--turquoise)",
         },
       },
-      visitedNodeDisappear: {
+      "visited-node-disappear": {
         "25%": {
           backgroundColor: "var(--turquoise)",
         },
@@ -62,8 +66,7 @@ export default {
           backgroundColor: "none",
         },
       },
-
-      shortestPathNodeAppear: {
+      "shortest-path-node-appear": {
         "0%": {
           backgroundColor: "var(--green)",
         },
@@ -75,7 +78,7 @@ export default {
           transform: "scale(1)",
         },
       },
-      shortestPathNodeDisappear: {
+      "shortest-path-node-disappear": {
         "0%": {
           backgroundColor: "var(--yellow)",
         },
@@ -89,6 +92,19 @@ export default {
           backgroundColor: "none",
         },
       },
+    },
+    animation: {
+      "pop-in-node": "pop-in-node 0.3s ease 0s 1 normal both running",
+      "pop-out-node": "pop-out-node 0.3s ease 0s 1 normal both running",
+      "visited-node-appear":
+        "visited-node-appear 2s ease 0s 1 normal both running",
+      "visited-node-disappear":
+        "visited-node-disappear 1.5s ease 0s 1 normal both running",
+      "shortest-path-node-appear":
+        "shortest-path-node-appear 1.5s ease 0s 1 normal both running",
+      "shortest-path-node-disappear":
+        "shortest-path-node-disappear 1.5s ease 0s 1 normal both running",
+      "destination-node": "destination-node 0.3s ease 0s 1 normal both running",
     },
   },
 };

@@ -5,7 +5,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import * as Node from "./Node";
 import { NODE_STATE } from "../constants";
 import useGrid from "../hooks/useGrid";
-import useDraw from "../hooks/useDraw";
 import Algorithm from "../algorithms/Algorithm";
 import "./Node.css";
 
@@ -17,9 +16,6 @@ const ANIMATION_SPEED = {
 interface GridProps {
   isRunning: boolean;
   setIsRunning: (isRunning: boolean) => void;
-  droppedObstruction: number;
-  isBrushing: boolean;
-  isErasing: boolean;
   isErasingAlgorithm: boolean;
   setIsErasingAlgorithm: (isErasingAlgorithm: boolean) => void;
   rows: number;
@@ -31,9 +27,6 @@ interface GridProps {
 const Grid: React.FC<GridProps> = ({
   isRunning,
   setIsRunning,
-  droppedObstruction,
-  isBrushing,
-  isErasing,
   isErasingAlgorithm,
   setIsErasingAlgorithm,
   rows,
@@ -47,7 +40,6 @@ const Grid: React.FC<GridProps> = ({
   const [hasProcessedSteps, setHasProcessedSteps] = useState(false);
   const [hasDisplayedPath, setHasDisplayedPath] = useState(false);
   const [pendingAnimations, setPendingAnimations] = useState<number[]>([]);
-  const { toggleCellWall, brush, erase } = useDraw(setGrid, setCell);
 
   // Clear state and states that prevent grid interaction after visualization
   const clearCache = useCallback(() => {
@@ -143,13 +135,13 @@ const Grid: React.FC<GridProps> = ({
 
       // Start toggling cells between wall and none
     } else if (!hasDisplayedPath) {
-      if (isBrushing) {
-        brush(grid, pos, droppedObstruction);
-      } else if (isErasing) {
-        erase(grid, pos);
-      } else {
-        toggleCellWall(grid, pos, droppedObstruction);
-      }
+      setCell(
+        {
+          weight: 1,
+          state: Node.toggleFrom(grid[pos.row][pos.col].state) as Node.State,
+        },
+        pos
+      );
     }
   };
 
@@ -165,13 +157,13 @@ const Grid: React.FC<GridProps> = ({
       !hasProcessedSteps &&
       ![NODE_STATE.START, NODE_STATE.END].includes(grid[pos.row][pos.col].state)
     ) {
-      if (isBrushing) {
-        brush(grid, pos, droppedObstruction);
-      } else if (isErasing) {
-        erase(grid, pos);
-      } else {
-        toggleCellWall(grid, pos, droppedObstruction);
-      }
+      setCell(
+        {
+          weight: 1,
+          state: Node.toggleFrom(grid[pos.row][pos.col].state) as Node.State,
+        },
+        pos
+      );
     }
   };
 
@@ -237,11 +229,11 @@ const Grid: React.FC<GridProps> = ({
                     >
                       <div
                         id={`top-node-${pos.row}-${pos.col}`}
-                        className={`top ${NODE_STATE.DEFAULT}`}
+                        className={`top node`}
                       />
                       <div
                         id={`node-${pos.row}-${pos.col}`}
-                        className={`${NODE_STATE.DEFAULT} ${node.state}`}
+                        className={`node ${node.state}`}
                       />
                     </td>
                   );

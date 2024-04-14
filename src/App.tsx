@@ -9,9 +9,6 @@ const App: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
 
   // Tools
-  const [droppedObstruction, setDroppedObstruction] = useState(0);
-  const [isBrushing, setIsBrushing] = useState(false);
-  const [isErasing, setIsErasing] = useState(false);
   const [isErasingAlgorithm, setIsErasingAlgorithm] = useState(false);
 
   // const [algorithm, setAlgorithm] = useState(new AStar());
@@ -27,12 +24,6 @@ const App: React.FC = () => {
       <header className="flex-initial">
         <ToolBar
           runButton={{ val: isRunning, set: setIsRunning }}
-          droppedObstruction={{
-            val: droppedObstruction,
-            set: setDroppedObstruction,
-          }}
-          isBrushing={{ val: isBrushing, set: setIsBrushing }}
-          isErasing={{ val: isErasing, set: setIsErasing }}
           isErasingAlgorithm={{
             val: isErasingAlgorithm,
             set: setIsErasingAlgorithm,
@@ -43,9 +34,6 @@ const App: React.FC = () => {
         <Grid
           isRunning={isRunning}
           setIsRunning={setIsRunning}
-          droppedObstruction={droppedObstruction}
-          isBrushing={isBrushing}
-          isErasing={isErasing}
           isErasingAlgorithm={isErasingAlgorithm}
           setIsErasingAlgorithm={setIsErasingAlgorithm}
           rows={Math.max(height, 0)}
