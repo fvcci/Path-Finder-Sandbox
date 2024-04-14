@@ -68,7 +68,11 @@ const Grid: React.FC<GridProps> = ({
       await new Promise((r) => setTimeout(r, 1500));
     }
 
-    const { steps, shortestPath } = algorithm.run(grid, start.position);
+    const { steps, shortestPath } = algorithm.run(
+      grid,
+      start.position,
+      end.position
+    );
     const animations = [];
 
     // Animate the steps to the algorithm

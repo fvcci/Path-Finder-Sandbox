@@ -5,7 +5,8 @@ export default interface Algorithm {
   getName: () => string;
   run: (
     grid: Node[][],
-    start: Position
+    start: Position,
+    end: Position
   ) => { steps: Position[]; shortestPath: Position[] };
 }
 

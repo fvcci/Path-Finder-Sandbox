@@ -8,22 +8,15 @@ import { Node, Position } from "../components/Node";
 const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
-    run: (grid: Node[][], start: Position) => {
+    run: (grid: Node[][], start: Position, end: Position) => {
       const steps: Position[] = [];
-      const parents: Position[][] = new Array(grid.length);
+      const parents: Position[][] = new Array(grid.length).fill(
+        new Array(grid[0].length).fill(null)
+      );
 
-      const dis: number[][] = new Array(grid.length);
-
-      for (let i = 0; i < grid.length; ++i) {
-        const parentsRow = new Array(grid[i].length);
-        const disRow = new Array(grid[i].length);
-        for (let j = 0; j < grid[i].length; ++j) {
-          parentsRow[j] = null;
-          disRow[j] = Infinity;
-        }
-        parents[i] = parentsRow;
-        dis[i] = disRow;
-      }
+      const dis: number[][] = new Array(grid.length).fill(
+        new Array(grid[0].length).fill(Infinity)
+      );
 
       // Start fro the start node
       const queue = new PriorityQueue<Node & Position>(
@@ -57,19 +50,20 @@ const Dijkstra = (): Algorithm => {
           // previousNode is a parent node to grid[r][c]
           parents[r][c] = prevNode;
 
-          if (adjNode.state !== NODE_STATE.END) {
-            queue.push({
-              weight: dis[r][c],
-              state: adjNode.state,
-              row: r,
-              col: c,
-            });
-          } else {
+          const reachedEnd = r === end.row && c === end.col;
+          if (reachedEnd) {
             return {
               steps,
               shortestPath: findShortestPath(parents, { row: r, col: c }),
             };
           }
+
+          queue.push({
+            weight: dis[r][c],
+            state: adjNode.state,
+            row: r,
+            col: c,
+          });
         }
       }
 
