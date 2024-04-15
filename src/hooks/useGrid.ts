@@ -25,31 +25,6 @@ export default function useGrid(
     [grid]
   );
 
-  // Takes a list of states to clear from the grid
-  const clearGridState = useCallback(
-    (statesToClear: string[]): boolean => {
-      let hasToggled = false;
-
-      for (let r = 0; r < grid.length; ++r) {
-        for (let c = 0; c < grid[r].length; ++c) {
-          const node = document.getElementById(`top-node-${r}-${c}`)!;
-
-          for (const stateToClear of statesToClear) {
-            // Toggle the current node's state to its reverse animation unless
-            // it is the dragged node then don't.
-            if (node.className.split(" ").includes(stateToClear)) {
-              node.className = node.className + "-reverse";
-              hasToggled = true;
-            }
-          }
-        }
-      }
-
-      return hasToggled;
-    },
-    [grid]
-  );
-
   useEffect(() => {
     setGrid(initGrid(rows, cols, start, end));
   }, [rows, cols, start, end]);
@@ -57,7 +32,6 @@ export default function useGrid(
   return {
     grid,
     setNode,
-    clearGridState,
   };
 }
 

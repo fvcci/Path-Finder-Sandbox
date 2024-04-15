@@ -26,24 +26,16 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
           <tbody className="whitespace-pre">
             {visualizedGrid.grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
-                {rowNodes.map((node, colIdx) => {
-                  const pos: Node.Position = { row: rowIdx, col: colIdx };
-                  return (
-                    <td
-                      key={colIdx}
-                      className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-pale-blue"
-                    >
-                      <div
-                        id={`top-node-${pos.row}-${pos.col}`}
-                        className={`top node`}
-                      />
-                      <div
-                        id={`node-${pos.row}-${pos.col}`}
-                        className={`node ${node.state}`}
-                      />
-                    </td>
-                  );
-                })}
+                {rowNodes.map((node, colIdx) => (
+                  <td
+                    key={colIdx}
+                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-pale-blue"
+                  >
+                    <div className={`node ${node.state}`}>
+                      <div className="top node" />
+                    </div>
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
