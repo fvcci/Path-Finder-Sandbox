@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 // local imports
 import * as Node from "./Node";
 import useGrid from "../hooks/useGrid";
-import "./Node.css";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
@@ -12,10 +11,10 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const visualizedGrid = useGrid(rows, cols, start.position, end.position);
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[beige-blue-4]">
-      <div className="outline outline-4 outline-beige-blue-2 p-1">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-primary-4">
+      <div className="outline outline-4 outline-primary-2 p-1">
         <table
-          className="outline outline-1 outline-beige-blue-2 p-1 border-spacing-0 border-collapse"
+          className="outline outline-1 outline-primary-2 p-1 border-spacing-0 border-collapse"
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
@@ -24,13 +23,13 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                 {rowNodes.map((node, colIdx) => (
                   <td
                     key={colIdx}
-                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-beige-blue-2"
+                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-primary-2"
                   >
                     <div className={Node.STATE_STYLES.BASE}>
                       <div
-                        className={`top ${Node.STATE_STYLES.BASE} ${
-                          Node.STATE_STYLES[node.state]
-                        }`}
+                        className={`w-full h-full absolute top-0 left-0 z-10 ${
+                          Node.STATE_STYLES.BASE
+                        } ${Node.STATE_STYLES[node.state]}`}
                       />
                     </div>
                   </td>

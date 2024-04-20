@@ -5,8 +5,6 @@ import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
 
 export default function App() {
-  const [isRunning, setIsRunning] = useState(false);
-
   // Tools
   const [isErasingAlgorithm, setIsErasingAlgorithm] = useState(false);
 
@@ -16,10 +14,9 @@ export default function App() {
   const { width, height } = useDimensions(ref, 1 / 24, -6);
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-beige-blue-1">
+    <div className="flex flex-col w-screen h-screen bg-primary-1">
       <header className="flex-initial">
         <ToolBar
-          runButton={{ val: isRunning, set: setIsRunning }}
           isErasingAlgorithm={{
             val: isErasingAlgorithm,
             set: setIsErasingAlgorithm,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import * as Node from "../components/Node";
 
 export default function useGrid(
@@ -9,26 +9,12 @@ export default function useGrid(
 ) {
   const [grid, setGrid] = useState<Node.Node[][]>([]);
 
-  // Create a new grid with grid[row][col] modified to value
-  const setNode = useCallback(
-    (node: Node.Node, pos: Node.Position) => {
-      const newGrid = new Array(grid.length);
-      for (let r = 0; r < grid.length; ++r) {
-        newGrid[r] = [...grid[r]];
-      }
-      newGrid[pos.row][pos.col] = node;
-      setGrid(newGrid);
-    },
-    [grid]
-  );
-
   useEffect(() => {
     setGrid(initGrid(rows, cols, start, end));
   }, [rows, cols, start, end]);
 
   return {
     grid,
-    setNode,
   };
 }
 

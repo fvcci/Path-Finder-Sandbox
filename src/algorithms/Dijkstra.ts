@@ -1,5 +1,3 @@
-import { NODE_STATE } from "../constants";
-
 // Local files
 import Algorithm, { DELTA } from "./Algorithm";
 import { PriorityQueue, inBounds, findShortestPath } from "./util";

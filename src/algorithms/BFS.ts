@@ -1,4 +1,3 @@
-import { NODE_STATE } from "../constants";
 import Algorithm, { DELTA } from "./Algorithm";
 import { Node, Position } from "../components/Node";
 import { Queue, inBounds, findShortestPath } from "./util";

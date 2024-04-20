@@ -8,7 +8,7 @@ export interface Position {
   col: number;
 }
 
-type State = keyof typeof STATE_STYLES;
+export type State = keyof typeof STATE_STYLES;
 
 export const STATE_STYLES = {
   BASE: "w-6 h-6 text-center select-none",
@@ -18,6 +18,6 @@ export const STATE_STYLES = {
   VISITED_DISAPPEAR: "animate-visited-node-disappear",
   SHORTEST_PATH_APPEAR: "animate-shortest-path-appear",
   SHORTEST_PATH_DISAPPEAR: "animate-shortest-path-disappear",
-  WALL_APPEAR: "animate-pop-in-node bg-beige-blue-2",
-  WALL_DISAPPEAR: "animate-pop-out-node bg-beige-blue-2",
+  WALL_APPEAR: "animate-pop-in-node bg-primary-2",
+  WALL_DISAPPEAR: "animate-pop-out-node bg-primary-2",
 } as const;

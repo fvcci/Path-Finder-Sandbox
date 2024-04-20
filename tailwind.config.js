@@ -16,10 +16,10 @@ export default {
     extend: {
       colors: {
         button: "#389fd6",
-        "beige-blue-1": "#417194",
-        "beige-blue-2": "#355871",
-        "beige-blue-3": "#233342",
-        "beige-blue-4": "#131c21",
+        "primary-1": "#417194",
+        "primary-2": "#355871",
+        "primary-3": "#233342",
+        "primary-4": "#131c21",
       },
     },
     keyframes: {
