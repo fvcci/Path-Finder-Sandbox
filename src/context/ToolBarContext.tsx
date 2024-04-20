@@ -4,16 +4,21 @@ import {
   ObservableEditable,
   ObservableEvent,
 } from "../util/observer";
+import Algorithm from "../algorithms/Algorithm";
+import Dijkstra from "../algorithms/Dijkstra";
 
 export const Provider = ({ children }: { children?: ReactNode[] }) => {
   return (
-    <Context.Provider value={{ runButton: RunAlgorithmButton() }}>
+    <Context.Provider
+      value={{ selectedAlgorithm: Dijkstra(), runButton: RunAlgorithmButton() }}
+    >
       {children}
     </Context.Provider>
   );
 };
 
 export const Context = createContext<{
+  selectedAlgorithm: Algorithm;
   runButton: Observable;
 } | null>(null);
 

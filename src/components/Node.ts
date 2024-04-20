@@ -11,7 +11,7 @@ export interface Position {
 export type State = keyof typeof STATE_STYLES;
 
 export const STATE_STYLES = {
-  BASE: "w-6 h-6 text-center select-none",
+  BASE: "w-6 h-6 relative text-center select-none",
   START: "animate-desination-node bg-green-500",
   END: "animate-desination-node bg-red-500",
   VISITED: "animate-visited-node-appear",

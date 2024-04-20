@@ -23,7 +23,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                 {rowNodes.map((node, colIdx) => (
                   <td
                     key={colIdx}
-                    className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-primary-2"
+                    className="table-cell p-0 min-w-6 min-h-6 border-[1px] border-primary-2"
                   >
                     <div className={Node.STATE_STYLES.BASE}>
                       <div
