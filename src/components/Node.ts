@@ -8,9 +8,9 @@ export interface Position {
   col: number;
 }
 
-type State = keyof typeof STATE_TO_STYLES;
+type State = keyof typeof STATE_STYLES;
 
-export const STATE_TO_STYLES = {
+export const STATE_STYLES = {
   BASE: "w-6 h-6 text-center select-none",
   START: "animate-desination-node bg-green-500",
   END: "animate-desination-node bg-red-500",
