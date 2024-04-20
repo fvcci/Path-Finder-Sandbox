@@ -3,29 +3,22 @@ import React, { useState, useLayoutEffect, createRef } from "react";
 // local imports
 import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
+import * as ToolBarContext from "./context/ToolBarContext";
 
 export default function App() {
-  // Tools
-  const [isErasingAlgorithm, setIsErasingAlgorithm] = useState(false);
-
-  // const [algorithm, setAlgorithm] = useState(new AStar());
-  // const [animationSpeed, setAnimationSpeed] = useState(1);
   const ref = createRef<HTMLDivElement>();
   const { width, height } = useDimensions(ref, 1 / 24, -6);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-primary-1">
-      <header className="flex-initial">
-        <ToolBar
-          isErasingAlgorithm={{
-            val: isErasingAlgorithm,
-            set: setIsErasingAlgorithm,
-          }}
-        />
-      </header>
-      <main className="flex-auto relative" ref={ref}>
-        <Grid rows={Math.max(height, 0)} cols={Math.max(width, 0)} />
-      </main>
+      <ToolBarContext.Provider>
+        <header className="flex-initial">
+          <ToolBar />
+        </header>
+        <main className="flex-auto relative" ref={ref}>
+          <Grid rows={Math.max(height, 0)} cols={Math.max(width, 0)} />
+        </main>
+      </ToolBarContext.Provider>
     </div>
   );
 }

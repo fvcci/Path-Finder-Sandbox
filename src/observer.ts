@@ -1,17 +1,23 @@
 export interface Observer {
-  update: (event: string) => void;
+  update: (event: ObservableEvent) => void;
 }
 
-export type IObservable = ReturnType<typeof Observable>;
+export type Observable = ReturnType<typeof ObservableEditable>;
 
-export const Observable = () => {
+export const ObservableEditable = () => {
   const observers = new Set<Observer>([]);
   return {
-    notifyObservers: (unverifiedEvent: string) => {
-      observers.forEach((observer) => observer.update(unverifiedEvent));
+    notifyObservers: (event: ObservableEvent) => {
+      observers.forEach((observer) => observer.update(event));
     },
     enlist: (observer: Observer) => {
       observers.add(observer);
     },
   };
 };
+
+export type ObservableEvent = [
+  "RUN ALGORITHM BUTTON CLICK",
+  "RUN ALGORITHM",
+  "ABORT ALGORITHM"
+][number];
