@@ -13,9 +13,7 @@ export default function useGrid(
     setGrid(initGrid(rows, cols, start, end));
   }, [rows, cols, start, end]);
 
-  return {
-    grid,
-  };
+  return grid;
 }
 
 const initGrid = (

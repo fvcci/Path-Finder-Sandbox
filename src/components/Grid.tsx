@@ -4,11 +4,17 @@ import { useState, useEffect } from "react";
 // local imports
 import * as Node from "./Node";
 import useGrid from "../hooks/useGrid";
+import { useToolBarContext } from "../hooks/useToolBarContext";
+import { ObservableEvent, Observer } from "../util/observer";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
-  const visualizedGrid = useGrid(rows, cols, start.position, end.position);
+  const grid = useGrid(rows, cols, start.position, end.position);
+
+  const toolBar = useToolBarContext();
+  const algorithmVisualizer = useAlgorithmVisualizer(grid);
+  toolBar.runButton.enlistToNotify(algorithmVisualizer);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-primary-4">
@@ -18,7 +24,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
-            {visualizedGrid.grid.map((rowNodes, rowIdx) => (
+            {grid.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, colIdx) => (
                   <td
@@ -66,4 +72,12 @@ const useInitialPosition = (
   }, [pos, rows, cols, initialRowPercent, initialColPercent]);
 
   return { position: pos, setPosition };
+};
+
+const useAlgorithmVisualizer = (grid: Node.Node[][]): Observer => {
+  return {
+    update: (event: ObservableEvent) => {
+      console.log(event);
+    },
+  };
 };

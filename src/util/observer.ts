@@ -10,7 +10,7 @@ export const ObservableEditable = () => {
     notifyObservers: (event: ObservableEvent) => {
       observers.forEach((observer) => observer.update(event));
     },
-    enlist: (observer: Observer) => {
+    enlistToNotify: (observer: Observer) => {
       observers.add(observer);
     },
   };
