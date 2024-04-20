@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { assert } from "../asserts";
+import { assert } from "../util/asserts";
 import * as ToolBarContext from "../context/ToolBarContext";
 
 export const useToolBarContext = () => {

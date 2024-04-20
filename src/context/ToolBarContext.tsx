@@ -1,5 +1,9 @@
 import { ReactNode, createContext, useState } from "react";
-import { Observable, ObservableEditable, ObservableEvent } from "../observer";
+import {
+  Observable,
+  ObservableEditable,
+  ObservableEvent,
+} from "../util/observer";
 
 export const Provider = ({ children }: { children?: ReactNode[] }) => {
   return (
