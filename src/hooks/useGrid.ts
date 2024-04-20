@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import * as Node from "../components/Node";
 
-// import local files
-import { NODE_STATE } from "../constants";
-
 export default function useGrid(
   rows: number,
   cols: number,
@@ -47,14 +44,14 @@ const initGrid = (
     for (let c = 0; c < grid[r].length; ++c) {
       grid[r][c] = {
         weight: 1,
-        state: "",
+        state: "BASE",
       };
     }
   }
 
   if (rows !== 0 && cols !== 0) {
-    grid[startNode.row][startNode.col].state = NODE_STATE.START;
-    grid[endNode.row][endNode.col].state = NODE_STATE.END;
+    grid[startNode.row][startNode.col].state = "START";
+    grid[endNode.row][endNode.col].state = "END";
   }
 
   return grid;

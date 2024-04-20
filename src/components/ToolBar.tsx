@@ -19,7 +19,7 @@ export default function ToolBar({
   // When selecting something else, deselect eraser
   /* eslint-disable @typescript-eslint/no-explicit-any */
   return (
-    <div className="bg-dark-blue">
+    <div className="bg-beige-blue-3">
       <button onClick={() => runButton.set(!runButton.val)}>
         {playButtonText}
       </button>

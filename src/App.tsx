@@ -3,7 +3,6 @@ import React, { useState, useLayoutEffect, createRef } from "react";
 // local imports
 import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
-import AStar from "./algorithms/AStar";
 
 export default function App() {
   const [isRunning, setIsRunning] = useState(false);
@@ -13,13 +12,11 @@ export default function App() {
 
   // const [algorithm, setAlgorithm] = useState(new AStar());
   // const [animationSpeed, setAnimationSpeed] = useState(1);
-  const algorithm = AStar();
-
   const ref = createRef<HTMLDivElement>();
-  const { width, height } = useDimensions(ref, 1 / 24, -10);
+  const { width, height } = useDimensions(ref, 1 / 24, -6);
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-background">
+    <div className="flex flex-col w-screen h-screen bg-beige-blue-1">
       <header className="flex-initial">
         <ToolBar
           runButton={{ val: isRunning, set: setIsRunning }}

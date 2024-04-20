@@ -1,21 +1,25 @@
 /** @type {import('tailwindcss').Config} */
+
+const LOCAL_COLORS = {
+  VISITED_NODE_1: "rgba(17, 104, 217, 0.75)",
+  VISITED_NODE_2: "rgba(0, 217, 159, 0.75)",
+  VISITED_NODE_3: "rgba(0, 190, 218, 0.75)",
+  SHORTEST_PATH: "rgb(255, 254, 106)",
+  WEIGHT_1: "rgba(103, 58, 182, 0.75)",
+  WEIGHT_2: "rgba(155, 39, 176, 0.75)",
+  WEIGHT_3: "rgba(233, 30, 99, 0.75)",
+};
+
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        background: "#417194",
-        selection: "#389fd6",
-        "pale-blue": "#355871",
-        "dark-blue": "#233342",
-        "darkest-blue": "#131c21",
-        turquoise: "rgba(0, 190, 218, 0.75)",
-        green: "rgba(0, 217, 159, 0.75)",
-        blue: "rgba(17, 104, 217, 0.75)",
-        yellow: "rgb(255, 254, 106)",
-        "weight-1": "rgba(103, 58, 182, 0.75)",
-        "weight-2": "rgba(155, 39, 176, 0.75)",
-        "weight-3": "rgba(233, 30, 99, 0.75)",
+        button: "#389fd6",
+        "beige-blue-1": "#417194",
+        "beige-blue-2": "#355871",
+        "beige-blue-3": "#233342",
+        "beige-blue-4": "#131c21",
       },
     },
     keyframes: {
@@ -41,26 +45,26 @@ export default {
           borderRadius: "100%",
         },
         "50%": {
-          backgroundColor: "var(--blue)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
         },
         "75%": {
           transform: "scale(1.2)",
-          backgroundColor: "var(--green)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
         },
         "100%": {
           transform: "scale(1)",
-          backgroundColor: "var(--turquoise)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_3,
         },
       },
       "visited-node-disappear": {
         "25%": {
-          backgroundColor: "var(--turquoise)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_3,
         },
         "50%": {
-          backgroundColor: "var(--green)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
         },
         "75%": {
-          backgroundColor: "var(--blue)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
         },
         "100%": {
           backgroundColor: "none",
@@ -68,10 +72,10 @@ export default {
       },
       "shortest-path-node-appear": {
         "0%": {
-          backgroundColor: "var(--green)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
         },
         "80%": {
-          backgroundColor: "var(--yellow)",
+          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
           transform: "scale(1.3)",
         },
         "100%": {
@@ -80,13 +84,13 @@ export default {
       },
       "shortest-path-node-disappear": {
         "0%": {
-          backgroundColor: "var(--yellow)",
+          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
         },
         "20%": {
-          backgroundColor: "var(--green)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
         },
         "40%": {
-          backgroundColor: "var(--blue)",
+          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
         },
         "60%": {
           backgroundColor: "none",
