@@ -26,10 +26,10 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                     key={colIdx}
                     className="table-cell relative p-0 min-w-6 min-h-6 border-[1px] border-beige-blue-2"
                   >
-                    <div className="node">
+                    <div className={Node.STATE_TO_STYLES.BASE}>
                       <div
-                        className={`top ${Node.STATES.BASE} ${
-                          Node.STATES[node.state]
+                        className={`top ${Node.STATE_TO_STYLES.BASE} ${
+                          Node.STATE_TO_STYLES[node.state]
                         }`}
                       />
                     </div>

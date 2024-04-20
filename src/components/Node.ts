@@ -8,9 +8,9 @@ export interface Position {
   col: number;
 }
 
-type State = keyof typeof STATES;
+type State = keyof typeof STATE_TO_STYLES;
 
-export const STATES = {
+export const STATE_TO_STYLES = {
   BASE: "w-6 h-6 text-center select-none",
   START: "animate-desination-node bg-green-500",
   END: "animate-desination-node bg-red-500",
@@ -21,6 +21,3 @@ export const STATES = {
   WALL_APPEAR: "animate-pop-in-node bg-beige-blue-2",
   WALL_DISAPPEAR: "animate-pop-out-node bg-beige-blue-2",
 } as const;
-
-const applyForEachClass = (className: string, f: (x: string) => string) =>
-  className.split(" ").map(f).join(" ");
