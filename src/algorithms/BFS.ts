@@ -38,7 +38,7 @@ const BFS = (): Algorithm => {
 
           if (
             !inBounds(grid.length, grid[0].length, r, c) ||
-            adjNode.state === NODE_STATE.WALL ||
+            adjNode.state === "WALL" ||
             visited[r][c]
           )
             continue;
@@ -48,7 +48,7 @@ const BFS = (): Algorithm => {
 
           queue.push({ row: r, col: c });
 
-          if (adjNode.state !== NODE_STATE.END) {
+          if (adjNode.state !== "END") {
             queue.push({ row: r, col: c });
           } else {
             return {

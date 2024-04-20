@@ -1,7 +1,6 @@
 import Algorithm, { DELTA } from "./Algorithm";
-import { Node } from "../components/Node";
 import { inBounds, findShortestPath, PriorityQueue } from "./util";
-import { Position } from "../components/Node";
+import { Node, Position } from "../components/Node";
 
 interface AStarNode {
   f: number;
@@ -63,7 +62,7 @@ const AStar = (): Algorithm => {
           // Invalid if out of bounds or a wall or is already visited
           if (
             !inBounds(grid.length, grid[0].length, rr, cc) ||
-            grid[rr][cc].state === NODE_STATE.WALL ||
+            grid[rr][cc].state === "WALL" ||
             visited[rr][cc]
           )
             continue;

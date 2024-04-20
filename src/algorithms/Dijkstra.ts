@@ -20,7 +20,7 @@ const Dijkstra = (): Algorithm => {
       const queue = new PriorityQueue<Node & Position>(
         (a, b) => a.weight < b.weight
       );
-      queue.push({ ...start, weight: -1, state: "node-start" });
+      queue.push({ ...start, weight: -1, state: "START" });
       dis[start.row][start.col] = 0;
 
       while (queue.size() > 0) {
@@ -38,7 +38,7 @@ const Dijkstra = (): Algorithm => {
           // Invalid if out of bounds or a wall or is already visited
           if (
             !inBounds(grid.length, grid[0].length, r, c) ||
-            adjNode.state === NODE_STATE.WALL ||
+            adjNode.state === "WALL" ||
             dis[r][c] <= dis[prevNode.row][prevNode.col] + adjNode.weight
           )
             continue;
