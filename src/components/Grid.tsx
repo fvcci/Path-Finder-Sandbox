@@ -3,17 +3,26 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useGrid from "../hooks/useGrid";
+import useVisualGrid, { NodeForAnimation } from "../hooks/useVisualGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 import { ObservableEvent, Observer } from "../util/observer";
+import { assert } from "../util/asserts";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
-  const grid = useGrid(rows, cols, start.position, end.position);
+  const visualGrid = useVisualGrid(rows, cols, start.position, end.position);
 
   const toolBar = useToolBarContext();
-  const algorithmVisualizer = useAlgorithmVisualizer(grid);
+  const algorithmVisualizer = useAlgorithmVisualizer(
+    {
+      gridState: visualGrid.gridState,
+      setGridState: visualGrid.setGridForAnimation,
+    },
+    start.position,
+    end.position,
+    8
+  );
   toolBar.runButton.enlistToNotify(algorithmVisualizer);
 
   return (
@@ -24,7 +33,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
-            {grid.map((rowNodes, rowIdx) => (
+            {visualGrid.gridForAnimation.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, colIdx) => (
                   <td
@@ -36,6 +45,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                         className={`w-full h-full absolute top-0 left-0 z-10 ${
                           Node.STATE_STYLES.BASE
                         } ${Node.STATE_STYLES[node.state]}`}
+                        style={{ animationDelay: node.animationDelay + "ms" }}
                       />
                     </div>
                   </td>
@@ -74,10 +84,63 @@ const useInitialPosition = (
   return { position: pos, setPosition };
 };
 
-const useAlgorithmVisualizer = (grid: Node.Node[][]): Observer => {
+const useAlgorithmVisualizer = (
+  gridAPI: {
+    gridState: Node.Node[][];
+    setGridState: (grid: NodeForAnimation[][]) => void;
+  },
+  start: Node.Position,
+  end: Node.Position,
+  speedFactorMiliSecs: number
+): Observer => {
   const toolBar = useToolBarContext();
   const run = () => {
-    toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+    if (gridAPI.gridState.length === 0) {
+      return;
+    }
+
+    const { steps, shortestPath } = toolBar.selectedAlgorithm.run(
+      gridAPI.gridState,
+      start,
+      end
+    );
+
+    const gridForAnimation: NodeForAnimation[][] = gridAPI.gridState.map(
+      (row) => row.map((node) => ({ ...node, animationDelay: 0 }))
+    );
+
+    steps.forEach((step, idx) => {
+      assert(gridForAnimation[step.row][step.col]);
+      gridForAnimation[step.row][step.col] = {
+        ...gridForAnimation[step.row][step.col],
+        state: "VISITED",
+        animationDelay: speedFactorMiliSecs * idx,
+      };
+    });
+
+    gridAPI.setGridState(gridForAnimation);
+
+    const stepsDuration = steps.length * speedFactorMiliSecs;
+    const shortestPathSpeedFactorMilliSecs = speedFactorMiliSecs * 4;
+
+    setTimeout(() => {
+      shortestPath.forEach((shortestPathStep, idx) => {
+        assert(gridForAnimation[shortestPathStep.row][shortestPathStep.col]);
+        gridForAnimation[shortestPathStep.row][shortestPathStep.col] = {
+          ...gridForAnimation[shortestPathStep.row][shortestPathStep.col],
+          state: "SHORTEST_PATH",
+          animationDelay: shortestPathSpeedFactorMilliSecs * idx,
+        };
+      });
+
+      gridAPI.setGridState(gridForAnimation);
+    }, stepsDuration);
+
+    const shortestPathDuration =
+      shortestPath.length * shortestPathSpeedFactorMilliSecs;
+    setTimeout(() => {
+      toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+    }, stepsDuration + shortestPathDuration);
   };
 
   return {
