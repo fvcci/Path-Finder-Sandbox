@@ -14,6 +14,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const visualGrid = useVisualGrid(rows, cols, start.position, end.position);
 
   const toolBar = useToolBarContext();
+  const stepsSpeedFactorMilliSecs = 8;
   const algorithmVisualizer = useAlgorithmVisualizer(
     {
       gridState: visualGrid.gridState,
@@ -21,7 +22,8 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
     },
     start.position,
     end.position,
-    8
+    stepsSpeedFactorMilliSecs,
+    stepsSpeedFactorMilliSecs * 4
   );
   toolBar.runButton.enlistToNotify(algorithmVisualizer);
 
@@ -91,10 +93,11 @@ const useAlgorithmVisualizer = (
   },
   start: Node.Position,
   end: Node.Position,
-  speedFactorMiliSecs: number
+  stepsSpeedFactorMilliSecs: number,
+  shortestPathSpeedFactorMilliSecs: number
 ): Observer => {
   const toolBar = useToolBarContext();
-  const run = () => {
+  const run = async () => {
     if (gridAPI.gridState.length === 0) {
       return;
     }
@@ -114,33 +117,36 @@ const useAlgorithmVisualizer = (
       gridForAnimation[step.row][step.col] = {
         ...gridForAnimation[step.row][step.col],
         state: "VISITED",
-        animationDelay: speedFactorMiliSecs * idx,
+        animationDelay: stepsSpeedFactorMilliSecs * idx,
       };
     });
 
     gridAPI.setGridState(gridForAnimation);
 
-    const stepsDuration = steps.length * speedFactorMiliSecs;
-    const shortestPathSpeedFactorMilliSecs = speedFactorMiliSecs * 4;
+    const paddingToAllowAnimationToFinish = 1000;
+    const stepsDuration = steps.length * stepsSpeedFactorMilliSecs;
 
-    setTimeout(() => {
-      shortestPath.forEach((shortestPathStep, idx) => {
-        assert(gridForAnimation[shortestPathStep.row][shortestPathStep.col]);
-        gridForAnimation[shortestPathStep.row][shortestPathStep.col] = {
-          ...gridForAnimation[shortestPathStep.row][shortestPathStep.col],
-          state: "SHORTEST_PATH",
-          animationDelay: shortestPathSpeedFactorMilliSecs * idx,
-        };
-      });
+    await executeAfterWaiting(
+      stepsDuration + paddingToAllowAnimationToFinish,
+      () => {
+        shortestPath.forEach((shortestPathStep, idx) => {
+          assert(gridForAnimation[shortestPathStep.row][shortestPathStep.col]);
+          gridForAnimation[shortestPathStep.row][shortestPathStep.col] = {
+            ...gridForAnimation[shortestPathStep.row][shortestPathStep.col],
+            state: "SHORTEST_PATH",
+            animationDelay: shortestPathSpeedFactorMilliSecs * idx,
+          };
+        });
 
-      gridAPI.setGridState(gridForAnimation);
-    }, stepsDuration);
+        gridAPI.setGridState(gridForAnimation);
+      }
+    );
 
     const shortestPathDuration =
       shortestPath.length * shortestPathSpeedFactorMilliSecs;
-    setTimeout(() => {
+    await executeAfterWaiting(shortestPathDuration, () => {
       toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
-    }, stepsDuration + shortestPathDuration);
+    });
   };
 
   return {
@@ -155,3 +161,11 @@ const useAlgorithmVisualizer = (
     },
   };
 };
+
+const executeAfterWaiting = async (durationMilliSecs: number, f: () => void) =>
+  new Promise((resolve) =>
+    setTimeout(() => {
+      resolve(undefined);
+      f();
+    }, durationMilliSecs)
+  );

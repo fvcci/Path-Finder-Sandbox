@@ -135,7 +135,6 @@ export const findShortestPath = (
   end: Position
 ): Position[] => {
   let current: Position | null = end;
-  console.log(parents);
   const shortestPath = [];
 
   // While current has a parent, go to its previousNode

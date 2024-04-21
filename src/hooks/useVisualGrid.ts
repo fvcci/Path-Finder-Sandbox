@@ -43,8 +43,6 @@ const initGrid = (
     grid[startNode.row][startNode.col].state = "START";
     grid[endNode.row][endNode.col].state = "END";
   }
-
-  console.log(grid);
   return grid;
 };
 
