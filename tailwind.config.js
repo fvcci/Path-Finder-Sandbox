@@ -1,25 +1,33 @@
 /** @type {import('tailwindcss').Config} */
 
-const LOCAL_COLORS = {
-  VISITED_NODE_1: "rgba(17, 104, 217, 0.75)",
-  VISITED_NODE_2: "rgba(0, 217, 159, 0.75)",
-  VISITED_NODE_3: "rgba(0, 190, 218, 0.75)",
-  SHORTEST_PATH: "rgb(255, 254, 106)",
-  WEIGHT_1: "rgba(103, 58, 182, 0.75)",
-  WEIGHT_2: "rgba(155, 39, 176, 0.75)",
-  WEIGHT_3: "rgba(233, 30, 99, 0.75)",
-};
-
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        button: "#389fd6",
-        "primary-1": "#417194",
-        "primary-2": "#355871",
-        "primary-3": "#233342",
-        "primary-4": "#131c21",
+        theme: {
+          button: "#389fd6",
+          primary: {
+            1: "#417194",
+            2: "#355871",
+            3: "#233342",
+            4: "#131c21",
+          },
+        },
+        node: {
+          "shortest-path": "rgb(255, 254, 106)",
+          visited: {
+            1: "rgba(17, 104, 217, 0.75)",
+            2: "rgba(0, 217, 159, 0.75)",
+            3: "rgba(0, 190, 218, 0.75)",
+          },
+          wall: "#355871",
+          weight: {
+            1: "rgba(103, 58, 182, 0.75)",
+            2: "rgba(155, 39, 176, 0.75)",
+            3: "rgba(233, 30, 99, 0.75)",
+          },
+        },
       },
     },
     keyframes: {
@@ -45,26 +53,26 @@ export default {
           borderRadius: "100%",
         },
         "50%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
+          backgroundColor: "theme('colors.node.visited.1')",
         },
         "75%": {
           transform: "scale(1.2)",
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
+          backgroundColor: "theme('colors.node.visited.2')",
         },
         "100%": {
           transform: "scale(1)",
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_3,
+          backgroundColor: "theme('colors.node.visited.3')",
         },
       },
       "visited-node-disappear": {
         "25%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_3,
+          backgroundColor: "theme('colors.node.visited.3')",
         },
         "50%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
+          backgroundColor: "theme('colors.node.visited.2')",
         },
         "75%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
+          backgroundColor: "theme('colors.node.visited.1')",
         },
         "100%": {
           backgroundColor: "none",
@@ -72,26 +80,26 @@ export default {
       },
       "shortest-path-node-appear": {
         "0%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
+          backgroundColor: "theme('colors.node.visited.2')",
         },
         "80%": {
-          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
+          backgroundColor: "theme('colors.node.shortest-path')",
           transform: "scale(1.3)",
         },
         "100%": {
-          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
+          backgroundColor: "theme('colors.node.shortest-path')",
           transform: "scale(1)",
         },
       },
       "shortest-path-node-disappear": {
         "0%": {
-          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
+          backgroundColor: "theme('colors.node.shortest-path')",
         },
         "20%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_2,
+          backgroundColor: "theme('colors.node.visited.2')",
         },
         "40%": {
-          backgroundColor: LOCAL_COLORS.VISITED_NODE_1,
+          backgroundColor: "theme('colors.node.visited.1')",
         },
         "60%": {
           backgroundColor: "none",

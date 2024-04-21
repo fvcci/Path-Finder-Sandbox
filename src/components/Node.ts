@@ -16,10 +16,10 @@ export const STATE_STYLES = {
   END: "animate-destination-node bg-red-500",
   VISITED: "animate-visited-node-appear",
   VISITED_DISAPPEAR: "animate-visited-node-disappear",
-  SHORTEST_PATH: "animate-shortest-path-node-appear bg-[#00b4dabf]",
+  SHORTEST_PATH: "animate-shortest-path-node-appear bg-node-visited-3",
   SHORTEST_PATH_DISAPPEAR: "animate-shortest-path-node-disappear",
-  WALL: "animate-pop-in-node bg-primary-2",
-  WALL_DISAPPEAR: "animate-pop-out-node bg-primary-2",
+  WALL: "animate-pop-in-node bg-node-wall",
+  WALL_DISAPPEAR: "animate-pop-out-node bg-node-wall",
 } as const;
 
 export const disappear = (stateStyle: State) => {

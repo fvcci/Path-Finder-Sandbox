@@ -28,10 +28,10 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   toolBar.runButton.enlistToNotify(algorithmVisualizer);
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-primary-4">
-      <div className="outline outline-4 outline-primary-2 p-1">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
+      <div className="outline outline-4 outline-theme-primary-2 p-1">
         <table
-          className="outline outline-1 outline-primary-2 p-1 border-spacing-0 border-collapse"
+          className="outline outline-1 outline-theme-primary-2 p-1 border-spacing-0 border-collapse"
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
@@ -40,7 +40,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                 {rowNodes.map((node, colIdx) => (
                   <td
                     key={colIdx}
-                    className="table-cell p-0 min-w-6 min-h-6 border-[1px] border-primary-2"
+                    className="table-cell p-0 min-w-6 min-h-6 border-[1px] border-theme-primary-2"
                   >
                     <div className={Node.STATE_STYLES.BASE}>
                       <div

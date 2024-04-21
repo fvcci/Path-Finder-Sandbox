@@ -4,7 +4,7 @@ export default function ToolBar() {
   const toolBar = useToolBarContext();
 
   return (
-    <div className="bg-primary-3">
+    <div className="bg-theme-primary-3">
       <button
         className="py-1 px-2 bg-red-500"
         onClick={() =>

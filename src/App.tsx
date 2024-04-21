@@ -10,7 +10,7 @@ export default function App() {
   const { width, height } = useDimensions(ref, 1 / 24, -6);
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-primary-1">
+    <div className="flex flex-col w-screen h-screen bg-theme-primary-1">
       <ToolBarContext.Provider>
         <header className="flex-initial">
           <ToolBar />
