@@ -6,6 +6,10 @@ const BFS = (): Algorithm => {
   return {
     getName: () => "Breadth First Search",
     run: (grid: Node[][], start: Position) => {
+      if (grid.length === 0) {
+        return { steps: [], shortestPath: [] };
+      }
+
       const steps: Position[] = [];
       const parents: Position[][] = new Array(grid.length);
       const visited: boolean[][] = new Array(grid.length);

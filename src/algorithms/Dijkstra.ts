@@ -7,14 +7,18 @@ const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
     run: (grid: Node[][], start: Position, end: Position) => {
-      const steps: Position[] = [];
-      const parents: Position[][] = new Array(grid.length).fill(
-        new Array(grid[0].length).fill(null)
-      );
+      if (grid.length === 0) {
+        return { steps: [], shortestPath: [] };
+      }
 
-      const dis: number[][] = new Array(grid.length).fill(
-        new Array(grid[0].length).fill(Infinity)
-      );
+      const steps: Position[] = [];
+      const parents: (Position | null)[][] = new Array(grid.length)
+        .fill(undefined)
+        .map(() => new Array(grid[0].length).fill(null));
+
+      const dis: number[][] = new Array(grid.length)
+        .fill(undefined)
+        .map(() => new Array(grid[0].length).fill(Infinity));
 
       // Start fro the start node
       const queue = new PriorityQueue<Node & Position>(
@@ -24,8 +28,8 @@ const Dijkstra = (): Algorithm => {
       dis[start.row][start.col] = 0;
 
       while (queue.size() > 0) {
-        const prevNode = queue.pop()!;
-        if (prevNode !== start) {
+        const prevNode = queue.pop();
+        if (prevNode.row !== start.row || prevNode.col !== start.col) {
           steps.push(prevNode);
         }
 
@@ -33,34 +37,31 @@ const Dijkstra = (): Algorithm => {
           const [r, c] = [prevNode.row + dr, prevNode.col + dc];
 
           // Record all the visited nodes in the algorithm
-          const adjNode = grid[r]?.[c];
-
           // Invalid if out of bounds or a wall or is already visited
           if (
             !inBounds(grid.length, grid[0].length, r, c) ||
-            adjNode.state === "WALL" ||
-            dis[r][c] <= dis[prevNode.row][prevNode.col] + adjNode.weight
-          )
+            grid[r][c].state === "WALL" ||
+            dis[r][c] <= dis[prevNode.row][prevNode.col] + grid[r][c].weight
+          ) {
             continue;
-
+          }
           // Add the previous distance with the distance now
-          dis[r][c] = dis[prevNode.row][prevNode.col] + adjNode.weight;
+          dis[r][c] = dis[prevNode.row][prevNode.col] + grid[r][c].weight;
           // previousNode is a parent node to grid[r][c]
           parents[r][c] = prevNode;
 
-          const reachedEnd = r === end.row && c === end.col;
-          if (reachedEnd) {
+          if (r === end.row && c === end.col) {
             return {
               steps,
-              shortestPath: findShortestPath(parents, { row: r, col: c }),
+              shortestPath: findShortestPath(parents, end),
             };
           }
 
           queue.push({
-            weight: dis[r][c],
-            state: adjNode.state,
             row: r,
             col: c,
+            weight: dis[r][c],
+            state: grid[r][c].state,
           });
         }
       }

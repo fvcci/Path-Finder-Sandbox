@@ -23,21 +23,27 @@ const AStar = (): Algorithm => {
   return {
     getName: () => "A*",
     run: (grid: Node[][], start: Position, end: Position) => {
+      if (grid.length === 0) {
+        return { steps: [], shortestPath: [] };
+      }
+
       // Initialize the lists
-      const visited: boolean[][] = new Array(grid.length).fill(
-        new Array(grid[0].length).fill(false)
-      );
-      const aStarGrid: AStarNode[][] = new Array(grid.length).fill(
-        new Array(grid[0].length).fill({
-          f: Number.MAX_VALUE,
-          g: Number.MAX_VALUE,
-          h: Number.MAX_VALUE,
-        })
-      );
+      const visited: boolean[][] = new Array(grid.length)
+        .fill(undefined)
+        .map(() => new Array(grid[0].length).fill(false));
+      const aStarGrid: AStarNode[][] = new Array(grid.length)
+        .fill(undefined)
+        .map(() =>
+          new Array(grid[0].length).fill({
+            f: Number.MAX_VALUE,
+            g: Number.MAX_VALUE,
+            h: Number.MAX_VALUE,
+          })
+        );
       const steps: Position[] = [];
-      const parents: Position[][] = new Array(grid.length).fill(
-        new Array(grid[0].length).fill(null)
-      );
+      const parents: Position[][] = new Array(grid.length)
+        .fill(undefined)
+        .map(() => new Array(grid[0].length).fill(null));
 
       // Initialize first node
       aStarGrid[start.row][start.col] = { f: 0, g: 0, h: 0 };
