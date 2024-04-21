@@ -3,20 +3,16 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useVisualGrid, { NodeForAnimation } from "../hooks/useVisualGrid";
+import useVisualGrid from "../hooks/useVisualGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
-import { ObservableEvent, Observer } from "../util/observer";
-import { assert } from "../util/asserts";
-import { executeAsynchronously } from "../util/async";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
-  const visualGrid = useVisualGrid(rows, cols, start.position, end.position);
-
   const stepsSpeedFactorMilliSecs = 8;
-  const algorithmVisualizer = useAlgorithmVisualizer(
-    visualGrid,
+  const visualGrid = useVisualGrid(
+    rows,
+    cols,
     start.position,
     end.position,
     stepsSpeedFactorMilliSecs,
@@ -24,7 +20,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   );
 
   const toolBar = useToolBarContext();
-  toolBar.runButton.enlistToNotify(algorithmVisualizer);
+  toolBar.runButton.enlistToNotify(visualGrid);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
@@ -83,81 +79,4 @@ const useInitialPosition = (
   }, [pos, rows, cols, initialRowPercent, initialColPercent]);
 
   return { position: pos, setPosition };
-};
-
-const useAlgorithmVisualizer = (
-  visualGrid: ReturnType<typeof useVisualGrid>,
-  start: Node.Position,
-  end: Node.Position,
-  stepsSpeedFactorMilliSecs: number,
-  shortestPathSpeedFactorMilliSecs: number
-): Observer => {
-  const toolBar = useToolBarContext();
-
-  const [count, setCount] = useState(0);
-
-  const run = async () => {
-    if (visualGrid.gridState.length === 0) {
-      return;
-    }
-
-    visualGrid.clearAnimation();
-
-    const { steps, shortestPath } = toolBar.selectedAlgorithm.run(
-      visualGrid.gridState,
-      start,
-      end
-    );
-
-    const gridForAnimation: NodeForAnimation[][] =
-      visualGrid.gridForAnimation.map((row) => row.map((node) => node));
-
-    const stepsDuration = steps.length * stepsSpeedFactorMilliSecs;
-
-    await executeAsynchronously(stepsDuration, () => {
-      steps.forEach((step, idx) => {
-        assert(gridForAnimation[step.row][step.col]);
-        gridForAnimation[step.row][step.col] = {
-          ...gridForAnimation[step.row][step.col],
-          state: "VISITED",
-          animationDelay: stepsSpeedFactorMilliSecs * idx,
-        };
-      });
-      visualGrid.setGridForAnimation(gridForAnimation);
-    });
-
-    if (count === 1) {
-      return;
-    }
-    setCount(1);
-
-    const shortestPathDuration =
-      shortestPath.length * shortestPathSpeedFactorMilliSecs;
-    await executeAsynchronously(shortestPathDuration, () => {
-      shortestPath.forEach((shortestPathStep, idx) => {
-        assert(gridForAnimation[shortestPathStep.row][shortestPathStep.col]);
-        gridForAnimation[shortestPathStep.row][shortestPathStep.col] = {
-          ...gridForAnimation[shortestPathStep.row][shortestPathStep.col],
-          state: "SHORTEST_PATH",
-          animationDelay: shortestPathSpeedFactorMilliSecs * idx,
-        };
-      });
-
-      visualGrid.setGridForAnimation(gridForAnimation);
-    });
-
-    toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
-  };
-
-  return {
-    update: (event: ObservableEvent) => {
-      switch (event) {
-        case "RUN ALGORITHM":
-          run();
-          break;
-        case "ABORT ALGORITHM":
-          break;
-      }
-    },
-  };
 };
