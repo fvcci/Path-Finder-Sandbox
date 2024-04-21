@@ -17,8 +17,8 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const stepsSpeedFactorMilliSecs = 8;
   const algorithmVisualizer = useAlgorithmVisualizer(
     {
-      gridState: visualGrid.gridState,
-      setGridState: visualGrid.setGridForAnimation,
+      grid: visualGrid.gridState,
+      setGrid: visualGrid.setGridForAnimation,
     },
     start.position,
     end.position,
@@ -88,8 +88,8 @@ const useInitialPosition = (
 
 const useAlgorithmVisualizer = (
   gridAPI: {
-    gridState: Node.Node[][];
-    setGridState: (grid: NodeForAnimation[][]) => void;
+    grid: Node.Node[][];
+    setGrid: (grid: NodeForAnimation[][]) => void;
   },
   start: Node.Position,
   end: Node.Position,
@@ -98,18 +98,18 @@ const useAlgorithmVisualizer = (
 ): Observer => {
   const toolBar = useToolBarContext();
   const run = async () => {
-    if (gridAPI.gridState.length === 0) {
+    if (gridAPI.grid.length === 0) {
       return;
     }
 
     const { steps, shortestPath } = toolBar.selectedAlgorithm.run(
-      gridAPI.gridState,
+      gridAPI.grid,
       start,
       end
     );
 
-    const gridForAnimation: NodeForAnimation[][] = gridAPI.gridState.map(
-      (row) => row.map((node) => ({ ...node, animationDelay: 0 }))
+    const gridForAnimation: NodeForAnimation[][] = gridAPI.grid.map((row) =>
+      row.map((node) => ({ ...node, animationDelay: 0 }))
     );
 
     steps.forEach((step, idx) => {
@@ -121,7 +121,7 @@ const useAlgorithmVisualizer = (
       };
     });
 
-    gridAPI.setGridState(gridForAnimation);
+    gridAPI.setGrid(gridForAnimation);
 
     const paddingToAllowAnimationToFinish = 1000;
     const stepsDuration = steps.length * stepsSpeedFactorMilliSecs;
