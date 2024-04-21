@@ -131,10 +131,11 @@ export const inBounds = (
 };
 
 export const findShortestPath = (
-  parents: Position[][],
+  parents: (Position | null)[][],
   end: Position
 ): Position[] => {
-  let current = end;
+  let current: Position | null = end;
+  console.log(parents);
   const shortestPath = [];
 
   // While current has a parent, go to its previousNode
