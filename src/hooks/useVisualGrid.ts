@@ -55,9 +55,9 @@ export default function useVisualGrid(
       }))
     );
 
-    await executeAsynchronously(maxDisappearDuration, () =>
-      setGridForAnimation(clearedGrid)
-    );
+    await executeAsynchronously(maxDisappearDuration, () => {
+      setGridForAnimation(clearedGrid);
+    });
   };
 
   const runAlgorithmAnimation = async () => {
@@ -86,10 +86,12 @@ export default function useVisualGrid(
       };
     });
 
-    const stepsDuration = steps.length * stepsSpeedFactorMilliSecs;
-    await executeAsynchronously(stepsDuration, () =>
-      setGridForAnimation(gridForAnimationCopy)
-    );
+    const stepsDuration =
+      (steps.length - 1) * stepsSpeedFactorMilliSecs +
+      Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS;
+    await executeAsynchronously(stepsDuration, () => {
+      setGridForAnimation(gridForAnimationCopy);
+    });
 
     shortestPath.forEach((shortestPathStep, idx) => {
       assert(gridForAnimationCopy[shortestPathStep.row][shortestPathStep.col]);
@@ -101,11 +103,10 @@ export default function useVisualGrid(
     });
 
     const shortestPathDuration =
-      shortestPath.length * shortestPathSpeedFactorMilliSecs +
-      Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS;
-    await executeAsynchronously(shortestPathDuration, () =>
-      setGridForAnimation(gridForAnimationCopy)
-    );
+      (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs;
+    await executeAsynchronously(shortestPathDuration, () => {
+      setGridForAnimation(gridForAnimationCopy);
+    });
 
     toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
   };
@@ -117,6 +118,7 @@ export default function useVisualGrid(
           runAlgorithmAnimation();
           break;
         case "ABORT ALGORITHM":
+          clearAnimation();
           break;
       }
     },
@@ -150,11 +152,27 @@ const initGrid = (
 
 export type NodeForAnimation = Node.Node & { animationDelay: number };
 
-const executeAsynchronously = async <T>(
+// const AsyncExecuter = () => {
+//   const promises: Promise<void>[] = [];
+
+//   return {
+//     executeAsynchronously: async (
+//       executionTimeMilliSecs: number,
+//       f: () => void
+//     ) => {
+//       return new Promise<void>((resolve) => {
+//         f();
+//         setTimeout(resolve, executionTimeMilliSecs);
+//       });
+//     },
+//   };
+// };
+
+const executeAsynchronously = async (
   executionTimeMilliSecs: number,
-  f: () => T
+  f: () => void
 ) =>
-  new Promise<T>((resolve) => {
-    const val = f();
-    setTimeout(() => resolve(val), executionTimeMilliSecs);
+  new Promise((resolve) => {
+    f();
+    setTimeout(resolve, executionTimeMilliSecs);
   });

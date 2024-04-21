@@ -9,14 +9,14 @@ import { useToolBarContext } from "../hooks/useToolBarContext";
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
-  const stepsSpeedFactorMilliSecs = 8;
+  const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
   const visualGrid = useVisualGrid(
     rows,
     cols,
     start.position,
     end.position,
-    stepsSpeedFactorMilliSecs,
-    stepsSpeedFactorMilliSecs * 4
+    STEPS_SPEED_FACTOR_MILLI_SECS,
+    STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
   const toolBar = useToolBarContext();
