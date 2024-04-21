@@ -75,9 +75,20 @@ const useInitialPosition = (
 };
 
 const useAlgorithmVisualizer = (grid: Node.Node[][]): Observer => {
+  const toolBar = useToolBarContext();
+  const run = () => {
+    toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+  };
+
   return {
     update: (event: ObservableEvent) => {
-      console.log(event);
+      switch (event) {
+        case "RUN ALGORITHM":
+          run();
+          break;
+        case "ABORT ALGORITHM":
+          break;
+      }
     },
   };
 };

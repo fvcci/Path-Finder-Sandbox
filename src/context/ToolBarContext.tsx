@@ -10,7 +10,10 @@ import Dijkstra from "../algorithms/Dijkstra";
 export const Provider = ({ children }: { children?: ReactNode[] }) => {
   return (
     <Context.Provider
-      value={{ selectedAlgorithm: Dijkstra(), runButton: RunAlgorithmButton() }}
+      value={{
+        selectedAlgorithm: Dijkstra(),
+        runButton: RunAlgorithmButton(),
+      }}
     >
       {children}
     </Context.Provider>
@@ -19,28 +22,36 @@ export const Provider = ({ children }: { children?: ReactNode[] }) => {
 
 export const Context = createContext<{
   selectedAlgorithm: Algorithm;
-  runButton: Observable;
+  runButton: ReturnType<typeof RunAlgorithmButton>;
 } | null>(null);
 
-const RunAlgorithmButton = (): Observable => {
+const RunAlgorithmButton = (): Observable & {
+  getAlgorithmEvent: () => ObservableEvent;
+} => {
   const observable = ObservableEditable();
-  const [runAlgorithmEvent, setRunAlgorithmEvent] = useState<
+  const [algorithmEvent, setAlgorithmEvent] = useState<
     ("RUN ALGORITHM" | "ABORT ALGORITHM") & ObservableEvent
-  >("ABORT ALGORITHM");
+  >("RUN ALGORITHM");
 
   return {
     ...observable,
     notifyObservers: (event: ObservableEvent) => {
       switch (event) {
-        case "RUN ALGORITHM BUTTON CLICK":
-          observable.notifyObservers(runAlgorithmEvent);
-          setRunAlgorithmEvent(
-            runAlgorithmEvent === "RUN ALGORITHM"
+        case "TOGGLE ALGORITHM BUTTON": {
+          const originalEvent = algorithmEvent;
+          setAlgorithmEvent(
+            algorithmEvent === "RUN ALGORITHM"
               ? "ABORT ALGORITHM"
               : "RUN ALGORITHM"
           );
+          observable.notifyObservers(originalEvent);
+          break;
+        }
+        case "ALGORITHM FINISHED RUNNING":
+          setAlgorithmEvent("RUN ALGORITHM");
           break;
       }
     },
+    getAlgorithmEvent: () => algorithmEvent,
   };
 };
