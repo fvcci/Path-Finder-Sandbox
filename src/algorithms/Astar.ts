@@ -29,20 +29,20 @@ const AStar = (): Algorithm => {
 
       // Initialize the lists
       const visited: boolean[][] = new Array(grid.length)
-        .fill(undefined)
+        .fill(null)
         .map(() => new Array(grid[0].length).fill(false));
       const aStarGrid: AStarNode[][] = new Array(grid.length)
-        .fill(undefined)
+        .fill(null)
         .map(() =>
-          new Array(grid[0].length).fill({
+          new Array(grid[0].length).map(() => ({
             f: Number.MAX_VALUE,
             g: Number.MAX_VALUE,
             h: Number.MAX_VALUE,
-          })
+          }))
         );
       const steps: Position[] = [];
       const parents: Position[][] = new Array(grid.length)
-        .fill(undefined)
+        .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
 
       // Initialize first node
