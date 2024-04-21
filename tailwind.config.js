@@ -79,6 +79,7 @@ export default {
           transform: "scale(1.3)",
         },
         "100%": {
+          backgroundColor: LOCAL_COLORS.SHORTEST_PATH,
           transform: "scale(1)",
         },
       },
@@ -98,17 +99,18 @@ export default {
       },
     },
     animation: {
-      "pop-in-node": "pop-in-node 0.3s ease 0s 1 normal both running",
-      "pop-out-node": "pop-out-node 0.3s ease 0s 1 normal both running",
+      "pop-in-node": "pop-in-node 0.3s ease 0s 1 normal forwards running",
+      "pop-out-node": "pop-out-node 0.3s ease 0s 1 normal forwards running",
       "visited-node-appear":
-        "visited-node-appear 2s ease 0s 1 normal both running",
+        "visited-node-appear 2s ease 0s 1 normal forwards running",
       "visited-node-disappear":
-        "visited-node-disappear 1.5s ease 0s 1 normal both running",
+        "visited-node-disappear 1.5s ease 0s 1 normal forwards running",
       "shortest-path-node-appear":
-        "shortest-path-node-appear 1.5s ease 0s 1 normal both running",
+        "shortest-path-node-appear 1.5s ease 0s 1 normal forwards running",
       "shortest-path-node-disappear":
-        "shortest-path-node-disappear 1.5s ease 0s 1 normal both running",
-      "destination-node": "destination-node 0.3s ease 0s 1 normal both running",
+        "shortest-path-node-disappear 1.5s ease 0s 1 normal forwards running",
+      "destination-node":
+        "destination-node 0.3s ease 0s 1 normal forwards running",
     },
   },
 };
