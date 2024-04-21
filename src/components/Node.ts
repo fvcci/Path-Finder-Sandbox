@@ -8,6 +8,13 @@ export interface Position {
   col: number;
 }
 
+export const DISAPPEAR_STATE = (
+  | "VISITED_DISAPPEAR"
+  | "SHORTEST_PATH_DISAPPEAR"
+  | "WALL_DISAPPEAR"
+) &
+  State;
+
 export type State = keyof typeof STATE_STYLES;
 
 export const STATE_STYLES = {
@@ -22,14 +29,16 @@ export const STATE_STYLES = {
   WALL_DISAPPEAR: "animate-pop-out-node bg-node-wall",
 } as const;
 
-export const disappear = (stateStyle: State) => {
+export const disappear = (stateStyle: State): State => {
   switch (stateStyle) {
     case "VISITED":
-      return "VISITED_DISAPPEAR" as State;
+      return "VISITED_DISAPPEAR";
     case "SHORTEST_PATH":
-      return "SHORTEST_PATH_DISAPPEAR" as State;
+      return "SHORTEST_PATH_DISAPPEAR";
     case "WALL":
-      return "WALL_DISAPPEAR" as State;
+      return "WALL_DISAPPEAR";
   }
   return stateStyle;
 };
+
+export const DISAPPEAR_ANIMATION_DURATION_MILLI_SECS = 1500;

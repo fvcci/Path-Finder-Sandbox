@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as Node from "../components/Node";
+import { executeAsynchronously } from "../util/async";
 
 export default function useVisualGrid(
   rows: number,
@@ -12,6 +13,26 @@ export default function useVisualGrid(
     NodeForAnimation[][]
   >([]);
 
+  const clearAnimation = async () => {
+    await executeAsynchronously(
+      Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
+      () => {
+        const clearedGrid = gridForAnimation.map((row) =>
+          row.map((node) => ({
+            weight: node.weight,
+            state: Node.disappear(node.state),
+            animationDelay: 0,
+          }))
+        );
+        setGridForAnimation(clearedGrid);
+      }
+    );
+  };
+
+  const clearAndSetGridForAnimation = async () => {
+    if (gridForAnimation.some(row => ))
+  };
+
   useEffect(() => {
     setGridState(initGrid(rows, cols, start, end));
     setGridForAnimation(initGrid(rows, cols, start, end));
@@ -21,7 +42,7 @@ export default function useVisualGrid(
     gridState,
     setGridState,
     gridForAnimation,
-    setGridForAnimation,
+    clearAndSetGridForAnimation,
   };
 }
 
