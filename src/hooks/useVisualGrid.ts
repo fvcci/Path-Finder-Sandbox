@@ -85,11 +85,28 @@ export default function useVisualGrid(
       "paths should not include the start and end node"
     );
 
+    if (isDisplayingAlgorithm(gridForAnimation, start)) {
+      asyncAnimator.queueAnimation(
+        "ANIMATE_CLEAR_GRID",
+        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
+        clearAnimation
+      );
+    }
+
     const traversalPathAnimatedGrid = animateGridPathFinding(
       gridForAnimation,
       traversalPath,
       "VISITED",
       traversalPathSpeedFactorMilliSecs
+    );
+
+    const traversalPathDuration =
+      (traversalPath.length - 1) * traversalPathSpeedFactorMilliSecs +
+      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+    asyncAnimator.queueAnimation(
+      "ANIMATE_TRAVERSAL",
+      traversalPathDuration,
+      () => setGridForAnimation(traversalPathAnimatedGrid)
     );
 
     const shortestPathAnimatedGrid = animateGridPathFinding(
@@ -99,31 +116,18 @@ export default function useVisualGrid(
       shortestPathSpeedFactorMilliSecs
     );
 
-    if (isDisplayingAlgorithm(gridForAnimation, start)) {
-      asyncAnimator.animate(
-        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
-        "ANIMATE_CLEAR_GRID",
-        clearAnimation
-      );
-    }
-
-    const traversalPathDuration =
-      (traversalPath.length - 1) * traversalPathSpeedFactorMilliSecs +
-      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
-    asyncAnimator.animate(traversalPathDuration, "ANIMATE_TRAVERSAL", () => {
-      setGridForAnimation(traversalPathAnimatedGrid);
-    });
-
     const shortestPathDuration =
       (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs +
       Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
-    asyncAnimator.animate(shortestPathDuration, "ANIMATE_SHORTEST_PATH", () => {
-      setGridForAnimation(shortestPathAnimatedGrid);
-    });
+    asyncAnimator.queueAnimation(
+      "ANIMATE_SHORTEST_PATH",
+      shortestPathDuration,
+      () => setGridForAnimation(shortestPathAnimatedGrid)
+    );
 
-    asyncAnimator.animate(0, "ANIMATE_END", () => {
-      toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
-    });
+    asyncAnimator.animate(() =>
+      toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING")
+    );
   };
 
   return {
@@ -204,39 +208,59 @@ export interface NodeForAnimation extends Node.Node {
 }
 
 const AsyncAnimator = () => {
-  const animationProcessIDMap = new Map<AnimationID, number>([]);
-  let totalAnimationTimeMilliSecs = 0;
+  const animations = new Map<
+    AnimationID,
+    {
+      animationTimeMilliSecs: number;
+      animation: () => void;
+    }
+  >();
+  const timeoutIDs = new Set<number>();
 
   return {
     stopAnimations: () => {
-      animationProcessIDMap.forEach((processID) => clearTimeout(processID));
-      animationProcessIDMap.clear();
-      totalAnimationTimeMilliSecs = 0;
+      timeoutIDs.forEach((processID) => clearTimeout(processID));
+      animations.clear();
     },
-    animate: (
-      animationTimeMilliSecs: number,
+    queueAnimation: (
       animationID: AnimationID,
-      f: () => void
+      animationTimeMilliSecs: number,
+      animation: () => void
     ) => {
-      if (animationProcessIDMap.has(animationID)) {
+      if (animations.has(animationID)) {
         return;
       }
 
-      const processID = setTimeout(() => {
-        f();
-        animationProcessIDMap.delete(animationID);
-        totalAnimationTimeMilliSecs -= animationTimeMilliSecs;
-      }, totalAnimationTimeMilliSecs);
+      animations.set(animationID, {
+        animationTimeMilliSecs,
+        animation,
+      });
+    },
+    animate: (processToRunAfterAnimations: (() => void) | null = null) => {
+      let totalAnimationTimeMilliSecs = 0;
+      animations.forEach(({ animationTimeMilliSecs, animation: process }) => {
+        const timeoutID = setTimeout(() => {
+          process();
+          timeoutIDs.delete(timeoutID);
+          totalAnimationTimeMilliSecs -= animationTimeMilliSecs;
+        }, totalAnimationTimeMilliSecs);
 
-      animationProcessIDMap.set(animationID, processID);
+        totalAnimationTimeMilliSecs += animationTimeMilliSecs;
+        timeoutIDs.add(timeoutID);
+      });
 
-      totalAnimationTimeMilliSecs += animationTimeMilliSecs;
+      if (processToRunAfterAnimations) {
+        setTimeout(() => {
+          processToRunAfterAnimations();
+        }, totalAnimationTimeMilliSecs);
+      }
+
+      animations.clear();
     },
   };
 };
 
 type AnimationID =
-  | "ANIMATE_TRAVERSAL"
-  | "ANIMATE_SHORTEST_PATH"
   | "ANIMATE_CLEAR_GRID"
-  | "ANIMATE_END";
+  | "ANIMATE_TRAVERSAL"
+  | "ANIMATE_SHORTEST_PATH";
