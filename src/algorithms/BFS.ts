@@ -11,10 +11,10 @@ const BFS = (): Algorithm => {
     getName: () => "Breadth First Search",
     run: (grid: Node[][], start: Position) => {
       if (grid.length === 0) {
-        return { steps: [], shortestPath: [] };
+        return { traversalPath: [], shortestPath: [] };
       }
 
-      const steps: Position[] = [];
+      const traversalPath: Position[] = [];
       const parents: Position[][] = new Array(grid.length);
       const visited: boolean[][] = new Array(grid.length);
 
@@ -36,7 +36,7 @@ const BFS = (): Algorithm => {
       while (queue.size() > 0) {
         const prevNode = queue.pop()!;
         if (prevNode !== start) {
-          steps.push(prevNode);
+          traversalPath.push(prevNode);
         }
 
         for (const [dr, dc] of DELTA) {
@@ -60,14 +60,14 @@ const BFS = (): Algorithm => {
             queue.push({ row: r, col: c });
           } else {
             return {
-              steps,
+              traversalPath,
               shortestPath: findShortestPath(parents, { row: r, col: c }),
             };
           }
         }
       }
 
-      return { steps, shortestPath: [] };
+      return { traversalPath, shortestPath: [] };
     },
   };
 };

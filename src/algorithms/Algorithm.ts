@@ -6,7 +6,7 @@ export default interface Algorithm {
     grid: Node[][],
     start: Position,
     end: Position
-  ) => { steps: Position[]; shortestPath: Position[] };
+  ) => { traversalPath: Position[]; shortestPath: Position[] };
 }
 
 export const DELTA = [

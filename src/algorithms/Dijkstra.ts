@@ -12,10 +12,10 @@ const Dijkstra = (): Algorithm => {
     getName: () => "Dijkstra's Algorithm",
     run: (grid: Node[][], start: Position, end: Position) => {
       if (grid.length === 0) {
-        return { steps: [], shortestPath: [] };
+        return { traversalPath: [], shortestPath: [] };
       }
 
-      const steps: Position[] = [];
+      const traversalPath: Position[] = [];
       const parents: (Position | null)[][] = new Array(grid.length)
         .fill(undefined)
         .map(() => new Array(grid[0].length).fill(null));
@@ -34,7 +34,7 @@ const Dijkstra = (): Algorithm => {
       while (queue.size() > 0) {
         const prevNode = queue.pop();
         if (prevNode.row !== start.row || prevNode.col !== start.col) {
-          steps.push(prevNode);
+          traversalPath.push(prevNode);
         }
         for (const [dr, dc] of DELTA) {
           const [r, c] = [prevNode.row + dr, prevNode.col + dc];
@@ -55,7 +55,7 @@ const Dijkstra = (): Algorithm => {
 
           if (r === end.row && c === end.col) {
             return {
-              steps,
+              traversalPath,
               shortestPath: findShortestPath(parents, end),
             };
           }
@@ -70,7 +70,7 @@ const Dijkstra = (): Algorithm => {
       }
 
       // In this case there was no path to the finish node
-      return { steps, shortestPath: [] };
+      return { traversalPath, shortestPath: [] };
     },
   };
 };
