@@ -28,7 +28,7 @@ const AStar = (): Algorithm => {
     getName: () => "A*",
     run: (grid: Node[][], start: Position, end: Position) => {
       if (grid.length === 0) {
-        return { steps: [], shortestPath: [] };
+        return { traversalPath: [], shortestPath: [] };
       }
 
       // Initialize the lists
@@ -44,7 +44,7 @@ const AStar = (): Algorithm => {
             h: Number.MAX_VALUE,
           }))
         );
-      const steps: Position[] = [];
+      const traversalPath: Position[] = [];
       const parents: Position[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
@@ -61,7 +61,7 @@ const AStar = (): Algorithm => {
         visited[r][c] = true;
 
         if (start.row !== r || start.col !== c) {
-          steps.push({ row: r, col: c });
+          traversalPath.push({ row: r, col: c });
         }
 
         // use delta to find neighbours
@@ -80,7 +80,7 @@ const AStar = (): Algorithm => {
           else if (reachedEnd) {
             parents[rr][cc] = { row: r, col: c };
             return {
-              steps,
+              traversalPath,
               shortestPath: findShortestPath(parents, { row: rr, col: cc }),
             };
           }
@@ -102,7 +102,7 @@ const AStar = (): Algorithm => {
         }
       }
 
-      return { steps, shortestPath: [] };
+      return { traversalPath, shortestPath: [] };
     },
   };
 };

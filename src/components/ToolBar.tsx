@@ -8,7 +8,7 @@ export default function ToolBar() {
       <button
         className="py-1 px-2 bg-red-500"
         onClick={() =>
-          toolBar.runButton.notifyObservers("TOGGLE ALGORITHM BUTTON")
+          toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON")
         }
       >
         {toolBar.runButton.getAlgorithmEvent()}

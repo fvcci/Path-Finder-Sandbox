@@ -76,7 +76,7 @@ export default function useVisualGrid(
 
     if (traversalPath.length === 0) {
       assert(shortestPath.length === 0);
-      toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+      toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
       return;
     }
 
@@ -120,17 +120,17 @@ export default function useVisualGrid(
     });
 
     asyncAnimator.animate(0, "ANIMATE_END", () => {
-      toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+      toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
     });
   };
 
   return {
     update: (event: ObservableEvent) => {
       switch (event) {
-        case "RUN ALGORITHM":
+        case "RUN_ALGORITHM":
           runPathFindingAnimation();
           break;
-        case "ABORT ALGORITHM":
+        case "ABORT_ALGORITHM":
           asyncAnimator.stopAnimations();
           clearAnimation();
           break;
