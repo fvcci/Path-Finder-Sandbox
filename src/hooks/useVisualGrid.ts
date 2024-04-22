@@ -5,6 +5,15 @@ import { Observer, ObservableEvent } from "../util/observer";
 import { assert } from "../util/asserts";
 import { DELTA, inBounds } from "../algorithms/Algorithm";
 
+interface VisualGrid extends Observer {
+  gridState: Node.Node[][];
+  setGridState: React.Dispatch<React.SetStateAction<Node.Node[][]>>;
+  gridForAnimation: NodeForAnimation[][];
+  setGridForAnimation: React.Dispatch<
+    React.SetStateAction<NodeForAnimation[][]>
+  >;
+}
+
 export default function useVisualGrid(
   rows: number,
   cols: number,
@@ -12,14 +21,7 @@ export default function useVisualGrid(
   end: Node.Position,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
-): Observer & {
-  gridState: Node.Node[][];
-  setGridState: React.Dispatch<React.SetStateAction<Node.Node[][]>>;
-  gridForAnimation: NodeForAnimation[][];
-  setGridForAnimation: React.Dispatch<
-    React.SetStateAction<NodeForAnimation[][]>
-  >;
-} {
+): VisualGrid {
   const [gridState, setGridState] = useState<Node.Node[][]>([]);
   const [gridForAnimation, setGridForAnimation] = useState<
     NodeForAnimation[][]
@@ -60,14 +62,6 @@ export default function useVisualGrid(
       return;
     }
 
-    if (isDisplayingAlgorithm(gridForAnimation, start)) {
-      asyncAnimator.animate(
-        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
-        "ANIMATE_CLEAR_GRID",
-        clearAnimation
-      );
-    }
-
     const { traversalPath, shortestPath } = toolBar.selectedAlgorithm.run(
       gridState,
       start,
@@ -98,19 +92,27 @@ export default function useVisualGrid(
       traversalPathSpeedFactorMilliSecs
     );
 
-    const traversalPathDuration =
-      (traversalPath.length - 1) * traversalPathSpeedFactorMilliSecs +
-      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
-    asyncAnimator.animate(traversalPathDuration, "ANIMATE_TRAVERSAL", () => {
-      setGridForAnimation(traversalPathAnimatedGrid);
-    });
-
     const shortestPathAnimatedGrid = animateGridPathFinding(
       traversalPathAnimatedGrid,
       shortestPath,
       "SHORTEST_PATH",
       shortestPathSpeedFactorMilliSecs
     );
+
+    if (isDisplayingAlgorithm(gridForAnimation, start)) {
+      asyncAnimator.animate(
+        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
+        "ANIMATE_CLEAR_GRID",
+        clearAnimation
+      );
+    }
+
+    const traversalPathDuration =
+      (traversalPath.length - 1) * traversalPathSpeedFactorMilliSecs +
+      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+    asyncAnimator.animate(traversalPathDuration, "ANIMATE_TRAVERSAL", () => {
+      setGridForAnimation(traversalPathAnimatedGrid);
+    });
 
     const shortestPathDuration =
       (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs +
@@ -197,7 +199,9 @@ const animateGridPathFinding = (
   return grid;
 };
 
-export type NodeForAnimation = Node.Node & { animationDelay: number };
+export interface NodeForAnimation extends Node.Node {
+  animationDelay: number;
+}
 
 const AsyncAnimator = () => {
   const animationProcessIDMap = new Map<AnimationID, number>([]);

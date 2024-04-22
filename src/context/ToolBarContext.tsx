@@ -12,7 +12,7 @@ export const Provider = ({ children }: { children?: ReactNode[] }) => {
     <Context.Provider
       value={{
         selectedAlgorithm: Dijkstra(),
-        runButton: RunAlgorithmButton(),
+        runButton: RunAlgorithmButtonImpl(),
       }}
     >
       {children}
@@ -22,12 +22,10 @@ export const Provider = ({ children }: { children?: ReactNode[] }) => {
 
 export const Context = createContext<{
   selectedAlgorithm: Algorithm;
-  runButton: ReturnType<typeof RunAlgorithmButton>;
+  runButton: RunAlgorithmButton;
 } | null>(null);
 
-const RunAlgorithmButton = (): Observable & {
-  getAlgorithmEvent: () => ObservableEvent;
-} => {
+const RunAlgorithmButtonImpl = (): RunAlgorithmButton => {
   const observable = ObservableEditable();
   const [algorithmEvent, setAlgorithmEvent] = useState<
     ("RUN_ALGORITHM" | "ABORT_ALGORITHM") & ObservableEvent
@@ -55,3 +53,7 @@ const RunAlgorithmButton = (): Observable & {
     getAlgorithmEvent: () => algorithmEvent,
   };
 };
+
+interface RunAlgorithmButton extends Observable {
+  getAlgorithmEvent: () => ObservableEvent;
+}
