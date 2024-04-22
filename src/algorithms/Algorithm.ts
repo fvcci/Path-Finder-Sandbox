@@ -1,5 +1,4 @@
-import { Position } from "../components/Node";
-import { Node } from "../components/Node";
+import { Node, Position } from "../components/Node";
 
 export default interface Algorithm {
   getName: () => string;

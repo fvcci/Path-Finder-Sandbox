@@ -3,6 +3,7 @@ import * as Node from "../components/Node";
 import { useToolBarContext } from "./useToolBarContext";
 import { Observer, ObservableEvent } from "../util/observer";
 import { assert } from "../util/asserts";
+import { DELTA, inBounds } from "../algorithms/Algorithm";
 
 export default function useVisualGrid(
   rows: number,
@@ -23,6 +24,7 @@ export default function useVisualGrid(
   const [gridForAnimation, setGridForAnimation] = useState<
     NodeForAnimation[][]
   >([]);
+  const [asyncAnimator] = useState(AsyncAnimator());
   const toolBar = useToolBarContext();
 
   useEffect(() => {
@@ -30,23 +32,7 @@ export default function useVisualGrid(
     setGridForAnimation(initGrid(rows, cols, start, end));
   }, [rows, cols, start, end]);
 
-  const clearAnimation = async () => {
-    let maxDisappearDuration = 0;
-    gridForAnimation.forEach((row) => {
-      row.forEach((node) => {
-        maxDisappearDuration = Math.max(
-          maxDisappearDuration,
-          Node.STATE_ANIMATION_DURATIONS_MILLI_SECS[
-            Node.disappearFrom(node.state)
-          ]
-        );
-      });
-    });
-
-    if (maxDisappearDuration === 0) {
-      return;
-    }
-
+  const clearAnimation = () => {
     const clearedGrid = gridForAnimation.map((row) =>
       row.map((node) => ({
         weight: node.weight,
@@ -55,17 +41,32 @@ export default function useVisualGrid(
       }))
     );
 
-    await executeAsynchronously(maxDisappearDuration, () => {
-      setGridForAnimation(clearedGrid);
-    });
+    setGridForAnimation(clearedGrid);
   };
 
-  const runAlgorithmAnimation = async () => {
-    if (gridState.length === 0) {
+  const runPathFindingAnimation = () => {
+    const gridsAreEmpty = [gridState, gridForAnimation].every(
+      (grid) => grid.length === 0
+    );
+    const loadedStartAndEndNode = [gridState, gridForAnimation].every(
+      (grid) =>
+        inBounds(grid, start) &&
+        inBounds(grid, end) &&
+        grid[start.row][start.col].state === "START" &&
+        grid[end.row][end.col].state === "END"
+    );
+
+    if (gridsAreEmpty || !loadedStartAndEndNode) {
       return;
     }
 
-    await clearAnimation();
+    if (isDisplayingAlgorithm(gridForAnimation, start)) {
+      asyncAnimator.animate(
+        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
+        "ANIMATE_CLEAR_GRID",
+        clearAnimation
+      );
+    }
 
     const { steps, shortestPath } = toolBar.selectedAlgorithm.run(
       gridState,
@@ -73,51 +74,64 @@ export default function useVisualGrid(
       end
     );
 
-    const gridForAnimationCopy: NodeForAnimation[][] = gridForAnimation.map(
-      (row) => row.map((node) => ({ ...node }))
+    if (steps.length === 0) {
+      assert(shortestPath.length === 0);
+      toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+      return;
+    }
+
+    assert(
+      [steps, shortestPath].every((path) =>
+        path.every(
+          ({ row, col }) =>
+            !(row === start.row && col === start.col) &&
+            !(row === end.row && col === end.col)
+        )
+      ),
+      "paths should not include the start and end node"
     );
 
-    steps.forEach((step, idx) => {
-      assert(gridForAnimationCopy[step.row][step.col]);
-      gridForAnimationCopy[step.row][step.col] = {
-        ...gridForAnimationCopy[step.row][step.col],
-        state: "VISITED",
-        animationDelay: stepsSpeedFactorMilliSecs * idx,
-      };
-    });
+    const stepsAnimatedGrid = animateGridPathFinding(
+      gridForAnimation,
+      steps,
+      "VISITED",
+      stepsSpeedFactorMilliSecs
+    );
 
     const stepsDuration =
       (steps.length - 1) * stepsSpeedFactorMilliSecs +
-      Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS;
-    await executeAsynchronously(stepsDuration, () => {
-      setGridForAnimation(gridForAnimationCopy);
+      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+    asyncAnimator.animate(stepsDuration, "ANIMATE_TRAVERSAL", () => {
+      setGridForAnimation(stepsAnimatedGrid);
     });
 
-    shortestPath.forEach((shortestPathStep, idx) => {
-      assert(gridForAnimationCopy[shortestPathStep.row][shortestPathStep.col]);
-      gridForAnimationCopy[shortestPathStep.row][shortestPathStep.col] = {
-        ...gridForAnimationCopy[shortestPathStep.row][shortestPathStep.col],
-        state: "SHORTEST_PATH",
-        animationDelay: shortestPathSpeedFactorMilliSecs * idx,
-      };
-    });
+    const shortestPathAnimatedGrid = animateGridPathFinding(
+      stepsAnimatedGrid,
+      shortestPath,
+      "SHORTEST_PATH",
+      shortestPathSpeedFactorMilliSecs
+    );
 
     const shortestPathDuration =
-      (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs;
-    await executeAsynchronously(shortestPathDuration, () => {
-      setGridForAnimation(gridForAnimationCopy);
+      (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs +
+      Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+    asyncAnimator.animate(shortestPathDuration, "ANIMATE_SHORTEST_PATH", () => {
+      setGridForAnimation(shortestPathAnimatedGrid);
     });
 
-    toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+    asyncAnimator.animate(0, "ANIMATE_END", () => {
+      toolBar.runButton.notifyObservers("ALGORITHM FINISHED RUNNING");
+    });
   };
 
   return {
     update: (event: ObservableEvent) => {
       switch (event) {
         case "RUN ALGORITHM":
-          runAlgorithmAnimation();
+          runPathFindingAnimation();
           break;
         case "ABORT ALGORITHM":
+          asyncAnimator.stopAnimations();
           clearAnimation();
           break;
       }
@@ -136,10 +150,10 @@ const initGrid = (
   endNode: Node.Position
 ) => {
   const grid: NodeForAnimation[][] = new Array(rows)
-    .fill(undefined)
+    .fill(null)
     .map(() =>
       new Array(cols)
-        .fill(undefined)
+        .fill(null)
         .map(() => ({ weight: 1, state: "BASE", animationDelay: 0 }))
     );
 
@@ -150,29 +164,83 @@ const initGrid = (
   return grid;
 };
 
-export type NodeForAnimation = Node.Node & { animationDelay: number };
+const AsyncAnimator = () => {
+  const animationProcessIDMap = new Map<AnimationID, number>([]);
+  let totalAnimationTimeMilliSecs = 0;
 
-// const AsyncExecuter = () => {
-//   const promises: Promise<void>[] = [];
+  return {
+    stopAnimations: () => {
+      console.debug("killed", animationProcessIDMap);
+      animationProcessIDMap.forEach((processID) => clearTimeout(processID));
+      animationProcessIDMap.clear();
+      totalAnimationTimeMilliSecs = 0;
+    },
+    animate: (
+      animationTimeMilliSecs: number,
+      animationID: AnimationID,
+      f: () => void
+    ) => {
+      if (animationProcessIDMap.has(animationID)) {
+        console.debug(animationProcessIDMap);
+        return;
+      }
 
-//   return {
-//     executeAsynchronously: async (
-//       executionTimeMilliSecs: number,
-//       f: () => void
-//     ) => {
-//       return new Promise<void>((resolve) => {
-//         f();
-//         setTimeout(resolve, executionTimeMilliSecs);
-//       });
-//     },
-//   };
-// };
+      const processID = setTimeout(() => {
+        f();
+        animationProcessIDMap.delete(animationID);
+        totalAnimationTimeMilliSecs -= animationTimeMilliSecs;
+        console.debug(animationID);
+      }, totalAnimationTimeMilliSecs);
 
-const executeAsynchronously = async (
-  executionTimeMilliSecs: number,
-  f: () => void
-) =>
-  new Promise((resolve) => {
-    f();
-    setTimeout(resolve, executionTimeMilliSecs);
+      animationProcessIDMap.set(animationID, processID);
+
+      totalAnimationTimeMilliSecs += animationTimeMilliSecs;
+      console.debug(
+        animationTimeMilliSecs,
+        totalAnimationTimeMilliSecs,
+        animationID
+      );
+    },
+  };
+};
+
+type AnimationID =
+  | "ANIMATE_TRAVERSAL"
+  | "ANIMATE_SHORTEST_PATH"
+  | "ANIMATE_CLEAR_GRID"
+  | "ANIMATE_END";
+
+const isDisplayingAlgorithm = (grid: Node.Node[][], start: Node.Position) => {
+  return DELTA.some((delta) => {
+    const [r, c] = [start.row + delta[0], start.col + delta[1]];
+    if (!inBounds(grid, { row: r, col: c })) {
+      return false;
+    }
+
+    const hasTraversalState = (
+      ["VISITED", "SHORTEST_PATH"] as Node.State[]
+    ).includes(grid[r][c].state);
+    return hasTraversalState;
   });
+};
+
+const animateGridPathFinding = (
+  gridOg: NodeForAnimation[][],
+  steps: Node.Position[],
+  state: Node.State,
+  incrementalSpeedFactorMilliSecs: number
+) => {
+  const grid = gridOg.map((row) => row.map((node) => ({ ...node })));
+  steps.forEach((step, idx) => {
+    assert(grid[step.row][step.col]);
+    grid[step.row][step.col] = {
+      ...grid[step.row][step.col],
+      state: state,
+      animationDelay: incrementalSpeedFactorMilliSecs * idx,
+    };
+  });
+
+  return grid;
+};
+
+export type NodeForAnimation = Node.Node & { animationDelay: number };

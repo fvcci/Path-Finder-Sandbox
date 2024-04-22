@@ -31,18 +31,6 @@ export const STATE_STYLES: Record<State, string> = {
   WALL_REMOVE: "animate-pop-out-node bg-node-wall",
 };
 
-export const STATE_ANIMATION_DURATIONS_MILLI_SECS: Record<State, number> = {
-  BASE: 0,
-  START: 0,
-  END: 0,
-  VISITED: 2000,
-  VISITED_DISAPPEAR: 1500,
-  SHORTEST_PATH: 1500,
-  SHORTEST_PATH_DISAPPEAR: 1500,
-  WALL: 0,
-  WALL_REMOVE: 0,
-};
-
 export const disappearFrom = (stateStyle: State): State => {
   switch (stateStyle) {
     case "VISITED":
@@ -54,3 +42,4 @@ export const disappearFrom = (stateStyle: State): State => {
 };
 
 export const DISAPPEAR_ANIMATION_DURATION_MILLI_SECS = 1500;
+export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;
