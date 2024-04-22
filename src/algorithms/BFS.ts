@@ -1,6 +1,10 @@
-import Algorithm, { DELTA } from "./Algorithm";
+import Algorithm, {
+  DELTA,
+  Queue,
+  inBounds,
+  findShortestPath,
+} from "./Algorithm";
 import { Node, Position } from "../components/Node";
-import { Queue, inBounds, findShortestPath } from "./util";
 
 const BFS = (): Algorithm => {
   return {
@@ -41,7 +45,7 @@ const BFS = (): Algorithm => {
           const adjNode = grid[r]?.[c];
 
           if (
-            !inBounds(grid.length, grid[0].length, r, c) ||
+            !inBounds(grid, { row: r, col: c }) ||
             adjNode.state === "WALL" ||
             visited[r][c]
           )

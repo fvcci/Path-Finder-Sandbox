@@ -1,6 +1,10 @@
 // Local files
-import Algorithm, { DELTA } from "./Algorithm";
-import { PriorityQueue, inBounds, findShortestPath } from "./util";
+import Algorithm, {
+  DELTA,
+  PriorityQueue,
+  inBounds,
+  findShortestPath,
+} from "./Algorithm";
 import { Node, Position } from "../components/Node";
 
 const Dijkstra = (): Algorithm => {
@@ -32,14 +36,13 @@ const Dijkstra = (): Algorithm => {
         if (prevNode.row !== start.row || prevNode.col !== start.col) {
           steps.push(prevNode);
         }
-
         for (const [dr, dc] of DELTA) {
           const [r, c] = [prevNode.row + dr, prevNode.col + dc];
 
           // Record all the visited nodes in the algorithm
           // Invalid if out of bounds or a wall or is already visited
           if (
-            !inBounds(grid.length, grid[0].length, r, c) ||
+            !inBounds(grid, { row: r, col: c }) ||
             grid[r][c].state === "WALL" ||
             dis[r][c] <= dis[prevNode.row][prevNode.col] + grid[r][c].weight
           ) {
