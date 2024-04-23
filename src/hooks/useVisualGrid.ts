@@ -93,7 +93,7 @@ export default function useVisualGrid(
       );
     }
 
-    const traversalPathAnimatedGrid = animateGridPathFinding(
+    const traversalPathAnimatedGrid = buildAnimatedGrid(
       gridForAnimation,
       traversalPath,
       "VISITED",
@@ -109,7 +109,7 @@ export default function useVisualGrid(
       () => setGridForAnimation(traversalPathAnimatedGrid)
     );
 
-    const shortestPathAnimatedGrid = animateGridPathFinding(
+    const shortestPathAnimatedGrid = buildAnimatedGrid(
       traversalPathAnimatedGrid,
       shortestPath,
       "SHORTEST_PATH",
@@ -184,7 +184,7 @@ const isDisplayingAlgorithm = (grid: Node.Node[][], start: Node.Position) => {
   });
 };
 
-const animateGridPathFinding = (
+const buildAnimatedGrid = (
   gridOg: NodeForAnimation[][],
   traversalPath: Node.Position[],
   state: Node.State,
