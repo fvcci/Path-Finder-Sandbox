@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useVisualGrid from "../hooks/useVisualGrid";
+import useAnimationGrid from "../hooks/useVisualGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
-  const visualGrid = useVisualGrid(
+  const visualGrid = useAnimationGrid(
     rows,
     cols,
     start.position,
