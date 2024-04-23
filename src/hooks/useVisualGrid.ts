@@ -4,6 +4,7 @@ import { useToolBarContext } from "./useToolBarContext";
 import { Observer, ObservableEvent } from "../util/observer";
 import { assert } from "../util/asserts";
 import { DELTA, inBounds } from "../algorithms/Algorithm";
+import { AsyncAnimator } from "../util/AsyncAnimator";
 
 interface VisualGrid extends Observer {
   gridState: Node.Node[][];
@@ -99,10 +100,10 @@ export default function useVisualGrid(
       "VISITED",
       traversalPathSpeedFactorMilliSecs
     );
-
     const traversalPathDuration =
       (traversalPath.length - 1) * traversalPathSpeedFactorMilliSecs +
       Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+
     asyncAnimator.queueAnimation(
       "ANIMATE_TRAVERSAL",
       traversalPathDuration,
@@ -115,10 +116,10 @@ export default function useVisualGrid(
       "SHORTEST_PATH",
       shortestPathSpeedFactorMilliSecs
     );
-
     const shortestPathDuration =
       (shortestPath.length - 1) * shortestPathSpeedFactorMilliSecs +
       Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
+
     asyncAnimator.queueAnimation(
       "ANIMATE_SHORTEST_PATH",
       shortestPathDuration,
@@ -206,61 +207,3 @@ const buildAnimatedGrid = (
 export interface NodeForAnimation extends Node.Node {
   animationDelay: number;
 }
-
-const AsyncAnimator = () => {
-  const animations = new Map<
-    AnimationID,
-    {
-      animationTimeMilliSecs: number;
-      animation: () => void;
-    }
-  >();
-  const timeoutIDs = new Set<number>();
-
-  return {
-    stopAnimations: () => {
-      timeoutIDs.forEach((processID) => clearTimeout(processID));
-      animations.clear();
-    },
-    queueAnimation: (
-      animationID: AnimationID,
-      animationTimeMilliSecs: number,
-      animation: () => void
-    ) => {
-      if (animations.has(animationID)) {
-        return;
-      }
-
-      animations.set(animationID, {
-        animationTimeMilliSecs,
-        animation,
-      });
-    },
-    animate: (processToRunAfterAnimations: (() => void) | null = null) => {
-      let totalAnimationTimeMilliSecs = 0;
-      animations.forEach(({ animationTimeMilliSecs, animation: process }) => {
-        const timeoutID = setTimeout(() => {
-          process();
-          timeoutIDs.delete(timeoutID);
-          totalAnimationTimeMilliSecs -= animationTimeMilliSecs;
-        }, totalAnimationTimeMilliSecs);
-
-        totalAnimationTimeMilliSecs += animationTimeMilliSecs;
-        timeoutIDs.add(timeoutID);
-      });
-
-      if (processToRunAfterAnimations) {
-        setTimeout(() => {
-          processToRunAfterAnimations();
-        }, totalAnimationTimeMilliSecs);
-      }
-
-      animations.clear();
-    },
-  };
-};
-
-type AnimationID =
-  | "ANIMATE_CLEAR_GRID"
-  | "ANIMATE_TRAVERSAL"
-  | "ANIMATE_SHORTEST_PATH";

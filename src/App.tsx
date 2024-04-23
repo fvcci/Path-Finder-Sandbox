@@ -23,6 +23,7 @@ export default function App() {
   );
 }
 
+// TODO make app dimensions a context maybe
 const useDimensions = (
   ref: React.RefObject<HTMLDivElement>,
   compression = 1,
