@@ -28,7 +28,7 @@ const AStar = (): Algorithm => {
     getName: () => "A*",
     run: (grid: Node[][], start: Position, end: Position) => {
       if (grid.length === 0) {
-        return { traversalPath: [], shortestPath: [] };
+        return { visitedPath: [], shortestPath: [] };
       }
 
       // Initialize the lists
@@ -80,7 +80,7 @@ const AStar = (): Algorithm => {
           else if (reachedEnd) {
             parents[rr][cc] = { row: r, col: c };
             return {
-              traversalPath,
+              visitedPath: traversalPath,
               shortestPath: findShortestPath(parents, { row: rr, col: cc }),
             };
           }
@@ -102,7 +102,7 @@ const AStar = (): Algorithm => {
         }
       }
 
-      return { traversalPath, shortestPath: [] };
+      return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
 };

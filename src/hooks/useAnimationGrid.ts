@@ -51,20 +51,20 @@ export default function useAnimationGrid(
       return;
     }
 
-    const { traversalPath, shortestPath } = toolBar.selectedAlgorithm.run(
+    const { visitedPath, shortestPath } = toolBar.selectedAlgorithm.run(
       gridState,
       start,
       end
     );
 
-    if (traversalPath.length === 0) {
+    if (visitedPath.length === 0) {
       assert(shortestPath.length === 0);
       toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
       return;
     }
 
     assert(
-      [traversalPath, shortestPath].every((path) =>
+      [visitedPath, shortestPath].every((path) =>
         path.every(
           ({ row, col }) =>
             !(row === start.row && col === start.col) &&
@@ -85,17 +85,17 @@ export default function useAnimationGrid(
 
     const traversalPathAnimatedGrid = buildPathOnGridForAnimation(
       gridForAnimation,
-      traversalPath,
-      "VISITED",
+      visitedPath,
+      "VISITED_PATH",
       traversalPathSpeedFactorMilliSecs
     );
-    const traversalPathDuration =
-      (traversalPath.length - 2) * traversalPathSpeedFactorMilliSecs +
+    const visitedPathDuration =
+      (visitedPath.length - 2) * traversalPathSpeedFactorMilliSecs +
       Node.APPEAR_ANIMATION_DURATION_MILLI_SECS;
 
     asyncAnimator.queueAnimation(
-      "ANIMATE_TRAVERSAL",
-      traversalPathDuration,
+      "ANIMATE_VISITED_PATH",
+      visitedPathDuration,
       () => setGridForAnimation(traversalPathAnimatedGrid)
     );
 
@@ -160,17 +160,14 @@ const initGrid = (
   return grid;
 };
 
-const buildClearedGridForAnimation = (
-  gridForAnimation: NodeForAnimation[][]
-) => {
-  return gridForAnimation.map((row) =>
+const buildClearedGridForAnimation = (gridForAnimation: NodeForAnimation[][]) =>
+  gridForAnimation.map((row) =>
     row.map((node) => ({
       weight: node.weight,
-      state: Node.disappearFrom(node.state),
+      state: Node.disappearPathFrom(node.state),
       animationDelay: 0,
     }))
   );
-};
 
 const buildPathOnGridForAnimation = (
   gridOg: NodeForAnimation[][],

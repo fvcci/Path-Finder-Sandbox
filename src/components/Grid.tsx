@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid from "../hooks/useVisualGrid";
+import useAnimationGrid from "../hooks/useAnimationGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
   const end = useInitialPosition(rows, cols, 0.5, 0.6);
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
-  const visualGrid = useAnimationGrid(
+  const animationGrid = useAnimationGrid(
     rows,
     cols,
     start.position,
@@ -19,8 +19,10 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
+  const [draggableNode, setDraggableNode] = useState();
+
   const toolBar = useToolBarContext();
-  toolBar.runButton.enlistToNotify(visualGrid);
+  toolBar.runButton.enlistToNotify(animationGrid);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
@@ -30,7 +32,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
-            {visualGrid.gridForAnimation.map((rowNodes, rowIdx) => (
+            {animationGrid.gridForAnimation.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, colIdx) => (
                   <td

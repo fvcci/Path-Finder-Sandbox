@@ -12,7 +12,7 @@ const Dijkstra = (): Algorithm => {
     getName: () => "Dijkstra's Algorithm",
     run: (grid: Node[][], start: Position, end: Position) => {
       if (grid.length === 0) {
-        return { traversalPath: [], shortestPath: [] };
+        return { visitedPath: [], shortestPath: [] };
       }
 
       const traversalPath: Position[] = [];
@@ -55,7 +55,7 @@ const Dijkstra = (): Algorithm => {
 
           if (r === end.row && c === end.col) {
             return {
-              traversalPath,
+              visitedPath: traversalPath,
               shortestPath: findShortestPath(parents, end),
             };
           }
@@ -70,7 +70,7 @@ const Dijkstra = (): Algorithm => {
       }
 
       // In this case there was no path to the finish node
-      return { traversalPath, shortestPath: [] };
+      return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
 };

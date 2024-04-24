@@ -11,7 +11,7 @@ const BFS = (): Algorithm => {
     getName: () => "Breadth First Search",
     run: (grid: Node[][], start: Position) => {
       if (grid.length === 0) {
-        return { traversalPath: [], shortestPath: [] };
+        return { visitedPath: [], shortestPath: [] };
       }
 
       const traversalPath: Position[] = [];
@@ -60,14 +60,14 @@ const BFS = (): Algorithm => {
             queue.push({ row: r, col: c });
           } else {
             return {
-              traversalPath,
+              visitedPath: traversalPath,
               shortestPath: findShortestPath(parents, { row: r, col: c }),
             };
           }
         }
       }
 
-      return { traversalPath, shortestPath: [] };
+      return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
 };

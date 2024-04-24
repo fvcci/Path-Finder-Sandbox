@@ -10,31 +10,32 @@ export interface Position {
 
 export type State =
   | "BASE"
-  | "START"
-  | "END"
-  | "VISITED"
-  | "VISITED_DISAPPEAR"
+  | "VISITED_PATH"
+  | "VISITED_PATH_DISAPPEAR"
   | "SHORTEST_PATH"
   | "SHORTEST_PATH_DISAPPEAR"
   | "WALL"
-  | "WALL_REMOVE";
+  | "WALL_DISAPPEAR"
+  | DraggableState;
+
+export type DraggableState = "START" | "END";
 
 export const STATE_STYLES: Record<State, string> = {
   BASE: "w-6 h-6 relative text-center select-none",
   START: "animate-destination-node bg-green-500",
   END: "animate-destination-node bg-red-500",
-  VISITED: "animate-visited-node-appear",
-  VISITED_DISAPPEAR: "animate-visited-node-disappear",
+  VISITED_PATH: "animate-visited-node-appear",
+  VISITED_PATH_DISAPPEAR: "animate-visited-node-disappear",
   SHORTEST_PATH: "animate-shortest-path-node-appear bg-node-visited-3",
   SHORTEST_PATH_DISAPPEAR: "animate-shortest-path-node-disappear",
   WALL: "animate-pop-in-node bg-node-wall",
-  WALL_REMOVE: "animate-pop-out-node bg-node-wall",
+  WALL_DISAPPEAR: "animate-pop-out-node bg-node-wall",
 };
 
-export const disappearFrom = (stateStyle: State): State => {
+export const disappearPathFrom = (stateStyle: State): State => {
   switch (stateStyle) {
-    case "VISITED":
-      return "VISITED_DISAPPEAR";
+    case "VISITED_PATH":
+      return "VISITED_PATH_DISAPPEAR";
     case "SHORTEST_PATH":
       return "SHORTEST_PATH_DISAPPEAR";
   }
