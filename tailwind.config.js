@@ -64,7 +64,7 @@ export default {
           backgroundColor: "theme('colors.node.visited.3')",
         },
       },
-      "visited-node-disappear": {
+      "visited-node-vanish": {
         "25%": {
           backgroundColor: "theme('colors.node.visited.3')",
         },
@@ -91,7 +91,7 @@ export default {
           transform: "scale(1)",
         },
       },
-      "shortest-path-node-disappear": {
+      "shortest-path-node-vanish": {
         "0%": {
           backgroundColor: "theme('colors.node.shortest-path')",
         },
@@ -111,12 +111,12 @@ export default {
       "pop-out-node": "pop-out-node 0.3s ease 0s 1 normal forwards running",
       "visited-node-appear":
         "visited-node-appear 2s ease 0s 1 normal forwards running",
-      "visited-node-disappear":
-        "visited-node-disappear 1.5s ease 0s 1 normal forwards running",
+      "visited-node-vanish":
+        "visited-node-vanish 1.5s ease 0s 1 normal forwards running",
       "shortest-path-node-appear":
         "shortest-path-node-appear 1.5s ease 0s 1 normal forwards running",
-      "shortest-path-node-disappear":
-        "shortest-path-node-disappear 1.5s ease 0s 1 normal forwards running",
+      "shortest-path-node-vanish":
+        "shortest-path-node-vanish 1.5s ease 0s 1 normal forwards running",
       "destination-node":
         "destination-node 0.3s ease 0s 1 normal forwards running",
     },

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid, { NodeForAnimation } from "../hooks/useAnimationGrid";
+import useAnimationGrid from "../hooks/useAnimationGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 import { inBounds } from "../algorithms/Algorithm";
 
@@ -20,26 +20,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
-  const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>({
-    weight: -1,
-    state: "WALL",
-  });
-
-  const brushOn = (
-    pos: Node.Position,
-    brush: Node.Node<Node.Obstruction> | null
-  ) => {
-    if (!brush || !inBounds(animationGrid.getGridForAnimation(), pos)) {
-      return;
-    }
-
-    const grid = animationGrid
-      .getGridForAnimation()
-      .map((row) => row.map((node) => ({ ...node })));
-    grid[pos.row][pos.col] = { ...grid[pos.row][pos.col], ...brush };
-    animationGrid.setGridForAnimation(grid);
-    animationGrid.mergeGridForAnimationIntoGridState();
-  };
+  const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
 
   const toolBar = useToolBarContext();
   toolBar.runButton.enlistToNotify(animationGrid);
@@ -59,15 +40,36 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                     key={colIdx}
                     className="table-cell p-0 min-w-6 min-h-6 border-[1px] border-theme-primary-2"
                   >
-                    <div className={Node.STATE_STYLES.BASE}>
+                    <div
+                      className={Node.STATE_STYLES.BASE}
+                      onMouseDown={() => {
+                        const brushNew = {
+                          weight: -1,
+                          state: "WALL" as Node.Obstruction,
+                        };
+                        setBrush(brushNew);
+                        brushOn(
+                          animationGrid,
+                          { row: rowIdx, col: colIdx },
+                          brushNew
+                        );
+                      }}
+                      onMouseEnter={() => {
+                        brushOn(
+                          animationGrid,
+                          { row: rowIdx, col: colIdx },
+                          brush
+                        );
+                      }}
+                      onMouseUp={() => {
+                        setBrush(null);
+                      }}
+                    >
                       <div
                         className={`w-full h-full absolute top-0 left-0 z-10 ${
                           Node.STATE_STYLES.BASE
                         } ${Node.STATE_STYLES[node.state]}`}
                         style={{ animationDelay: node.animationDelay + "ms" }}
-                        onClick={() =>
-                          brushOn({ row: rowIdx, col: colIdx }, brush)
-                        }
                       />
                     </div>
                   </td>
@@ -104,4 +106,24 @@ const useInitialPosition = (
   }, [pos, rows, cols, initialRowPercent, initialColPercent]);
 
   return { position: pos, setPosition };
+};
+
+const brushOn = (
+  animationGrid: ReturnType<typeof useAnimationGrid>,
+  pos: Node.Position,
+  brush: Node.Node<Node.Obstruction> | null
+) => {
+  if (!brush || !inBounds(animationGrid.getGridForAnimation(), pos)) {
+    return;
+  }
+
+  const grid = animationGrid
+    .getGridForAnimation()
+    .map((row) => row.map((node) => ({ ...node })));
+  grid[pos.row][pos.col] = {
+    ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
+    animationDelay: grid[pos.row][pos.col].animationDelay,
+  };
+  animationGrid.setGridForAnimation(grid);
+  animationGrid.mergeGridForAnimationIntoGridState();
 };

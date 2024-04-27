@@ -78,13 +78,14 @@ export default function useAnimationGrid(
     if (isDisplayingAlgorithm(gridForAnimation, start)) {
       asyncAnimator.queueAnimation(
         "ANIMATE_CLEAR_GRID",
-        Node.DISAPPEAR_ANIMATION_DURATION_MILLI_SECS,
+        Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
         () =>
-          setGridForAnimation(buildClearedGridForAnimation(gridForAnimation))
+          setGridForAnimation(buildGridForAnimationCleared(gridForAnimation))
       );
     }
 
-    const traversalPathAnimatedGrid = buildPathOnGridForAnimation(
+    const traversalPathAnimatedGrid = buildGridForAnimationPath(
+      // TODO
       gridForAnimation,
       visitedPath,
       "VISITED_PATH",
@@ -100,7 +101,7 @@ export default function useAnimationGrid(
       () => setGridForAnimation(traversalPathAnimatedGrid)
     );
 
-    const shortestPathAnimatedGrid = buildPathOnGridForAnimation(
+    const shortestPathAnimatedGrid = buildGridForAnimationPath(
       traversalPathAnimatedGrid,
       shortestPath,
       "SHORTEST_PATH",
@@ -129,7 +130,7 @@ export default function useAnimationGrid(
           break;
         case "ABORT_ALGORITHM":
           asyncAnimator.stopAnimations();
-          setGridForAnimation(buildClearedGridForAnimation(gridForAnimation));
+          setGridForAnimation(buildGridForAnimationCleared(gridForAnimation));
           break;
       }
     },
@@ -162,16 +163,16 @@ const initGridForAnimation = (
   return grid;
 };
 
-const buildClearedGridForAnimation = (gridForAnimation: NodeForAnimation[][]) =>
+const buildGridForAnimationCleared = (gridForAnimation: NodeForAnimation[][]) =>
   gridForAnimation.map((row) =>
     row.map((node) => ({
-      weight: node.weight,
-      state: Node.disappearPathFrom(node.state),
+      weight: 1,
+      state: Node.vanishPathFrom(node.state),
       animationDelay: 0,
     }))
   );
 
-const buildPathOnGridForAnimation = (
+const buildGridForAnimationPath = (
   gridOg: NodeForAnimation[][],
   path: Node.Position[],
   state: Node.State,
@@ -195,7 +196,7 @@ const mapGridForAnimationToGridState = (
 ) =>
   gridForAnimation.map((row) =>
     row.map((node) => {
-      assert(!Node.isPathState(node.state));
+      // TODO
       return {
         weight: node.weight,
         state: node.state,
