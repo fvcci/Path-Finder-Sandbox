@@ -7,12 +7,12 @@ import { DELTA, inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
 
 interface AnimationGrid extends Observer {
-  gridState: Node.Node[][];
-  setGridState: React.Dispatch<React.SetStateAction<Node.Node[][]>>;
-  gridForAnimation: NodeForAnimation[][];
+  getGridForAnimation: () => NodeForAnimation[][];
   setGridForAnimation: React.Dispatch<
     React.SetStateAction<NodeForAnimation[][]>
   >;
+  getGridState: () => Node.Node<Node.State>[][];
+  mergeGridForAnimationIntoGridState: () => void;
 }
 
 export default function useAnimationGrid(
@@ -23,7 +23,7 @@ export default function useAnimationGrid(
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ): AnimationGrid {
-  const [gridState, setGridState] = useState<Node.Node[][]>([]);
+  const [gridState, setGridState] = useState<Node.Node<Node.State>[][]>([]);
   const [gridForAnimation, setGridForAnimation] = useState<
     NodeForAnimation[][]
   >([]);
@@ -31,8 +31,9 @@ export default function useAnimationGrid(
   const toolBar = useToolBarContext();
 
   useEffect(() => {
-    setGridState(initGrid(rows, cols, start, end));
-    setGridForAnimation(initGrid(rows, cols, start, end));
+    const gridForAnimationNew = initGridForAnimation(rows, cols, start, end);
+    setGridForAnimation(gridForAnimationNew);
+    setGridState(mapGridForAnimationToGridState(gridForAnimationNew));
   }, [rows, cols, start, end]);
 
   const runPathFindingAnimation = () => {
@@ -132,14 +133,15 @@ export default function useAnimationGrid(
           break;
       }
     },
-    gridState,
-    setGridState,
-    gridForAnimation,
+    getGridForAnimation: () => gridForAnimation,
     setGridForAnimation,
+    getGridState: () => gridState,
+    mergeGridForAnimationIntoGridState: () =>
+      setGridState(mapGridForAnimationToGridState(gridForAnimation)),
   };
 }
 
-const initGrid = (
+const initGridForAnimation = (
   rows: number,
   cols: number,
   startNode: Node.Position,
@@ -188,11 +190,27 @@ const buildPathOnGridForAnimation = (
   return grid;
 };
 
-export interface NodeForAnimation extends Node.Node {
+const mapGridForAnimationToGridState = (
+  gridForAnimation: NodeForAnimation[][]
+) =>
+  gridForAnimation.map((row) =>
+    row.map((node) => {
+      assert(!Node.isPathState(node.state));
+      return {
+        weight: node.weight,
+        state: node.state,
+      };
+    })
+  );
+
+export interface NodeForAnimation extends Node.Node<Node.State> {
   animationDelay: number;
 }
 
-const isDisplayingAlgorithm = (grid: Node.Node[][], start: Node.Position) => {
+const isDisplayingAlgorithm = (
+  grid: NodeForAnimation[][],
+  start: Node.Position
+) => {
   return DELTA.some((delta) => {
     const [r, c] = [start.row + delta[0], start.col + delta[1]];
     if (!inBounds(grid, { row: r, col: c })) {

@@ -1,6 +1,6 @@
-export interface Node {
+export interface Node<T extends State> {
   weight: number;
-  state: State;
+  state: T;
 }
 
 export interface Position {
@@ -9,16 +9,27 @@ export interface Position {
 }
 
 export type State =
+  | "START"
+  | "END"
   | "BASE"
-  | "VISITED_PATH"
-  | "VISITED_PATH_DISAPPEAR"
-  | "SHORTEST_PATH"
-  | "SHORTEST_PATH_DISAPPEAR"
   | "WALL"
   | "WALL_DISAPPEAR"
-  | DraggableState;
+  | PathState;
 
-export type DraggableState = "START" | "END";
+export type PathState = (typeof PathStates)[number];
+
+export const isPathState = (state: State) => {
+  return PathStates.some((pathState) => pathState === state);
+};
+
+const PathStates = [
+  "VISITED_PATH",
+  "VISITED_PATH_DISAPPEAR",
+  "SHORTEST_PATH",
+  "SHORTEST_PATH_DISAPPEAR",
+] as const;
+
+export type Obstruction = ("BASE" | "WALL") & State;
 
 export const STATE_STYLES: Record<State, string> = {
   BASE: "w-6 h-6 relative text-center select-none",

@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid from "../hooks/useAnimationGrid";
+import useAnimationGrid, { NodeForAnimation } from "../hooks/useAnimationGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
+import { inBounds } from "../algorithms/Algorithm";
 
 export default function Grid({ rows, cols }: { rows: number; cols: number }) {
   const start = useInitialPosition(rows, cols, 0.15, 0.2);
@@ -19,7 +20,26 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
-  const [draggableNode, setDraggableNode] = useState();
+  const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>({
+    weight: -1,
+    state: "WALL",
+  });
+
+  const brushOn = (
+    pos: Node.Position,
+    brush: Node.Node<Node.Obstruction> | null
+  ) => {
+    if (!brush || !inBounds(animationGrid.getGridForAnimation(), pos)) {
+      return;
+    }
+
+    const grid = animationGrid
+      .getGridForAnimation()
+      .map((row) => row.map((node) => ({ ...node })));
+    grid[pos.row][pos.col] = { ...grid[pos.row][pos.col], ...brush };
+    animationGrid.setGridForAnimation(grid);
+    animationGrid.mergeGridForAnimationIntoGridState();
+  };
 
   const toolBar = useToolBarContext();
   toolBar.runButton.enlistToNotify(animationGrid);
@@ -32,7 +52,7 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
-            {animationGrid.gridForAnimation.map((rowNodes, rowIdx) => (
+            {animationGrid.getGridForAnimation().map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, colIdx) => (
                   <td
@@ -45,6 +65,9 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                           Node.STATE_STYLES.BASE
                         } ${Node.STATE_STYLES[node.state]}`}
                         style={{ animationDelay: node.animationDelay + "ms" }}
+                        onClick={() =>
+                          brushOn({ row: rowIdx, col: colIdx }, brush)
+                        }
                       />
                     </div>
                   </td>
