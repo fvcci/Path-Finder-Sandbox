@@ -62,6 +62,10 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                         );
                       }}
                       onMouseUp={() => {
+                        console.log(
+                          animationGrid.getGridForAnimation(),
+                          animationGrid.getGridState()
+                        );
                         setBrush(null);
                       }}
                     >
@@ -124,6 +128,5 @@ const brushOn = (
     ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
     animationDelay: grid[pos.row][pos.col].animationDelay,
   };
-  animationGrid.setGridForAnimation(grid);
-  animationGrid.mergeGridForAnimationIntoGridState();
+  animationGrid.setGrids(grid);
 };

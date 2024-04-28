@@ -58,5 +58,15 @@ export const toggleVanishObstructionState = (
   return node;
 };
 
-export const DISAPPEAR_ANIMATION_DURATION_MILLI_SECS = 1500;
+const VANISHED_STATE: State[] = [
+  "WALL_VANISH",
+  "VISITED_PATH_VANISH",
+  "SHORTEST_PATH_VANISH",
+];
+
+export const convertVanishToBaseState = (state: State) => {
+  return VANISHED_STATE.includes(state) ? "BASE" : state;
+};
+
+export const VANISH_ANIMATION_DURATION_MILLI_SECS = 1500;
 export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;

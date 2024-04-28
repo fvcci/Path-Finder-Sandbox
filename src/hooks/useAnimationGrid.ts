@@ -12,7 +12,7 @@ interface AnimationGrid extends Observer {
     React.SetStateAction<NodeForAnimation[][]>
   >;
   getGridState: () => Node.Node<Node.State>[][];
-  mergeGridForAnimationIntoGridState: () => void;
+  setGrids: (grid: NodeForAnimation[][]) => void;
 }
 
 export default function useAnimationGrid(
@@ -32,9 +32,13 @@ export default function useAnimationGrid(
 
   useEffect(() => {
     const gridForAnimationNew = initGridForAnimation(rows, cols, start, end);
-    setGridForAnimation(gridForAnimationNew);
-    setGridState(mapGridForAnimationToGridState(gridForAnimationNew));
+    setGrids(gridForAnimationNew);
   }, [rows, cols, start, end]);
+
+  const setGrids = (grid: NodeForAnimation[][]) => {
+    setGridForAnimation(grid);
+    setGridState(mapGridForAnimationToGridState(grid));
+  };
 
   const runPathFindingAnimation = () => {
     const gridsAreEmpty = [gridState, gridForAnimation].every(
@@ -79,13 +83,13 @@ export default function useAnimationGrid(
       asyncAnimator.queueAnimation(
         "ANIMATE_CLEAR_GRID",
         Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
-        () =>
-          setGridForAnimation(buildGridForAnimationCleared(gridForAnimation))
+        () => setGridForAnimation(buildAnimationVanishedPath(gridForAnimation))
       );
     }
 
-    const traversalPathAnimatedGrid = buildGridForAnimationPath(
-      // TODO
+    console.log("hi");
+
+    const traversalPathAnimatedGrid = buildAnimationPath(
       gridForAnimation,
       visitedPath,
       "VISITED_PATH",
@@ -101,7 +105,7 @@ export default function useAnimationGrid(
       () => setGridForAnimation(traversalPathAnimatedGrid)
     );
 
-    const shortestPathAnimatedGrid = buildGridForAnimationPath(
+    const shortestPathAnimatedGrid = buildAnimationPath(
       traversalPathAnimatedGrid,
       shortestPath,
       "SHORTEST_PATH",
@@ -130,15 +134,14 @@ export default function useAnimationGrid(
           break;
         case "ABORT_ALGORITHM":
           asyncAnimator.stopAnimations();
-          setGridForAnimation(buildGridForAnimationCleared(gridForAnimation));
+          setGridForAnimation(buildAnimationVanishedPath(gridForAnimation));
           break;
       }
     },
     getGridForAnimation: () => gridForAnimation,
     setGridForAnimation,
     getGridState: () => gridState,
-    mergeGridForAnimationIntoGridState: () =>
-      setGridState(mapGridForAnimationToGridState(gridForAnimation)),
+    setGrids,
   };
 }
 
@@ -163,7 +166,7 @@ const initGridForAnimation = (
   return grid;
 };
 
-const buildGridForAnimationCleared = (gridForAnimation: NodeForAnimation[][]) =>
+const buildAnimationVanishedPath = (gridForAnimation: NodeForAnimation[][]) =>
   gridForAnimation.map((row) =>
     row.map((node) => ({
       weight: 1,
@@ -172,7 +175,7 @@ const buildGridForAnimationCleared = (gridForAnimation: NodeForAnimation[][]) =>
     }))
   );
 
-const buildGridForAnimationPath = (
+const buildAnimationPath = (
   gridOg: NodeForAnimation[][],
   path: Node.Position[],
   state: Node.State,
@@ -193,13 +196,13 @@ const buildGridForAnimationPath = (
 
 const mapGridForAnimationToGridState = (
   gridForAnimation: NodeForAnimation[][]
-) =>
+): Node.Node<Node.State>[][] =>
   gridForAnimation.map((row) =>
     row.map((node) => {
-      // TODO
+      console.log(node.state);
       return {
         weight: node.weight,
-        state: node.state,
+        state: Node.convertVanishToBaseState(node.state),
       };
     })
   );
