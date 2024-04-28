@@ -1,44 +1,41 @@
 import { useState } from "react";
 import * as Node from "../components/Node";
-import useAnimationGrid, { isDisplayingAlgorithm } from "./useAnimationGrid";
+import { AnimationGrid } from "./useAnimationGrid";
 import { assert } from "../util/asserts";
 import { inBounds } from "../algorithms/Algorithm";
 
-export const useBrush = (
-  animationGrid: ReturnType<typeof useAnimationGrid>
-) => {
+export default function useBrush() {
   const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
 
   return {
-    onMouseDown: (pos: Node.Position) => {
-      if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
-        return;
-      }
+    placeBrushDownOnto: (animationGrid: AnimationGrid, pos: Node.Position) => {
       const brushNew = {
         weight: -1,
         state: "WALL" as Node.Obstruction,
       };
       setBrush(brushNew);
-      brushOn(animationGrid, pos, brushNew);
+      animationGrid.setGrids(buildBrushOn(animationGrid, pos, brushNew));
     },
-    onMouseEnter: (pos: Node.Position) => {
-      brushOn(animationGrid, pos, brush);
+    drawOn: (animationGrid: AnimationGrid, pos: Node.Position) => {
+      if (brush) {
+        animationGrid.setGrids(buildBrushOn(animationGrid, pos, brush));
+      }
     },
-    onMouseUp: () => {
+    releaseBrush: () => {
       setBrush(null);
     },
   };
-};
+}
 
-const brushOn = (
-  animationGrid: ReturnType<typeof useAnimationGrid>,
+const buildBrushOn = (
+  animationGrid: AnimationGrid,
   pos: Node.Position,
-  brush: Node.Node<Node.Obstruction> | null
+  brush: Node.Node<Node.Obstruction>
 ) => {
-  if (!animationGrid.gridForAnimation || !brush) {
-    return;
-  }
-  assert(inBounds(animationGrid.gridForAnimation, pos));
+  assert(
+    animationGrid.gridForAnimation &&
+      inBounds(animationGrid.gridForAnimation, pos)
+  );
 
   const grid = animationGrid.gridForAnimation.map((row) =>
     row.map((node) => ({ ...node }))
@@ -47,5 +44,5 @@ const brushOn = (
     ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
     animationDelay: grid[pos.row][pos.col].animationDelay,
   };
-  animationGrid.setGrids(grid);
+  return grid;
 };

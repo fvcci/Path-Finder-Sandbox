@@ -142,13 +142,13 @@ export const inBounds = (
   position: Position | null
 ): boolean => {
   return (
-    grid !== null &&
-    position !== null &&
-    grid.length !== 0 &&
-    0 <= position.row &&
-    position.row < grid.length &&
-    0 <= position.col &&
-    position.col < grid[0].length
+    !position ||
+    !grid ||
+    (grid.length !== 0 &&
+      0 <= position.row &&
+      position.row < grid.length &&
+      0 <= position.col &&
+      position.col < grid[0].length)
   );
 };
 

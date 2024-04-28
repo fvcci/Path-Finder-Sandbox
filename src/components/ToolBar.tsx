@@ -1,4 +1,4 @@
-import { useToolBarContext } from "../hooks/useToolBarContext";
+import useToolBarContext from "../hooks/useToolBarContext";
 
 export default function ToolBar() {
   const toolBar = useToolBarContext();

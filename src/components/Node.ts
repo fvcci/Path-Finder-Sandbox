@@ -19,11 +19,7 @@ export type State =
   | "SHORTEST_PATH"
   | "SHORTEST_PATH_VANISH";
 
-export type Desintation = Extends<State, "START" | "END">;
-
 export type Obstruction = Extends<State, "BASE" | "WALL">;
-
-type Extends<T, U extends T> = U;
 
 export const STATE_STYLES: Record<State, string> = {
   BASE: "w-6 h-6 relative text-center select-none",
@@ -78,5 +74,13 @@ export const convertVanishToBaseState = (state: State) => {
   return VANISHED_STATE.includes(state) ? "BASE" : state;
 };
 
+const DESTINATIONS: State[] = ["START", "END"];
+
+export const isDestination = (state: State) => {
+  return DESTINATIONS.includes(state);
+};
+
 export const VANISH_ANIMATION_DURATION_MILLI_SECS = 1500;
 export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;
+
+type Extends<T, U extends T> = U;

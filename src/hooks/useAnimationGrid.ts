@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import * as Node from "../components/Node";
-import { useToolBarContext } from "./useToolBarContext";
+import useToolBarContext from "./useToolBarContext";
 import { Observer } from "../util/observer";
 import { assert } from "../util/asserts";
-import { inBounds } from "../algorithms/Algorithm";
+import { DELTA, inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
+
+export type AnimationGrid = ReturnType<typeof useAnimationGrid>;
 
 export default function useAnimationGrid(
   dimensions: Dimensions | null,
@@ -75,7 +77,7 @@ export default function useAnimationGrid(
       "paths should not include the start and end node"
     );
 
-    if (isDisplayingAlgorithm(gridForAnimation)) {
+    if (isDisplayingAlgorithm(gridForAnimation, start)) {
       asyncAnimator.queueAnimation(
         "ANIMATE_CLEAR_GRID",
         Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
@@ -138,6 +140,7 @@ export default function useAnimationGrid(
     } as Observer,
     gridForAnimation,
     setGridForAnimation,
+    gridState,
     setGrids,
   };
 }
@@ -204,31 +207,24 @@ export interface NodeForAnimation extends Node.Node<Node.State> {
   animationDelay: number;
 }
 
-// ? faster algorithm
-// export const isDisplayingAlgorithm = (
-//   grid: NodeForAnimation[][] | null,
-//   start: Node.Position | null
-// ) => {
-//   return (
-//     grid &&
-//     start &&
-//     DELTA.some((delta) => {
-//       const [r, c] = [start.row + delta[0], start.col + delta[1]];
-//       if (!inBounds(grid, { row: r, col: c })) {
-//         return false;
-//       }
-
-//       const hasTraversalState = (
-//         ["VISITED", "SHORTEST_PATH"] as Node.State[]
-//       ).includes(grid[r][c].state);
-//       return hasTraversalState;
-//     })
-//   );
-// };
-
-export const isDisplayingAlgorithm = (grid: NodeForAnimation[][] | null) => {
+export const isDisplayingAlgorithm = (
+  grid: NodeForAnimation[][] | null,
+  start: Node.Position | null
+) => {
   return (
-    grid && grid.some((row) => row.some((node) => Node.isPath(node.state)))
+    grid &&
+    start &&
+    DELTA.some((delta) => {
+      const [r, c] = [start.row + delta[0], start.col + delta[1]];
+      if (!inBounds(grid, { row: r, col: c })) {
+        return false;
+      }
+
+      const hasPathState = (
+        ["VISITED", "SHORTEST_PATH"] as Node.State[]
+      ).includes(grid[r][c].state);
+      return hasPathState;
+    })
   );
 };
 

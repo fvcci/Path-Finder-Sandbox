@@ -3,9 +3,13 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid, { Dimensions } from "../hooks/useAnimationGrid";
-import { useToolBarContext } from "../hooks/useToolBarContext";
-import { useBrush } from "../hooks/useBrush";
+import useAnimationGrid, {
+  Dimensions,
+  isDisplayingAlgorithm,
+} from "../hooks/useAnimationGrid";
+import useToolBarContext from "../hooks/useToolBarContext";
+import useBrush from "../hooks/useBrush";
+import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
 
 export default function Grid({
   dimensions,
@@ -33,17 +37,49 @@ export default function Grid({
     }
   }, [toolBar.runButton, animationGrid]);
 
-  const brush = useBrush(animationGrid);
+  const brush = useBrush();
+  const mouseDraggedNode = useMouseDraggedNode();
 
   const mouseController = (pos: Node.Position) => ({
     onMouseDown: () => {
-      brush.onMouseDown(pos);
+      if (
+        !animationGrid.gridForAnimation ||
+        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+      ) {
+        return;
+      }
+
+      if (
+        Node.isDestination(
+          animationGrid.gridForAnimation[pos.row][pos.col].state
+        )
+      ) {
+        mouseDraggedNode.pickUpNodeFrom(animationGrid, pos);
+        return;
+      }
+      brush.placeBrushDownOnto(animationGrid, pos);
     },
     onMouseEnter: () => {
-      brush.onMouseEnter(pos);
+      if (
+        !animationGrid.gridForAnimation ||
+        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+      ) {
+        return;
+      }
+
+      brush.drawOn(animationGrid, pos);
+      mouseDraggedNode.dragNodeOver(animationGrid, pos);
     },
     onMouseUp: () => {
-      brush.onMouseUp();
+      if (
+        !animationGrid.gridForAnimation ||
+        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+      ) {
+        return;
+      }
+
+      brush.releaseBrush();
+      mouseDraggedNode.releaseNode(animationGrid);
     },
   });
 
