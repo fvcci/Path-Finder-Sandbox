@@ -7,11 +7,10 @@ import { DELTA, inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
 
 interface AnimationGrid extends Observer {
-  getGridForAnimation: () => NodeForAnimation[][];
+  gridForAnimation: NodeForAnimation[][] | null;
   setGridForAnimation: React.Dispatch<
-    React.SetStateAction<NodeForAnimation[][]>
+    React.SetStateAction<NodeForAnimation[][] | null>
   >;
-  getGridState: () => Node.Node<Node.State>[][];
   setGrids: (grid: NodeForAnimation[][]) => void;
 }
 
@@ -22,17 +21,19 @@ export default function useAnimationGrid(
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ): AnimationGrid {
-  const [gridState, setGridState] = useState<Node.Node<Node.State>[][]>([]);
+  const [gridState, setGridState] = useState<Node.Node<Node.State>[][] | null>(
+    null
+  );
   const [gridForAnimation, setGridForAnimation] = useState<
-    NodeForAnimation[][]
-  >([]);
+    NodeForAnimation[][] | null
+  >(null);
   const [asyncAnimator] = useState(AsyncAnimator());
 
   const toolBar = useToolBarContext();
 
   useEffect(() => {
-    console.log(dimensions.rows, dimensions.cols, start, end);
     if (dimensions.rows && dimensions.cols && start && end) {
+      console.log(dimensions.rows, dimensions.cols, start, end);
       setGrids(initGridForAnimation(dimensions, start, end));
     }
   }, [dimensions, start, end]);
@@ -43,7 +44,10 @@ export default function useAnimationGrid(
   };
 
   const runPathFindingAnimation = () => {
-    assert(start && end, "start and end nodes must be defined");
+    assert(
+      start && end && gridState && gridForAnimation,
+      "grid not fully initialized"
+    );
 
     const loadedStartAndEndNodeIntoGrid = [gridState, gridForAnimation].every(
       (grid) =>
@@ -138,14 +142,14 @@ export default function useAnimationGrid(
           runPathFindingAnimation();
           break;
         case "ABORT_ALGORITHM":
+          assert(gridForAnimation);
           asyncAnimator.stopAnimations();
           setGridForAnimation(buildAnimationVanishedPath(gridForAnimation));
           break;
       }
     },
-    getGridForAnimation: () => gridForAnimation,
+    gridForAnimation,
     setGridForAnimation,
-    getGridState: () => gridState,
     setGrids,
   };
 }
@@ -213,10 +217,11 @@ export interface NodeForAnimation extends Node.Node<Node.State> {
 }
 
 export const isDisplayingAlgorithm = (
-  grid: NodeForAnimation[][],
+  grid: NodeForAnimation[][] | null,
   start: Node.Position | null
 ) => {
   return (
+    grid &&
     start &&
     DELTA.some((delta) => {
       const [r, c] = [start.row + delta[0], start.col + delta[1]];

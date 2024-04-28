@@ -25,7 +25,11 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
   const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
 
   const toolBar = useToolBarContext();
-  toolBar.runButton.enlistToNotify(animationGrid);
+  useEffect(() => {
+    if (animationGrid.gridForAnimation) {
+      toolBar.runButton.enlistToNotify(animationGrid);
+    }
+  }, [start, end, toolBar.runButton, animationGrid]);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
@@ -35,7 +39,7 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
           cellSpacing="0"
         >
           <tbody className="whitespace-pre">
-            {animationGrid.getGridForAnimation().map((rowNodes, rowIdx) => (
+            {animationGrid.gridForAnimation?.map((rowNodes, rowIdx) => (
               <tr key={rowIdx}>
                 {rowNodes.map((node, colIdx) => (
                   <td
@@ -47,7 +51,7 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
                       onMouseDown={() => {
                         if (
                           isDisplayingAlgorithm(
-                            animationGrid.getGridForAnimation(),
+                            animationGrid.gridForAnimation,
                             start.position
                           )
                         ) {
@@ -72,10 +76,6 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
                         );
                       }}
                       onMouseUp={() => {
-                        console.log(
-                          animationGrid.getGridForAnimation(),
-                          animationGrid.getGridState()
-                        );
                         setBrush(null);
                       }}
                     >
@@ -123,13 +123,17 @@ const brushOn = (
   pos: Node.Position,
   brush: Node.Node<Node.Obstruction> | null
 ) => {
-  if (!brush || !inBounds(animationGrid.getGridForAnimation(), pos)) {
+  if (
+    !animationGrid.gridForAnimation ||
+    !brush ||
+    !inBounds(animationGrid.gridForAnimation, pos)
+  ) {
     return;
   }
 
-  const grid = animationGrid
-    .getGridForAnimation()
-    .map((row) => row.map((node) => ({ ...node })));
+  const grid = animationGrid.gridForAnimation.map((row) =>
+    row.map((node) => ({ ...node }))
+  );
   grid[pos.row][pos.col] = {
     ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
     animationDelay: grid[pos.row][pos.col].animationDelay,

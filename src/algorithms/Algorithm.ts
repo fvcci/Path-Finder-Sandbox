@@ -137,8 +137,12 @@ export class Queue {
   }
 }
 
-export const inBounds = (grid: Node<State>[][], position: Position | null) => {
+export const inBounds = (
+  grid: Node<State>[][] | null,
+  position: Position | null
+) => {
   return (
+    grid &&
     position &&
     grid.length !== 0 &&
     0 <= position.row &&
