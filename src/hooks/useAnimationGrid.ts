@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import * as Node from "../components/Node";
 import { useToolBarContext } from "./useToolBarContext";
-import { Observer, ObservableEvent } from "../util/observer";
+import { Observer } from "../util/observer";
 import { assert } from "../util/asserts";
 import { DELTA, inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
-
-interface AnimationGrid extends Observer {
-  gridForAnimation: NodeForAnimation[][] | null;
-  setGridForAnimation: React.Dispatch<
-    React.SetStateAction<NodeForAnimation[][] | null>
-  >;
-  setGrids: (grid: NodeForAnimation[][]) => void;
-}
 
 export default function useAnimationGrid(
   dimensions: Dimensions | null,
@@ -20,7 +12,7 @@ export default function useAnimationGrid(
   end: Node.Position | null,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
-): AnimationGrid {
+) {
   const [gridState, setGridState] = useState<Node.Node<Node.State>[][] | null>(
     null
   );
@@ -129,18 +121,21 @@ export default function useAnimationGrid(
   };
 
   return {
-    update: (event: ObservableEvent) => {
-      switch (event) {
-        case "RUN_ALGORITHM":
-          runPathFindingAnimation();
-          break;
-        case "ABORT_ALGORITHM":
-          assert(gridForAnimation);
-          asyncAnimator.stopAnimations();
-          setGridForAnimation(buildAnimationVanishedPath(gridForAnimation));
-          break;
-      }
-    },
+    observer: {
+      update: (event) => {
+        assert(gridState && gridForAnimation, "grid not fully initialized");
+
+        switch (event) {
+          case "RUN_ALGORITHM":
+            runPathFindingAnimation();
+            break;
+          case "ABORT_ALGORITHM":
+            asyncAnimator.stopAnimations();
+            setGridForAnimation(buildAnimationVanishedPath(gridForAnimation));
+            break;
+        }
+      },
+    } as Observer,
     gridForAnimation,
     setGridForAnimation,
     setGrids,

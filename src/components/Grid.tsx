@@ -26,12 +26,15 @@ export default function Grid({
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
-  const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
+  const brush = useBrush(animationGrid);
 
   const toolBar = useToolBarContext();
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
-      toolBar.runButton.enlistToNotify("ANIMATION_GRID", animationGrid);
+      toolBar.runButton.enlistToNotify(
+        "ANIMATION_GRID",
+        animationGrid.observer
+      );
     }
   }, [toolBar.runButton, animationGrid]);
 
@@ -122,25 +125,29 @@ const useInitialPosition = (
   return { position: pos, setPosition };
 };
 
-const brushOn = (
-  animationGrid: ReturnType<typeof useAnimationGrid>,
-  pos: Node.Position,
-  brush: Node.Node<Node.Obstruction> | null
-) => {
-  if (
-    !animationGrid.gridForAnimation ||
-    !brush ||
-    !inBounds(animationGrid.gridForAnimation, pos)
-  ) {
-    return;
-  }
+const useBrush = (animationGrid: ReturnType<typeof useAnimationGrid>) => {
+  const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
 
-  const grid = animationGrid.gridForAnimation.map((row) =>
-    row.map((node) => ({ ...node }))
-  );
-  grid[pos.row][pos.col] = {
-    ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
-    animationDelay: grid[pos.row][pos.col].animationDelay,
+  const brushOn = (pos: Node.Position) => {
+    if (
+      !animationGrid.gridForAnimation ||
+      !brush ||
+      !inBounds(animationGrid.gridForAnimation, pos)
+    ) {
+      return;
+    }
+
+    const grid = animationGrid.gridForAnimation.map((row) =>
+      row.map((node) => ({ ...node }))
+    );
+    grid[pos.row][pos.col] = {
+      ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
+      animationDelay: grid[pos.row][pos.col].animationDelay,
+    };
+    animationGrid.setGrids(grid);
   };
-  animationGrid.setGrids(grid);
+
+  return {
+    brushOn,
+  };
 };

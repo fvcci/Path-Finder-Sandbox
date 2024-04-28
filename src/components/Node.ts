@@ -19,7 +19,9 @@ export type State =
   | "SHORTEST_PATH"
   | "SHORTEST_PATH_VANISH";
 
-export type Obstruction = ("BASE" | "WALL") & State;
+export type Obstruction = Extends<State, "BASE" | "WALL">;
+
+type Extends<T, U extends T> = U;
 
 export const STATE_STYLES: Record<State, string> = {
   BASE: "w-6 h-6 relative text-center select-none",
