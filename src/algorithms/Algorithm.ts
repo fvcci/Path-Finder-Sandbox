@@ -140,10 +140,10 @@ export class Queue {
 export const inBounds = (
   grid: Node<State>[][] | null,
   position: Position | null
-) => {
+): boolean => {
   return (
-    grid &&
-    position &&
+    grid !== null &&
+    position !== null &&
     grid.length !== 0 &&
     0 <= position.row &&
     position.row < grid.length &&

@@ -9,6 +9,7 @@ import useAnimationGrid, {
 } from "../hooks/useAnimationGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 import { inBounds } from "../algorithms/Algorithm";
+import { assert } from "../util/asserts";
 
 export default function Grid({
   dimensions,
@@ -137,13 +138,10 @@ const brushOn = (
   pos: Node.Position,
   brush: Node.Node<Node.Obstruction> | null
 ) => {
-  if (
-    !animationGrid.gridForAnimation ||
-    !brush ||
-    !inBounds(animationGrid.gridForAnimation, pos)
-  ) {
+  if (!animationGrid.gridForAnimation || !brush) {
     return;
   }
+  assert(inBounds(animationGrid.gridForAnimation, pos));
 
   const grid = animationGrid.gridForAnimation.map((row) =>
     row.map((node) => ({ ...node }))
