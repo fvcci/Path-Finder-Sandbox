@@ -19,6 +19,8 @@ export type State =
   | "SHORTEST_PATH"
   | "SHORTEST_PATH_VANISH";
 
+export type Desintation = Extends<State, "START" | "END">;
+
 export type Obstruction = Extends<State, "BASE" | "WALL">;
 
 type Extends<T, U extends T> = U;
