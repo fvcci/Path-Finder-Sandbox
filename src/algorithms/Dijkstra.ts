@@ -5,12 +5,12 @@ import Algorithm, {
   inBounds,
   findShortestPath,
 } from "./Algorithm";
-import { Node, Position } from "../components/Node";
+import { Node, Position, State } from "../components/Node";
 
 const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
-    run: (grid: Node[][], start: Position, end: Position) => {
+    run: (grid: Node<State>[][], start: Position, end: Position) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
@@ -25,7 +25,7 @@ const Dijkstra = (): Algorithm => {
         .map(() => new Array(grid[0].length).fill(Infinity));
 
       // Start fro the start node
-      const queue = new PriorityQueue<Node & Position>(
+      const queue = new PriorityQueue<Node<State> & Position>(
         (a, b) => a.weight < b.weight
       );
       queue.push({ ...start, weight: -1, state: "START" });

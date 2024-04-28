@@ -4,12 +4,12 @@ import Algorithm, {
   inBounds,
   findShortestPath,
 } from "./Algorithm";
-import { Node, Position } from "../components/Node";
+import { Node, Position, State } from "../components/Node";
 
 const BFS = (): Algorithm => {
   return {
     getName: () => "Breadth First Search",
-    run: (grid: Node[][], start: Position) => {
+    run: (grid: Node<State>[][], start: Position) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }

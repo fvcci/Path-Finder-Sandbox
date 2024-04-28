@@ -4,7 +4,7 @@ import Algorithm, {
   findShortestPath,
   PriorityQueue,
 } from "./Algorithm";
-import { Node, Position } from "../components/Node";
+import { Node, Position, State } from "../components/Node";
 
 interface AStarNode {
   f: number;
@@ -26,7 +26,7 @@ const heuristic = (a: Position, b: Position) => {
 const AStar = (): Algorithm => {
   return {
     getName: () => "A*",
-    run: (grid: Node[][], start: Position, end: Position) => {
+    run: (grid: Node<State>[][], start: Position, end: Position) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
