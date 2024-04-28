@@ -30,28 +30,29 @@ const useDimensions = (
   compression = 1,
   addend = 0
 ): Dimensions | null => {
-  const [width, setWidth] = useState<number | null>(null);
-  const [height, setHeight] = useState<number | null>(null);
+  const [dimensions, setDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
 
   useLayoutEffect(() => {
     if (!ref.current) {
       return;
     }
 
-    if (width && height) {
+    if (dimensions) {
       return;
     }
 
     const { width: newWidth, height: newHeight } =
       ref.current.getBoundingClientRect();
-    setWidth(newWidth);
-    setHeight(newHeight);
-  }, [ref, width, height]);
+    setDimensions({ width: newWidth, height: newHeight });
+  }, [ref, dimensions]);
 
-  return width && height
+  return dimensions
     ? {
-        rows: Math.max(Math.floor(height * compression) + addend, 2),
-        cols: Math.max(Math.floor(width * compression) + addend, 2),
+        rows: Math.max(Math.floor(dimensions.height * compression) + addend, 2),
+        cols: Math.max(Math.floor(dimensions.width * compression) + addend, 2),
       }
     : null;
 };
