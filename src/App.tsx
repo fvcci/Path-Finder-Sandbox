@@ -29,7 +29,7 @@ const useDimensions = (
   ref: React.RefObject<HTMLDivElement>,
   compression = 1,
   addend = 0
-): Dimensions => {
+): Dimensions | null => {
   const [width, setWidth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
 
@@ -53,5 +53,5 @@ const useDimensions = (
         rows: Math.max(Math.floor(height * compression) + addend, 2),
         cols: Math.max(Math.floor(width * compression) + addend, 2),
       }
-    : { rows: null, cols: null };
+    : null;
 };

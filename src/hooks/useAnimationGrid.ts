@@ -15,7 +15,7 @@ interface AnimationGrid extends Observer {
 }
 
 export default function useAnimationGrid(
-  dimensions: Dimensions,
+  dimensions: Dimensions | null,
   start: Node.Position | null,
   end: Node.Position | null,
   traversalPathSpeedFactorMilliSecs: number,
@@ -32,7 +32,7 @@ export default function useAnimationGrid(
   const toolBar = useToolBarContext();
 
   useEffect(() => {
-    if (dimensions.rows && dimensions.cols && start && end) {
+    if (dimensions && start && end) {
       setGrids(initGridForAnimation(dimensions, start, end));
     }
   }, [dimensions, start, end]);
@@ -231,6 +231,6 @@ export const isDisplayingAlgorithm = (
 };
 
 export type Dimensions = {
-  rows: number | null;
-  cols: number | null;
+  rows: number;
+  cols: number;
 };

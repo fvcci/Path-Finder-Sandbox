@@ -10,7 +10,11 @@ import useAnimationGrid, {
 import { useToolBarContext } from "../hooks/useToolBarContext";
 import { inBounds } from "../algorithms/Algorithm";
 
-export default function Grid({ dimensions }: { dimensions: Dimensions }) {
+export default function Grid({
+  dimensions,
+}: {
+  dimensions: Dimensions | null;
+}) {
   const start = useInitialPosition(dimensions, 0.15, 0.2);
   const end = useInitialPosition(dimensions, 0.5, 0.6);
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
@@ -98,14 +102,14 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
 }
 
 const useInitialPosition = (
-  dimensions: Dimensions,
+  dimensions: Dimensions | null,
   initialRowPercent: number,
   initialColPercent: number
 ) => {
   const [pos, setPosition] = useState<Node.Position | null>(null);
 
   useEffect(() => {
-    if (!dimensions.rows || !dimensions.cols) {
+    if (!dimensions) {
       return;
     }
 
@@ -113,7 +117,7 @@ const useInitialPosition = (
       row: Math.floor(dimensions.rows * initialRowPercent),
       col: Math.floor(dimensions.cols * initialColPercent),
     });
-  }, [dimensions.rows, dimensions.cols, initialRowPercent, initialColPercent]);
+  }, [dimensions, initialRowPercent, initialColPercent]);
 
   return { position: pos, setPosition };
 };
