@@ -33,7 +33,6 @@ export default function useAnimationGrid(
 
   useEffect(() => {
     if (dimensions.rows && dimensions.cols && start && end) {
-      console.log(dimensions.rows, dimensions.cols, start, end);
       setGrids(initGridForAnimation(dimensions, start, end));
     }
   }, [dimensions, start, end]);
@@ -69,9 +68,6 @@ export default function useAnimationGrid(
 
     if (visitedPath.length === 0) {
       assert(shortestPath.length === 0);
-      console.log(
-        "ALGORITHM_FINISHED_RUNNING runPathFindingAnimation, visitedPath.length === 0"
-      );
       toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
       return;
     }
@@ -128,9 +124,6 @@ export default function useAnimationGrid(
     );
 
     asyncAnimator.animate(() => {
-      console.log(
-        "ALGORITHM_FINISHED_RUNNING runPathFindingAnimation, AsyncAnimator"
-      );
       toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
     });
   };

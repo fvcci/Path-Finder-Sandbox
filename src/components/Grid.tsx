@@ -27,9 +27,9 @@ export default function Grid({ dimensions }: { dimensions: Dimensions }) {
   const toolBar = useToolBarContext();
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
-      toolBar.runButton.enlistToNotify(animationGrid);
+      toolBar.runButton.enlistToNotify("ANIMATION_GRID", animationGrid);
     }
-  }, [start, end, toolBar.runButton, animationGrid]);
+  }, [toolBar.runButton, animationGrid]);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">

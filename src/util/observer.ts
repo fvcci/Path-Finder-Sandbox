@@ -5,13 +5,13 @@ export interface Observer {
 export type Observable = ReturnType<typeof ObservableEditable>;
 
 export const ObservableEditable = () => {
-  const observers = new Set<Observer>();
+  const observers = new Map<string, Observer>();
   return {
     notifyObservers: (event: ObservableEvent) => {
       observers.forEach((observer) => observer.update(event));
     },
-    enlistToNotify: (observer: Observer) => {
-      observers.add(observer);
+    enlistToNotify: (name: string, observer: Observer) => {
+      observers.set(name, observer);
     },
   };
 };
