@@ -3,7 +3,7 @@ import * as Node from "../components/Node";
 import { useToolBarContext } from "./useToolBarContext";
 import { Observer } from "../util/observer";
 import { assert } from "../util/asserts";
-import { DELTA, inBounds } from "../algorithms/Algorithm";
+import { inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
 
 export default function useAnimationGrid(
@@ -75,7 +75,7 @@ export default function useAnimationGrid(
       "paths should not include the start and end node"
     );
 
-    if (isDisplayingAlgorithm(gridForAnimation, start)) {
+    if (isDisplayingAlgorithm(gridForAnimation)) {
       asyncAnimator.queueAnimation(
         "ANIMATE_CLEAR_GRID",
         Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
@@ -204,24 +204,31 @@ export interface NodeForAnimation extends Node.Node<Node.State> {
   animationDelay: number;
 }
 
-export const isDisplayingAlgorithm = (
-  grid: NodeForAnimation[][] | null,
-  start: Node.Position | null
-) => {
-  return (
-    grid &&
-    start &&
-    DELTA.some((delta) => {
-      const [r, c] = [start.row + delta[0], start.col + delta[1]];
-      if (!inBounds(grid, { row: r, col: c })) {
-        return false;
-      }
+// ? faster algorithm
+// export const isDisplayingAlgorithm = (
+//   grid: NodeForAnimation[][] | null,
+//   start: Node.Position | null
+// ) => {
+//   return (
+//     grid &&
+//     start &&
+//     DELTA.some((delta) => {
+//       const [r, c] = [start.row + delta[0], start.col + delta[1]];
+//       if (!inBounds(grid, { row: r, col: c })) {
+//         return false;
+//       }
 
-      const hasTraversalState = (
-        ["VISITED", "SHORTEST_PATH"] as Node.State[]
-      ).includes(grid[r][c].state);
-      return hasTraversalState;
-    })
+//       const hasTraversalState = (
+//         ["VISITED", "SHORTEST_PATH"] as Node.State[]
+//       ).includes(grid[r][c].state);
+//       return hasTraversalState;
+//     })
+//   );
+// };
+
+export const isDisplayingAlgorithm = (grid: NodeForAnimation[][] | null) => {
+  return (
+    grid && grid.some((row) => row.some((node) => Node.isPath(node.state)))
   );
 };
 

@@ -26,8 +26,6 @@ export default function Grid({
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
 
-  const brush = useBrush(animationGrid);
-
   const toolBar = useToolBarContext();
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
@@ -37,6 +35,20 @@ export default function Grid({
       );
     }
   }, [toolBar.runButton, animationGrid]);
+
+  const brush = useBrush(animationGrid);
+
+  const mouseController = (pos: Node.Position) => ({
+    onMouseDown: () => {
+      brush.onMouseDown(pos);
+    },
+    onMouseEnter: () => {
+      brush.onMouseEnter(pos);
+    },
+    onMouseUp: () => {
+      brush.onMouseUp();
+    },
+  });
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
@@ -55,36 +67,7 @@ export default function Grid({
                   >
                     <div
                       className={Node.STATE_STYLES.BASE}
-                      onMouseDown={() => {
-                        if (
-                          isDisplayingAlgorithm(
-                            animationGrid.gridForAnimation,
-                            start.position
-                          )
-                        ) {
-                          return;
-                        }
-                        const brushNew = {
-                          weight: -1,
-                          state: "WALL" as Node.Obstruction,
-                        };
-                        setBrush(brushNew);
-                        brushOn(
-                          animationGrid,
-                          { row: rowIdx, col: colIdx },
-                          brushNew
-                        );
-                      }}
-                      onMouseEnter={() => {
-                        brushOn(
-                          animationGrid,
-                          { row: rowIdx, col: colIdx },
-                          brush
-                        );
-                      }}
-                      onMouseUp={() => {
-                        setBrush(null);
-                      }}
+                      {...mouseController({ row: rowIdx, col: colIdx })}
                     >
                       <div
                         className={`w-full h-full absolute top-0 left-0 z-10 ${
@@ -128,26 +111,46 @@ const useInitialPosition = (
 const useBrush = (animationGrid: ReturnType<typeof useAnimationGrid>) => {
   const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
 
-  const brushOn = (pos: Node.Position) => {
-    if (
-      !animationGrid.gridForAnimation ||
-      !brush ||
-      !inBounds(animationGrid.gridForAnimation, pos)
-    ) {
-      return;
-    }
-
-    const grid = animationGrid.gridForAnimation.map((row) =>
-      row.map((node) => ({ ...node }))
-    );
-    grid[pos.row][pos.col] = {
-      ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
-      animationDelay: grid[pos.row][pos.col].animationDelay,
-    };
-    animationGrid.setGrids(grid);
-  };
-
   return {
-    brushOn,
+    onMouseDown: (pos: Node.Position) => {
+      if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
+        return;
+      }
+      const brushNew = {
+        weight: -1,
+        state: "WALL" as Node.Obstruction,
+      };
+      setBrush(brushNew);
+      brushOn(animationGrid, pos, brushNew);
+    },
+    onMouseEnter: (pos: Node.Position) => {
+      brushOn(animationGrid, pos, brush);
+    },
+    onMouseUp: () => {
+      setBrush(null);
+    },
   };
+};
+
+const brushOn = (
+  animationGrid: ReturnType<typeof useAnimationGrid>,
+  pos: Node.Position,
+  brush: Node.Node<Node.Obstruction> | null
+) => {
+  if (
+    !animationGrid.gridForAnimation ||
+    !brush ||
+    !inBounds(animationGrid.gridForAnimation, pos)
+  ) {
+    return;
+  }
+
+  const grid = animationGrid.gridForAnimation.map((row) =>
+    row.map((node) => ({ ...node }))
+  );
+  grid[pos.row][pos.col] = {
+    ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
+    animationDelay: grid[pos.row][pos.col].animationDelay,
+  };
+  animationGrid.setGrids(grid);
 };

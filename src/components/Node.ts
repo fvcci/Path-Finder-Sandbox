@@ -60,6 +60,12 @@ export const toggleVanishObstructionState = (
   return node;
 };
 
+const PATHS: State[] = ["VISITED_PATH", "SHORTEST_PATH"];
+
+export const isPath = (state: State) => {
+  return PATHS.includes(state);
+};
+
 const VANISHED_STATE: State[] = [
   "WALL_VANISH",
   "VISITED_PATH_VANISH",
