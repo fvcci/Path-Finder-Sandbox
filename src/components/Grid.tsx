@@ -3,17 +3,19 @@ import { useState, useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid from "../hooks/useAnimationGrid";
+import useAnimationGrid, {
+  Dimensions,
+  isDisplayingAlgorithm,
+} from "../hooks/useAnimationGrid";
 import { useToolBarContext } from "../hooks/useToolBarContext";
 import { inBounds } from "../algorithms/Algorithm";
 
-export default function Grid({ rows, cols }: { rows: number; cols: number }) {
-  const start = useInitialPosition(rows, cols, 0.15, 0.2);
-  const end = useInitialPosition(rows, cols, 0.5, 0.6);
+export default function Grid({ dimensions }: { dimensions: Dimensions }) {
+  const start = useInitialPosition(dimensions, 0.15, 0.2);
+  const end = useInitialPosition(dimensions, 0.5, 0.6);
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
   const animationGrid = useAnimationGrid(
-    rows,
-    cols,
+    dimensions,
     start.position,
     end.position,
     STEPS_SPEED_FACTOR_MILLI_SECS,
@@ -43,6 +45,14 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
                     <div
                       className={Node.STATE_STYLES.BASE}
                       onMouseDown={() => {
+                        if (
+                          isDisplayingAlgorithm(
+                            animationGrid.getGridForAnimation(),
+                            start.position
+                          )
+                        ) {
+                          return;
+                        }
                         const brushNew = {
                           weight: -1,
                           state: "WALL" as Node.Obstruction,
@@ -88,26 +98,22 @@ export default function Grid({ rows, cols }: { rows: number; cols: number }) {
 }
 
 const useInitialPosition = (
-  rows: number,
-  cols: number,
+  dimensions: Dimensions,
   initialRowPercent: number,
   initialColPercent: number
 ) => {
-  const [pos, setPosition] = useState<Node.Position>({
-    row: Math.floor(rows * initialRowPercent),
-    col: Math.floor(cols * initialColPercent),
-  });
+  const [pos, setPosition] = useState<Node.Position | null>(null);
 
   useEffect(() => {
-    if (pos.row !== 0 && pos.col !== 0) {
+    if (!dimensions.rows || !dimensions.cols) {
       return;
     }
 
     setPosition({
-      row: Math.floor(rows * initialRowPercent),
-      col: Math.floor(cols * initialColPercent),
+      row: Math.floor(dimensions.rows * initialRowPercent),
+      col: Math.floor(dimensions.cols * initialColPercent),
     });
-  }, [pos, rows, cols, initialRowPercent, initialColPercent]);
+  }, [dimensions.rows, dimensions.cols, initialRowPercent, initialColPercent]);
 
   return { position: pos, setPosition };
 };

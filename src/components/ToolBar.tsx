@@ -7,9 +7,10 @@ export default function ToolBar() {
     <div className="bg-theme-primary-3">
       <button
         className="py-1 px-2 bg-red-500"
-        onClick={() =>
-          toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON")
-        }
+        onClick={() => {
+          console.log("TOGGLE_ALGORITHM_BUTTON ToolBar");
+          toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON");
+        }}
       >
         {toolBar.runButton.getAlgorithmEvent()}
       </button>

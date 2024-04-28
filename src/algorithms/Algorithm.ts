@@ -1,9 +1,9 @@
-import { Node, Position } from "../components/Node";
+import { Node, Position, State } from "../components/Node";
 
 export default interface Algorithm {
   getName: () => string;
   run: (
-    grid: Node[][],
+    grid: Node<State>[][],
     start: Position,
     end: Position
   ) => { visitedPath: Position[]; shortestPath: Position[] };
@@ -137,8 +137,9 @@ export class Queue {
   }
 }
 
-export const inBounds = (grid: Node[][], position: Position) => {
+export const inBounds = (grid: Node<State>[][], position: Position | null) => {
   return (
+    position &&
     grid.length !== 0 &&
     0 <= position.row &&
     position.row < grid.length &&

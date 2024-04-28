@@ -5,7 +5,7 @@ export interface Observer {
 export type Observable = ReturnType<typeof ObservableEditable>;
 
 export const ObservableEditable = () => {
-  const observers = new Set<Observer>([]);
+  const observers = new Set<Observer>();
   return {
     notifyObservers: (event: ObservableEvent) => {
       observers.forEach((observer) => observer.update(event));

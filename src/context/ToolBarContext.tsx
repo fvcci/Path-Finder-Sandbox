@@ -42,6 +42,7 @@ const RunAlgorithmButtonImpl = (): RunAlgorithmButton => {
               ? "ABORT_ALGORITHM"
               : "RUN_ALGORITHM"
           );
+          console.log("TOGGLE_ALGORITHM_BUTTON RunAlgorithmButton");
           observable.notifyObservers(originalEvent);
           break;
         }
