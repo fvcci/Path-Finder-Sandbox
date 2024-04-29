@@ -3,18 +3,25 @@ import { AsyncAnimator } from "../util/AsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
 import { assert } from "../util/asserts";
 import * as Node from "../components/Node";
-import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
+import useAnimationGrid, {
+  Dimensions,
+  NodeForAnimation,
+} from "./useAnimationGrid";
 import { ObservableEvent, Observer } from "../util/observer";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(
+  dimensions: Dimensions | null,
+  start: Dimensions,
+  end: Dimensions,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ) {
+  const animationGrid = useAnimationGrid(dimensions, start, end);
   const [asyncAnimator] = useState(AsyncAnimator());
   const toolBar = useToolBarContext();
 
-  const asyncClearGrid = (animationGrid: AnimationGrid) => {
+  const asyncClearGrid = () => {
     asyncAnimator.queueAnimation(
       "ANIMATE_VANISH_GRID",
       Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
@@ -30,7 +37,7 @@ export default function useGridAnimator(
     );
   };
 
-  const runPathFindingAnimation = (animationGrid: AnimationGrid) => {
+  const runPathFindingAnimation = () => {
     assert(
       animationGrid.gridState && animationGrid.gridForAnimation,
       "grid not fully initialized"
@@ -58,7 +65,7 @@ export default function useGridAnimator(
     );
 
     if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
-      asyncClearGrid(animationGrid);
+      asyncClearGrid();
     }
 
     const traversalPathAnimatedGrid = buildAnimationPath(
@@ -98,26 +105,28 @@ export default function useGridAnimator(
     });
   };
 
-  return (animationGrid: AnimationGrid): Observer => ({
-    update: (event: ObservableEvent) => {
-      assert(
-        animationGrid.gridState && animationGrid.gridForAnimation,
-        "grid not fully initialized"
-      );
+  return {
+    observer: {
+      update: (event: ObservableEvent) => {
+        assert(
+          animationGrid.gridState && animationGrid.gridForAnimation,
+          "grid not fully initialized"
+        );
 
-      switch (event) {
-        case "RUN_ALGORITHM":
-          runPathFindingAnimation(animationGrid);
-          break;
-        case "ABORT_ALGORITHM":
-          asyncAnimator.stopAnimations();
-          asyncClearGrid(animationGrid);
-          asyncAnimator.animate();
-          console.log(buildClearedGrid(animationGrid.gridForAnimation!));
-          break;
-      }
-    },
-  });
+        switch (event) {
+          case "RUN_ALGORITHM":
+            runPathFindingAnimation();
+            break;
+          case "ABORT_ALGORITHM":
+            asyncAnimator.stopAnimations();
+            asyncClearGrid();
+            asyncAnimator.animate();
+            break;
+        }
+      },
+    } as Observer,
+    animationGrid,
+  };
 }
 
 const buildAnimationVanishedPath = (grid: NodeForAnimation[][]) =>
