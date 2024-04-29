@@ -1,3 +1,5 @@
+import { Extends } from "./types";
+
 export interface Node<T extends State> {
   weight: number;
   state: T;
@@ -83,5 +85,3 @@ export const isDestination = (state: State) => {
 
 export const VANISH_ANIMATION_DURATION_MILLI_SECS = 1500;
 export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;
-
-type Extends<T, U extends T> = U;

@@ -6,6 +6,7 @@ import {
 } from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
+import { Extends } from "../util/types";
 
 export const Provider = ({
   children,
@@ -31,9 +32,10 @@ export const Context = createContext<{
 
 const RunAlgorithmButton = (): RunAlgorithmButton => {
   const observable = ObservableEditable();
-  const [algorithmEvent, setAlgorithmEvent] = useState<
-    ("RUN_ALGORITHM" | "ABORT_ALGORITHM") & ObservableEvent
-  >("RUN_ALGORITHM");
+  const [algorithmEvent, setAlgorithmEvent] =
+    useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "ABORT_ALGORITHM">>(
+      "RUN_ALGORITHM"
+    );
 
   return {
     ...observable,

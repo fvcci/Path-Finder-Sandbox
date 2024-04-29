@@ -30,16 +30,11 @@ export const Provider = ({
     setDimensions(newDimensions);
   }, [dimensionsRef, dimensions, compression, addend]);
 
-  return (
-    <Context.Provider value={{ dimensions, setDimensions }}>
-      {children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ dimensions }}>{children}</Context.Provider>;
 };
 
 export const Context = createContext<{
   dimensions: Dimensions | null;
-  setDimensions: React.Dispatch<React.SetStateAction<Dimensions | null>>;
 } | null>(null);
 
 export type Dimensions = {
