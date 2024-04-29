@@ -16,7 +16,7 @@ export const Provider = ({
     <Context.Provider
       value={{
         selectedAlgorithm: Dijkstra(),
-        runButton: RunAlgorithmButtonImpl(),
+        runButton: RunAlgorithmButton(),
       }}
     >
       {children}
@@ -29,7 +29,7 @@ export const Context = createContext<{
   runButton: RunAlgorithmButton;
 } | null>(null);
 
-const RunAlgorithmButtonImpl = (): RunAlgorithmButton => {
+const RunAlgorithmButton = (): RunAlgorithmButton => {
   const observable = ObservableEditable();
   const [algorithmEvent, setAlgorithmEvent] = useState<
     ("RUN_ALGORITHM" | "ABORT_ALGORITHM") & ObservableEvent
@@ -54,10 +54,10 @@ const RunAlgorithmButtonImpl = (): RunAlgorithmButton => {
           break;
       }
     },
-    getAlgorithmEvent: () => algorithmEvent,
+    algorithmEvent,
   };
 };
 
 interface RunAlgorithmButton extends Observable {
-  getAlgorithmEvent: () => ObservableEvent;
+  algorithmEvent: ObservableEvent;
 }

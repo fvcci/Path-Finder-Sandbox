@@ -11,7 +11,7 @@ export default function ToolBar() {
           toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON");
         }}
       >
-        {toolBar.runButton.getAlgorithmEvent()}
+        {toolBar.runButton.algorithmEvent}
       </button>
     </div>
   );
