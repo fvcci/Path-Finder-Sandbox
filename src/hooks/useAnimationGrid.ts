@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import * as Node from "../util/Node";
 import useDimensionsContext from "./useDimensionContext";
+import { Dimensions } from "../context/DimensionContext";
 
 export type AnimationGrid = ReturnType<typeof useAnimationGrid>;
 
@@ -91,8 +92,3 @@ const mapGridForAnimationToGridState = (
 export interface NodeForAnimation extends Node.Node<Node.State> {
   animationDelay: number;
 }
-
-export type Dimensions = {
-  rows: number;
-  cols: number;
-};
