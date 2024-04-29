@@ -3,15 +3,15 @@ import * as Node from "../components/Node";
 import useToolBarContext from "./useToolBarContext";
 import { Observer } from "../util/observer";
 import { assert } from "../util/asserts";
-import { DELTA, inBounds } from "../algorithms/Algorithm";
+import { inBounds } from "../algorithms/Algorithm";
 import { AsyncAnimator } from "../util/AsyncAnimator";
 
 export type AnimationGrid = ReturnType<typeof useAnimationGrid>;
 
 export default function useAnimationGrid(
   dimensions: Dimensions | null,
-  start: Node.Position | null,
-  end: Node.Position | null,
+  startRatio: Dimensions,
+  endRatio: Dimensions,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ) {
@@ -26,10 +26,24 @@ export default function useAnimationGrid(
   const toolBar = useToolBarContext();
 
   useEffect(() => {
-    if (dimensions && start && end) {
-      setGrids(initGridForAnimation(dimensions, start, end));
+    if (dimensions) {
+      setGrids(
+        initGridForAnimation(
+          dimensions,
+          { rows: startRatio.rows, cols: startRatio.cols },
+          { rows: endRatio.rows, cols: endRatio.cols }
+        )
+      );
     }
-  }, [dimensions, start, end]);
+    // startRatio and endRatio are new objects every few seconds (even though they're
+    // constants) so have to destructure them into their enumerables
+  }, [
+    dimensions,
+    startRatio.rows,
+    startRatio.cols,
+    endRatio.rows,
+    endRatio.cols,
+  ]);
 
   const setGrids = (grid: NodeForAnimation[][]) => {
     setGridForAnimation(grid);
@@ -37,28 +51,10 @@ export default function useAnimationGrid(
   };
 
   const runPathFindingAnimation = () => {
-    assert(
-      start && end && gridState && gridForAnimation,
-      "grid not fully initialized"
-    );
+    assert(gridState && gridForAnimation, "grid not fully initialized");
 
-    const loadedStartAndEndNodeIntoGrid = [gridState, gridForAnimation].every(
-      (grid) =>
-        inBounds(grid, start) &&
-        inBounds(grid, end) &&
-        grid[start.row][start.col].state === "START" &&
-        grid[end.row][end.col].state === "END"
-    );
-    assert(
-      loadedStartAndEndNodeIntoGrid,
-      "Start and end nodes weren't loaded into the grid"
-    );
-
-    const { visitedPath, shortestPath } = toolBar.selectedAlgorithm.run(
-      gridState,
-      start,
-      end
-    );
+    const { visitedPath, shortestPath } =
+      toolBar.selectedAlgorithm.run(gridState);
 
     if (visitedPath.length === 0) {
       assert(shortestPath.length === 0);
@@ -70,14 +66,14 @@ export default function useAnimationGrid(
       [visitedPath, shortestPath].every((path) =>
         path.every(
           ({ row, col }) =>
-            !(row === start.row && col === start.col) &&
-            !(row === end.row && col === end.col)
+            inBounds(gridForAnimation, { row, col }) &&
+            !Node.isDestination(gridForAnimation[row][col].state)
         )
       ),
-      "paths should not include the start and end node"
+      "paths should not include destinations"
     );
 
-    if (isDisplayingAlgorithm(gridForAnimation, start)) {
+    if (isDisplayingAlgorithm(gridForAnimation)) {
       asyncAnimator.queueAnimation(
         "ANIMATE_CLEAR_GRID",
         Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
@@ -147,8 +143,8 @@ export default function useAnimationGrid(
 
 const initGridForAnimation = (
   dimensions: Dimensions,
-  startNode: Node.Position,
-  endNode: Node.Position
+  startRatio: Dimensions,
+  endRatio: Dimensions
 ) => {
   const grid: NodeForAnimation[][] = new Array(dimensions.rows)
     .fill(null)
@@ -158,10 +154,18 @@ const initGridForAnimation = (
         .map(() => ({ weight: 1, state: "BASE", animationDelay: 0 }))
     );
 
-  grid[startNode.row][startNode.col].state = "START";
-  grid[endNode.row][endNode.col].state = "END";
+  const start = multiply(dimensions, startRatio);
+  const end = multiply(dimensions, endRatio);
+
+  grid[start.row][start.col].state = "START";
+  grid[end.row][end.col].state = "END";
   return grid;
 };
+
+const multiply = (x: Dimensions, y: Dimensions): Node.Position => ({
+  row: Math.floor(x.rows * y.rows),
+  col: Math.floor(x.cols * y.cols),
+});
 
 const buildAnimationVanishedPath = (gridForAnimation: NodeForAnimation[][]) =>
   gridForAnimation.map((row) =>
@@ -207,26 +211,8 @@ export interface NodeForAnimation extends Node.Node<Node.State> {
   animationDelay: number;
 }
 
-export const isDisplayingAlgorithm = (
-  grid: NodeForAnimation[][] | null,
-  start: Node.Position | null
-) => {
-  return (
-    grid &&
-    start &&
-    DELTA.some((delta) => {
-      const [r, c] = [start.row + delta[0], start.col + delta[1]];
-      if (!inBounds(grid, { row: r, col: c })) {
-        return false;
-      }
-
-      const hasPathState = (
-        ["VISITED", "SHORTEST_PATH"] as Node.State[]
-      ).includes(grid[r][c].state);
-      return hasPathState;
-    })
-  );
-};
+export const isDisplayingAlgorithm = (grid: NodeForAnimation[][] | null) =>
+  grid && grid.some((row) => row.some((node) => Node.isPath(node.state)));
 
 export type Dimensions = {
   rows: number;

@@ -24,10 +24,16 @@ export default function useMouseDraggedNode() {
         return;
       }
 
-      const newMouseDraggedNode = {
-        ...mouseDraggedNode,
-        ...pos,
-      };
+      assert(animationGrid.gridForAnimation);
+
+      const newMouseDraggedNode = Node.isDestination(
+        animationGrid.gridForAnimation[pos.row][pos.col].state
+      )
+        ? mouseDraggedNode
+        : {
+            ...mouseDraggedNode,
+            ...pos,
+          };
 
       animationGrid.setGridForAnimation(
         buildMouseDraggedNodeOnto(
@@ -75,16 +81,11 @@ const buildMouseDraggedNodeOnto = (
       .state;
 
   grid[prevMouseDraggedPos.row][prevMouseDraggedPos.col].state =
-    Node.isDestination(prevState) ? "BASE" : prevState;
+    prevState === mouseDraggedNode.state ? "BASE" : prevState;
 
-  const curState =
-    animationGrid.gridState[mouseDraggedNode.row][mouseDraggedNode.col].state;
-
-  if (!Node.isDestination(curState)) {
-    grid[mouseDraggedNode.row][mouseDraggedNode.col] = {
-      ...mouseDraggedNode,
-      animationDelay: 0,
-    };
-  }
+  grid[mouseDraggedNode.row][mouseDraggedNode.col] = {
+    ...mouseDraggedNode,
+    animationDelay: 0,
+  };
   return grid;
 };

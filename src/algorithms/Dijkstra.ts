@@ -4,13 +4,15 @@ import Algorithm, {
   PriorityQueue,
   inBounds,
   findShortestPath,
+  findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, State } from "../components/Node";
+import { assert } from "../util/asserts";
 
 const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
-    run: (grid: Node<State>[][], start: Position, end: Position) => {
+    run: (grid: Node<State>[][]) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
@@ -28,6 +30,9 @@ const Dijkstra = (): Algorithm => {
       const queue = new PriorityQueue<Node<State> & Position>(
         (a, b) => a.weight < b.weight
       );
+      const start = findNodeFrom(grid, "START");
+      assert(start);
+
       queue.push({ ...start, weight: -1, state: "START" });
       dis[start.row][start.col] = 0;
 
@@ -53,10 +58,10 @@ const Dijkstra = (): Algorithm => {
           // previousNode is a parent node to grid[r][c]
           parents[r][c] = prevNode;
 
-          if (r === end.row && c === end.col) {
+          if (grid[r][c].state === "END") {
             return {
               visitedPath: traversalPath,
-              shortestPath: findShortestPath(parents, end),
+              shortestPath: findShortestPath(parents, { row: r, col: c }),
             };
           }
 

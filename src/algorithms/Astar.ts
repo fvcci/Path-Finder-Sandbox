@@ -3,8 +3,10 @@ import Algorithm, {
   inBounds,
   findShortestPath,
   PriorityQueue,
+  findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, State } from "../components/Node";
+import { assert } from "../util/asserts";
 
 interface AStarNode {
   f: number;
@@ -26,7 +28,7 @@ const heuristic = (a: Position, b: Position) => {
 const AStar = (): Algorithm => {
   return {
     getName: () => "A*",
-    run: (grid: Node<State>[][], start: Position, end: Position) => {
+    run: (grid: Node<State>[][]) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
@@ -49,7 +51,10 @@ const AStar = (): Algorithm => {
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
 
-      // Initialize first node
+      const start = findNodeFrom(grid, "START");
+      const end = findNodeFrom(grid, "END");
+      assert(start && end);
+
       aStarGrid[start.row][start.col] = { f: 0, g: 0, h: 0 };
 
       // open list using priority queue of type F

@@ -3,13 +3,15 @@ import Algorithm, {
   Queue,
   inBounds,
   findShortestPath,
+  findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, State } from "../components/Node";
+import { assert } from "../util/asserts";
 
 const BFS = (): Algorithm => {
   return {
     getName: () => "Breadth First Search",
-    run: (grid: Node<State>[][], start: Position) => {
+    run: (grid: Node<State>[][]) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
@@ -28,6 +30,9 @@ const BFS = (): Algorithm => {
         parents[i] = parentsRow;
         visited[i] = visitedRow;
       }
+
+      const start = findNodeFrom(grid, "START");
+      assert(start);
 
       const queue = new Queue();
       queue.push(start);

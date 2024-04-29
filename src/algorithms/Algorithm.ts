@@ -2,11 +2,10 @@ import { Node, Position, State } from "../components/Node";
 
 export default interface Algorithm {
   getName: () => string;
-  run: (
-    grid: Node<State>[][],
-    start: Position,
-    end: Position
-  ) => { visitedPath: Position[]; shortestPath: Position[] };
+  run: (grid: Node<State>[][]) => {
+    visitedPath: Position[];
+    shortestPath: Position[];
+  };
 }
 
 export const DELTA = [
@@ -150,6 +149,24 @@ export const inBounds = (
       0 <= position.col &&
       position.col < grid[0].length)
   );
+};
+
+export const findNodeFrom = (
+  grid: Node<State>[][],
+  state: State
+): Position | null => {
+  let pos: Position | null = null;
+
+  grid.some((row, rowIdx) =>
+    row.some((node, colIdx) => {
+      if (node.state === state) {
+        pos = { row: rowIdx, col: colIdx };
+        // Early break
+        return true;
+      }
+    })
+  );
+  return pos;
 };
 
 export const findShortestPath = (

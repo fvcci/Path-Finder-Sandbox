@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-operators */
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
@@ -16,13 +16,11 @@ export default function Grid({
 }: {
   dimensions: Dimensions | null;
 }) {
-  const start = useInitialPosition(dimensions, 0.15, 0.2);
-  const end = useInitialPosition(dimensions, 0.5, 0.6);
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
   const animationGrid = useAnimationGrid(
     dimensions,
-    start.position,
-    end.position,
+    { rows: 0.15, cols: 0.2 },
+    { rows: 0.5, cols: 0.6 },
     STEPS_SPEED_FACTOR_MILLI_SECS,
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
@@ -44,7 +42,7 @@ export default function Grid({
     onMouseDown: () => {
       if (
         !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+        isDisplayingAlgorithm(animationGrid.gridForAnimation)
       ) {
         return;
       }
@@ -62,7 +60,7 @@ export default function Grid({
     onMouseEnter: () => {
       if (
         !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+        isDisplayingAlgorithm(animationGrid.gridForAnimation)
       ) {
         return;
       }
@@ -73,7 +71,7 @@ export default function Grid({
     onMouseUp: () => {
       if (
         !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation, start.position)
+        isDisplayingAlgorithm(animationGrid.gridForAnimation)
       ) {
         return;
       }
@@ -119,24 +117,3 @@ export default function Grid({
     </div>
   );
 }
-
-const useInitialPosition = (
-  dimensions: Dimensions | null,
-  initialRowPercent: number,
-  initialColPercent: number
-) => {
-  const [pos, setPosition] = useState<Node.Position | null>(null);
-
-  useEffect(() => {
-    if (!dimensions) {
-      return;
-    }
-
-    setPosition({
-      row: Math.floor(dimensions.rows * initialRowPercent),
-      col: Math.floor(dimensions.cols * initialColPercent),
-    });
-  }, [dimensions, initialRowPercent, initialColPercent]);
-
-  return { position: pos, setPosition };
-};
