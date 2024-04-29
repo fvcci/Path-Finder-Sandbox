@@ -1,4 +1,3 @@
-// local imports
 import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
 import * as ToolBarContext from "./context/ToolBarContext";

@@ -1,7 +1,4 @@
-/* eslint-disable no-mixed-operators */
 import { useEffect } from "react";
-
-// local imports
 import * as Node from "../util/Node";
 import useToolBarContext from "../hooks/useToolBarContext";
 import useBrush from "../hooks/useBrush";

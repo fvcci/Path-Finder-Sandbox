@@ -1,4 +1,3 @@
-// Local files
 import Algorithm, {
   DELTA,
   PriorityQueue,
