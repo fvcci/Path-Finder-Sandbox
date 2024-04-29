@@ -3,13 +3,13 @@ import { useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import useAnimationGrid, {
-  Dimensions,
-  isDisplayingAlgorithm,
-} from "../hooks/useAnimationGrid";
+import useAnimationGrid, { Dimensions } from "../hooks/useAnimationGrid";
 import useToolBarContext from "../hooks/useToolBarContext";
 import useBrush from "../hooks/useBrush";
 import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
+import useGridAnimator, {
+  isDisplayingAlgorithm,
+} from "../hooks/useGridAnimator";
 
 export default function Grid({
   dimensions,
@@ -20,7 +20,10 @@ export default function Grid({
   const animationGrid = useAnimationGrid(
     dimensions,
     { rows: 0.15, cols: 0.2 },
-    { rows: 0.5, cols: 0.6 },
+    { rows: 0.5, cols: 0.6 }
+  );
+
+  const gridAnimator = useGridAnimator(
     STEPS_SPEED_FACTOR_MILLI_SECS,
     STEPS_SPEED_FACTOR_MILLI_SECS * 4
   );
@@ -30,10 +33,10 @@ export default function Grid({
     if (animationGrid.gridForAnimation) {
       toolBar.runButton.enlistToNotify(
         "ANIMATION_GRID",
-        animationGrid.observer
+        gridAnimator(animationGrid)
       );
     }
-  }, [toolBar.runButton, animationGrid]);
+  }, [toolBar.runButton, gridAnimator, animationGrid]);
 
   const brush = useBrush();
   const mouseDraggedNode = useMouseDraggedNode();
