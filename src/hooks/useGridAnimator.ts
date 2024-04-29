@@ -7,7 +7,7 @@ import useAnimationGrid, {
   Dimensions,
   NodeForAnimation,
 } from "./useAnimationGrid";
-import { ObservableEvent, Observer } from "../util/observer";
+import { ObservableEvent, Observer } from "../util/Observer";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(

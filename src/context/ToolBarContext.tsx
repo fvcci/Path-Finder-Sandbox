@@ -3,7 +3,7 @@ import {
   Observable,
   ObservableEditable,
   ObservableEvent,
-} from "../util/observer";
+} from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
 
