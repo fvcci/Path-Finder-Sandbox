@@ -7,7 +7,11 @@ import {
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
 
-export const Provider = ({ children }: { children?: ReactNode[] }) => {
+export const Provider = ({
+  children,
+}: {
+  children?: ReactNode | ReactNode[];
+}) => {
   return (
     <Context.Provider
       value={{

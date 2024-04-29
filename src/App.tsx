@@ -1,14 +1,12 @@
-import React, { useState, useLayoutEffect, createRef } from "react";
-
 // local imports
 import ToolBar from "./components/ToolBar";
 import Grid from "./components/Grid";
 import * as ToolBarContext from "./context/ToolBarContext";
-import { Dimensions } from "./hooks/useAnimationGrid";
+import * as DimensionsContext from "./context/DimensionContext";
+import { createRef } from "react";
 
 export default function App() {
   const ref = createRef<HTMLDivElement>();
-  const dimensions = useDimensions(ref, 1 / 24, -6);
 
   return (
     <div className="flex flex-col w-screen h-screen bg-theme-primary-1">
@@ -17,42 +15,15 @@ export default function App() {
           <ToolBar />
         </header>
         <main className="flex-auto relative" ref={ref}>
-          <Grid dimensions={dimensions} />
+          <DimensionsContext.Provider
+            compression={1 / 24}
+            addend={-6}
+            dimensionsRef={ref}
+          >
+            <Grid />
+          </DimensionsContext.Provider>
         </main>
       </ToolBarContext.Provider>
     </div>
   );
 }
-
-// TODO make app dimensions a context maybe
-const useDimensions = (
-  ref: React.RefObject<HTMLDivElement>,
-  compression = 1,
-  addend = 0
-): Dimensions | null => {
-  const [dimensions, setDimensions] = useState<{
-    width: number;
-    height: number;
-  } | null>(null);
-
-  useLayoutEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-
-    if (dimensions) {
-      return;
-    }
-
-    const { width: newWidth, height: newHeight } =
-      ref.current.getBoundingClientRect();
-    setDimensions({ width: newWidth, height: newHeight });
-  }, [ref, dimensions]);
-
-  return dimensions
-    ? {
-        rows: Math.max(Math.floor(dimensions.height * compression) + addend, 2),
-        cols: Math.max(Math.floor(dimensions.width * compression) + addend, 2),
-      }
-    : null;
-};

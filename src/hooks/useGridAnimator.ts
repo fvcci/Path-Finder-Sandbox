@@ -11,13 +11,12 @@ import { ObservableEvent, Observer } from "../util/observer";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(
-  dimensions: Dimensions | null,
   start: Dimensions,
   end: Dimensions,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ) {
-  const animationGrid = useAnimationGrid(dimensions, start, end);
+  const animationGrid = useAnimationGrid(start, end);
   const [asyncAnimator] = useState(AsyncAnimator());
   const toolBar = useToolBarContext();
 

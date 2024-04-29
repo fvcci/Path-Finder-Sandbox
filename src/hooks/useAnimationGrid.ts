@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import * as Node from "../components/Node";
+import useDimensionsContext from "./useDimensionContext";
 
 export type AnimationGrid = ReturnType<typeof useAnimationGrid>;
 
 export default function useAnimationGrid(
-  dimensions: Dimensions | null,
   startRatio: Dimensions,
   endRatio: Dimensions
 ) {
@@ -15,11 +15,13 @@ export default function useAnimationGrid(
     NodeForAnimation[][] | null
   >(null);
 
+  const dimensions = useDimensionsContext();
+
   useEffect(() => {
-    if (dimensions) {
+    if (dimensions.dimensions) {
       setGrids(
         initGridForAnimation(
-          dimensions,
+          dimensions.dimensions,
           { rows: startRatio.rows, cols: startRatio.cols },
           { rows: endRatio.rows, cols: endRatio.cols }
         )
@@ -28,7 +30,7 @@ export default function useAnimationGrid(
     // startRatio and endRatio are new objects every few seconds (even though they're
     // constants) so have to destructure them into their enumerables
   }, [
-    dimensions,
+    dimensions.dimensions,
     startRatio.rows,
     startRatio.cols,
     endRatio.rows,

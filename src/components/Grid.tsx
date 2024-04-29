@@ -3,7 +3,6 @@ import { useEffect } from "react";
 
 // local imports
 import * as Node from "./Node";
-import { Dimensions } from "../hooks/useAnimationGrid";
 import useToolBarContext from "../hooks/useToolBarContext";
 import useBrush from "../hooks/useBrush";
 import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
@@ -11,15 +10,10 @@ import useGridAnimator, {
   isDisplayingAlgorithm,
 } from "../hooks/useGridAnimator";
 
-export default function Grid({
-  dimensions,
-}: {
-  dimensions: Dimensions | null;
-}) {
+export default function Grid() {
   const STEPS_SPEED_FACTOR_MILLI_SECS = 8;
 
   const { animationGrid, observer: gridAnimatorObserver } = useGridAnimator(
-    dimensions,
     { rows: 0.15, cols: 0.2 },
     { rows: 0.5, cols: 0.6 },
     STEPS_SPEED_FACTOR_MILLI_SECS,
