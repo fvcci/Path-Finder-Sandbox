@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AsyncAnimator } from "../util/AsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
 import { assert } from "../util/asserts";
-import * as Node from "../components/Node";
+import * as Node from "../util/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
 import { ObservableEvent, Observer } from "../util/Observer";
 import { inBounds } from "../algorithms/Algorithm";

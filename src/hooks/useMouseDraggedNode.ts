@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as Node from "../components/Node";
+import * as Node from "../util/Node";
 import { AnimationGrid } from "./useAnimationGrid";
 import { assert } from "../util/asserts";
 import { inBounds } from "../algorithms/Algorithm";

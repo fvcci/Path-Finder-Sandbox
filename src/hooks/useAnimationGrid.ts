@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as Node from "../components/Node";
+import * as Node from "../util/Node";
 import useDimensionsContext from "./useDimensionContext";
 
 export type AnimationGrid = ReturnType<typeof useAnimationGrid>;
