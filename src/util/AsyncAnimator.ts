@@ -54,6 +54,7 @@ export const AsyncAnimator = () => {
 };
 
 type AnimationID =
+  | "ANIMATE_VANISH_GRID"
   | "ANIMATE_CLEAR_GRID"
   | "ANIMATE_VISITED_PATH"
   | "ANIMATE_SHORTEST_PATH";

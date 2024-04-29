@@ -26,9 +26,9 @@ export const STATE_STYLES: Record<State, string> = {
   START: "animate-destination-node bg-green-500",
   END: "animate-destination-node bg-red-500",
   VISITED_PATH: "animate-visited-node-appear",
-  VISITED_PATH_VANISH: "animate-visited-node-disappear",
+  VISITED_PATH_VANISH: "animate-visited-node-vanish",
   SHORTEST_PATH: "animate-shortest-path-node-appear bg-node-visited-3",
-  SHORTEST_PATH_VANISH: "animate-shortest-path-node-disappear",
+  SHORTEST_PATH_VANISH: "animate-shortest-path-node-vanish",
   WALL: "animate-pop-in-node bg-node-wall",
   WALL_VANISH: "animate-pop-out-node bg-node-wall",
 };
@@ -49,7 +49,6 @@ export const toggleVanishObstructionState = (
 ): Node<State> => {
   switch (node.state) {
     case "BASE":
-      return brush;
     case "WALL_VANISH":
       return brush;
     case "WALL":
@@ -64,14 +63,16 @@ export const isPath = (state: State) => {
   return PATHS.includes(state);
 };
 
-const VANISHED_STATE: State[] = [
+const ANIMATION_STATES: State[] = [
   "WALL_VANISH",
+  "VISITED_PATH",
   "VISITED_PATH_VANISH",
+  "SHORTEST_PATH",
   "SHORTEST_PATH_VANISH",
 ];
 
-export const convertVanishToBaseState = (state: State) => {
-  return VANISHED_STATE.includes(state) ? "BASE" : state;
+export const convertAnimationToBaseState = (state: State) => {
+  return ANIMATION_STATES.includes(state) ? "BASE" : state;
 };
 
 const DESTINATIONS: State[] = ["START", "END"];

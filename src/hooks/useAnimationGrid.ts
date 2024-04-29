@@ -81,7 +81,7 @@ const mapGridForAnimationToGridState = (
     row.map((node) => {
       return {
         weight: node.weight,
-        state: Node.convertVanishToBaseState(node.state),
+        state: Node.convertAnimationToBaseState(node.state),
       };
     })
   );
