@@ -23,13 +23,13 @@ export default function useAnimationGrid(
       setGrids(
         initGridForAnimation(
           dimensions.dimensions,
+          // startRatio and endRatio are new objects every few seconds (even though they're
+          // constants) so have to destructure them into their enumerables
           { rows: startRatio.rows, cols: startRatio.cols },
           { rows: endRatio.rows, cols: endRatio.cols }
         )
       );
     }
-    // startRatio and endRatio are new objects every few seconds (even though they're
-    // constants) so have to destructure them into their enumerables
   }, [
     dimensions.dimensions,
     startRatio.rows,
@@ -81,12 +81,10 @@ const mapGridForAnimationToGridState = (
   gridForAnimation: NodeForAnimation[][]
 ): Node.Node<Node.State>[][] =>
   gridForAnimation.map((row) =>
-    row.map((node) => {
-      return {
-        weight: node.weight,
-        state: Node.convertAnimationToBaseState(node.state),
-      };
-    })
+    row.map((node) => ({
+      weight: node.weight,
+      state: Node.convertAnimationToBaseState(node.state),
+    }))
   );
 
 export interface NodeForAnimation extends Node.Node<Node.State> {

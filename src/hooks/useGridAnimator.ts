@@ -15,22 +15,6 @@ export default function useGridAnimator(
   const [asyncAnimator] = useState(AsyncAnimator());
   const toolBar = useToolBarContext();
 
-  const asyncClearGrid = () => {
-    asyncAnimator.queueAnimation(
-      "ANIMATE_VANISH_GRID",
-      Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
-      () =>
-        animationGrid.setGridForAnimation(
-          buildAnimationVanishedPath(animationGrid.gridForAnimation!)
-        )
-    );
-    asyncAnimator.queueAnimation("ANIMATE_CLEAR_GRID", 0, () =>
-      animationGrid.setGridForAnimation(
-        buildClearedGrid(animationGrid.gridForAnimation!)
-      )
-    );
-  };
-
   const runPathFindingAnimation = () => {
     assert(
       animationGrid.gridState && animationGrid.gridForAnimation,
@@ -59,10 +43,10 @@ export default function useGridAnimator(
     );
 
     if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
-      asyncClearGrid();
+      asyncClearGrid(asyncAnimator, animationGrid);
     }
 
-    const traversalPathAnimatedGrid = buildAnimationPath(
+    const visitedPathAnimatedGrid = buildAnimationPath(
       animationGrid.gridForAnimation,
       visitedPath,
       "VISITED_PATH",
@@ -75,11 +59,11 @@ export default function useGridAnimator(
     asyncAnimator.queueAnimation(
       "ANIMATE_VISITED_PATH",
       visitedPathDuration,
-      () => animationGrid.setGridForAnimation(traversalPathAnimatedGrid)
+      () => animationGrid.setGridForAnimation(visitedPathAnimatedGrid)
     );
 
     const shortestPathAnimatedGrid = buildAnimationPath(
-      traversalPathAnimatedGrid,
+      visitedPathAnimatedGrid,
       shortestPath,
       "SHORTEST_PATH",
       shortestPathSpeedFactorMilliSecs
@@ -112,7 +96,7 @@ export default function useGridAnimator(
           break;
         case "ABORT_ALGORITHM":
           asyncAnimator.stopAnimations();
-          asyncClearGrid();
+          asyncClearGrid(asyncAnimator, animationGrid);
           asyncAnimator.animate();
           break;
       }
@@ -120,26 +104,41 @@ export default function useGridAnimator(
   };
 }
 
-const buildAnimationVanishedPath = (grid: NodeForAnimation[][]) =>
-  grid.map((row) =>
-    row.map((node) =>
-      Node.isPath(node.state)
-        ? {
-            ...node,
-            state: Node.vanishPathFrom(node.state),
-            animationDelay: 0,
-          }
-        : node
+const asyncClearGrid = (
+  asyncAnimator: ReturnType<typeof AsyncAnimator>,
+  animationGrid: AnimationGrid
+) => {
+  asyncAnimator.queueAnimation(
+    "ANIMATE_VANISH_GRID",
+    Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
+    () =>
+      animationGrid.setGridForAnimation(
+        buildAnimationVanishedPath(animationGrid.gridForAnimation!)
+      )
+  );
+  asyncAnimator.queueAnimation("ANIMATE_CLEAR_GRID", 0, () =>
+    animationGrid.setGridForAnimation(
+      buildClearedGrid(animationGrid.gridForAnimation!)
     )
   );
+};
+
+const buildAnimationVanishedPath = (grid: NodeForAnimation[][]) =>
+  buildZeroAnimationDelayGrid(grid, Node.vanishPathFrom);
 
 const buildClearedGrid = (grid: NodeForAnimation[][]) =>
+  buildZeroAnimationDelayGrid(grid, Node.convertAnimationToBaseState);
+
+const buildZeroAnimationDelayGrid = (
+  grid: NodeForAnimation[][],
+  stateMap: (state: Node.State) => Node.State
+) =>
   grid.map((row) =>
     row.map((node) =>
       Node.isPath(node.state)
         ? {
             ...node,
-            state: Node.convertAnimationToBaseState(node.state),
+            state: stateMap(node.state),
             animationDelay: 0,
           }
         : node

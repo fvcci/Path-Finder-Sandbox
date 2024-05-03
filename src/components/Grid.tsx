@@ -7,6 +7,7 @@ import useGridAnimator, {
   isDisplayingAlgorithm,
 } from "../hooks/useGridAnimator";
 import useAnimationGrid, { AnimationGrid } from "../hooks/useAnimationGrid";
+import { assert } from "../util/asserts";
 
 export default function Grid() {
   const animationGrid = useAnimationGrid(
@@ -70,15 +71,17 @@ export default function Grid() {
 const useMouseController = (animationGrid: AnimationGrid) => {
   const brush = useBrush();
   const mouseDraggedNode = useMouseDraggedNode();
+
+  if (
+    !animationGrid.gridForAnimation ||
+    isDisplayingAlgorithm(animationGrid.gridForAnimation)
+  ) {
+    return () => {};
+  }
+
   return (pos: Node.Position) => ({
     onMouseDown: () => {
-      if (
-        !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation)
-      ) {
-        return;
-      }
-
+      assert(animationGrid.gridForAnimation);
       if (
         Node.isDestination(
           animationGrid.gridForAnimation[pos.row][pos.col].state
@@ -90,24 +93,10 @@ const useMouseController = (animationGrid: AnimationGrid) => {
       brush.placeBrushDownOnto(animationGrid, pos);
     },
     onMouseEnter: () => {
-      if (
-        !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation)
-      ) {
-        return;
-      }
-
       brush.drawOn(animationGrid, pos);
       mouseDraggedNode.dragNodeOver(animationGrid, pos);
     },
     onMouseUp: () => {
-      if (
-        !animationGrid.gridForAnimation ||
-        isDisplayingAlgorithm(animationGrid.gridForAnimation)
-      ) {
-        return;
-      }
-
       brush.releaseBrush();
       mouseDraggedNode.releaseNode(animationGrid);
     },
