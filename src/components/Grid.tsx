@@ -27,7 +27,7 @@ export default function Grid() {
   const toolBar = useToolBarContext();
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
-      toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator.observer);
+      toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
     }
   }, [toolBar.runButton, animationGrid, gridAnimator]);
 
@@ -71,11 +71,9 @@ export default function Grid() {
 const useMouseController = (animationGrid: AnimationGrid) => {
   const brush = useBrush();
   const mouseDraggedNode = useMouseDraggedNode();
+  const toolBar = useToolBarContext();
 
-  if (
-    !animationGrid.gridForAnimation ||
-    isDisplayingAlgorithm(animationGrid.gridForAnimation)
-  ) {
+  if (!animationGrid.gridForAnimation) {
     return () => {};
   }
 
@@ -88,12 +86,19 @@ const useMouseController = (animationGrid: AnimationGrid) => {
         )
       ) {
         mouseDraggedNode.pickUpNodeFrom(animationGrid, pos);
+        toolBar.runButton.notifyObservers("ABORT_ALGORITHM");
         return;
       }
-      brush.placeBrushDownOnto(animationGrid, pos);
+
+      if (!isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
+        brush.placeBrushDownOnto(animationGrid, pos);
+      }
     },
     onMouseEnter: () => {
-      brush.drawOn(animationGrid, pos);
+      if (!isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
+        brush.drawOn(animationGrid, pos);
+      }
+
       mouseDraggedNode.dragNodeOver(animationGrid, pos);
     },
     onMouseUp: () => {

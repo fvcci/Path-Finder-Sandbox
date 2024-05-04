@@ -10,7 +10,7 @@ export default function useGridAnimator(
   animationGrid: AnimationGrid,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
-) {
+): Observer {
   const asyncAnimator = useAsyncAnimator();
   const toolBar = useToolBarContext();
 
@@ -83,29 +83,22 @@ export default function useGridAnimator(
   };
 
   return {
-    observer: {
-      update: (event: ObservableEvent) => {
-        assert(
-          animationGrid.gridState && animationGrid.gridForAnimation,
-          "grid not fully initialized"
-        );
+    update: (event: ObservableEvent) => {
+      assert(
+        animationGrid.gridState && animationGrid.gridForAnimation,
+        "grid not fully initialized"
+      );
 
-        switch (event) {
-          case "RUN_ALGORITHM":
-            runPathFindingAnimation();
-            break;
-          case "ABORT_ALGORITHM":
-            asyncAnimator.stopAnimations();
-            asyncClearGrid(asyncAnimator, animationGrid);
-            asyncAnimator.animate();
-            break;
-        }
-      },
-    } as Observer,
-    clearGrid: () => {
-      asyncAnimator.stopAnimations();
-      asyncClearGrid(asyncAnimator, animationGrid);
-      asyncAnimator.animate();
+      switch (event) {
+        case "RUN_ALGORITHM":
+          runPathFindingAnimation();
+          break;
+        case "ABORT_ALGORITHM":
+          asyncAnimator.stopAnimations();
+          asyncClearGrid(asyncAnimator, animationGrid);
+          asyncAnimator.animate();
+          break;
+      }
     },
   };
 }

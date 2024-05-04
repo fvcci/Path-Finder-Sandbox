@@ -51,6 +51,11 @@ const RunAlgorithmButton = (): RunAlgorithmButton => {
           observable.notifyObservers(originalEvent);
           break;
         }
+        case "ABORT_ALGORITHM": {
+          observable.notifyObservers("ABORT_ALGORITHM");
+          setAlgorithmEvent("RUN_ALGORITHM");
+          break;
+        }
         case "ALGORITHM_FINISHED_RUNNING":
           setAlgorithmEvent("RUN_ALGORITHM");
           break;
