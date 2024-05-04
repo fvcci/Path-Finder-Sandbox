@@ -1,12 +1,16 @@
-export const AsyncAnimator = () => {
-  const animations = new Map<
-    AnimationID,
-    {
-      animationTimeMilliSecs: number;
-      animation: () => void;
-    }
-  >();
-  const timeoutIDs = new Set<number>();
+import { useState } from "react";
+
+export const useAsyncAnimator = () => {
+  const [animations] = useState(
+    new Map<
+      AnimationID,
+      {
+        animationTimeMilliSecs: number;
+        animation: () => void;
+      }
+    >()
+  );
+  const [timeoutIDs] = useState(new Set<number>());
 
   return {
     stopAnimations: () => {

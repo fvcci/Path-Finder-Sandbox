@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { AsyncAnimator } from "../util/AsyncAnimator";
+import { useAsyncAnimator } from "./AsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
 import { assert } from "../util/asserts";
 import * as Node from "../util/Node";
@@ -12,7 +11,7 @@ export default function useGridAnimator(
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
 ): Observer {
-  const [asyncAnimator] = useState(AsyncAnimator());
+  const asyncAnimator = useAsyncAnimator();
   const toolBar = useToolBarContext();
 
   const runPathFindingAnimation = () => {
@@ -105,7 +104,7 @@ export default function useGridAnimator(
 }
 
 const asyncClearGrid = (
-  asyncAnimator: ReturnType<typeof AsyncAnimator>,
+  asyncAnimator: ReturnType<typeof useAsyncAnimator>,
   animationGrid: AnimationGrid
 ) => {
   asyncAnimator.queueAnimation(
