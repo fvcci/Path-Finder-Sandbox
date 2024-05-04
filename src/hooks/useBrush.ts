@@ -41,7 +41,7 @@ const buildBrushOn = (
     row.map((node) => ({ ...node }))
   );
   grid[pos.row][pos.col] = {
-    ...Node.toggleVanishObstructionState(grid[pos.row][pos.col], brush),
+    ...Node.toggleObstructionVanishState(grid[pos.row][pos.col], brush),
     animationDelay: grid[pos.row][pos.col].animationDelay,
   };
   return grid;

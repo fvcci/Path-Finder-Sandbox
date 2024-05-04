@@ -45,13 +45,15 @@ export const vanishPathFrom = (state: State): State => {
   return state;
 };
 
-export const toggleVanishObstructionState = (
+export const toggleObstructionVanishState = (
   node: Node<State>,
   brush: Node<Obstruction>
 ): Node<State> => {
   switch (node.state) {
     case "BASE":
     case "WALL_VANISH":
+    case "VISITED_PATH_VANISH":
+    case "SHORTEST_PATH_VANISH":
       return brush;
     case "WALL":
       return { weight: 0, state: "WALL_VANISH" };

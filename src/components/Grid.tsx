@@ -27,7 +27,7 @@ export default function Grid() {
   const toolBar = useToolBarContext();
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
-      toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
+      toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator.observer);
     }
   }, [toolBar.runButton, animationGrid, gridAnimator]);
 

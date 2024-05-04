@@ -10,7 +10,7 @@ export default function useGridAnimator(
   animationGrid: AnimationGrid,
   traversalPathSpeedFactorMilliSecs: number,
   shortestPathSpeedFactorMilliSecs: number
-): Observer {
+) {
   const asyncAnimator = useAsyncAnimator();
   const toolBar = useToolBarContext();
 
@@ -83,22 +83,29 @@ export default function useGridAnimator(
   };
 
   return {
-    update: (event: ObservableEvent) => {
-      assert(
-        animationGrid.gridState && animationGrid.gridForAnimation,
-        "grid not fully initialized"
-      );
+    observer: {
+      update: (event: ObservableEvent) => {
+        assert(
+          animationGrid.gridState && animationGrid.gridForAnimation,
+          "grid not fully initialized"
+        );
 
-      switch (event) {
-        case "RUN_ALGORITHM":
-          runPathFindingAnimation();
-          break;
-        case "ABORT_ALGORITHM":
-          asyncAnimator.stopAnimations();
-          asyncClearGrid(asyncAnimator, animationGrid);
-          asyncAnimator.animate();
-          break;
-      }
+        switch (event) {
+          case "RUN_ALGORITHM":
+            runPathFindingAnimation();
+            break;
+          case "ABORT_ALGORITHM":
+            asyncAnimator.stopAnimations();
+            asyncClearGrid(asyncAnimator, animationGrid);
+            asyncAnimator.animate();
+            break;
+        }
+      },
+    } as Observer,
+    clearGrid: () => {
+      asyncAnimator.stopAnimations();
+      asyncClearGrid(asyncAnimator, animationGrid);
+      asyncAnimator.animate();
     },
   };
 }
@@ -115,18 +122,10 @@ const asyncClearGrid = (
         buildAnimationVanishedPath(animationGrid.gridForAnimation!)
       )
   );
-  asyncAnimator.queueAnimation("ANIMATE_CLEAR_GRID", 0, () =>
-    animationGrid.setGridForAnimation(
-      buildClearedGrid(animationGrid.gridForAnimation!)
-    )
-  );
 };
 
 const buildAnimationVanishedPath = (grid: NodeForAnimation[][]) =>
   buildZeroAnimationDelayGrid(grid, Node.vanishPathFrom);
-
-const buildClearedGrid = (grid: NodeForAnimation[][]) =>
-  buildZeroAnimationDelayGrid(grid, Node.convertAnimationToBaseState);
 
 const buildZeroAnimationDelayGrid = (
   grid: NodeForAnimation[][],
