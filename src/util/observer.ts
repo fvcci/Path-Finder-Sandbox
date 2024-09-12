@@ -18,6 +18,6 @@ export const ObservableEditable = () => {
 
 export type ObservableEvent =
   | "TOGGLE_ALGORITHM_BUTTON"
-  | "ABORT_ALGORITHM"
+  | "CLEAR_ALGORITHM"
   | "RUN_ALGORITHM"
   | "ALGORITHM_FINISHED_RUNNING";

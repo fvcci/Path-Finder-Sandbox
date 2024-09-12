@@ -3,6 +3,7 @@ import {
   Observable,
   ObservableEditable,
   ObservableEvent,
+  Observer,
 } from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
@@ -18,6 +19,7 @@ export const Provider = ({
       value={{
         selectedAlgorithm: Dijkstra(),
         runButton: RunAlgorithmButton(),
+        clearButton: ClearAlgorithmButton(),
       }}
     >
       {children}
@@ -28,12 +30,13 @@ export const Provider = ({
 export const Context = createContext<{
   selectedAlgorithm: Algorithm;
   runButton: RunAlgorithmButton;
+  clearButton: Observable;
 } | null>(null);
 
 const RunAlgorithmButton = (): RunAlgorithmButton => {
   const observable = ObservableEditable();
   const [algorithmEvent, setAlgorithmEvent] =
-    useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "ABORT_ALGORITHM">>(
+    useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "CLEAR_ALGORITHM">>(
       "RUN_ALGORITHM"
     );
 
@@ -45,14 +48,14 @@ const RunAlgorithmButton = (): RunAlgorithmButton => {
           const originalEvent = algorithmEvent;
           setAlgorithmEvent(
             algorithmEvent === "RUN_ALGORITHM"
-              ? "ABORT_ALGORITHM"
+              ? "CLEAR_ALGORITHM"
               : "RUN_ALGORITHM"
           );
           observable.notifyObservers(originalEvent);
           break;
         }
-        case "ABORT_ALGORITHM": {
-          observable.notifyObservers("ABORT_ALGORITHM");
+        case "CLEAR_ALGORITHM": {
+          observable.notifyObservers("CLEAR_ALGORITHM");
           setAlgorithmEvent("RUN_ALGORITHM");
           break;
         }
@@ -61,10 +64,33 @@ const RunAlgorithmButton = (): RunAlgorithmButton => {
           break;
       }
     },
+    update: (event: ObservableEvent) => {
+      switch (event) {
+        case "CLEAR_ALGORITHM":
+          setAlgorithmEvent("RUN_ALGORITHM");
+          break;
+      }
+    },
     algorithmEvent,
   };
 };
 
-interface RunAlgorithmButton extends Observable {
+interface RunAlgorithmButton extends Observable, Observer {
   algorithmEvent: ObservableEvent;
 }
+
+const ClearAlgorithmButton = (): Observable => {
+  const observable = ObservableEditable();
+
+  return {
+    ...observable,
+    notifyObservers: (event: ObservableEvent) => {
+      switch (event) {
+        case "CLEAR_ALGORITHM": {
+          observable.notifyObservers("CLEAR_ALGORITHM");
+          break;
+        }
+      }
+    },
+  };
+};

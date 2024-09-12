@@ -28,8 +28,10 @@ export default function Grid() {
   useEffect(() => {
     if (animationGrid.gridForAnimation) {
       toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
+      toolBar.clearButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
+      toolBar.clearButton.enlistToNotify("RUN_BUTTON", toolBar.runButton);
     }
-  }, [toolBar.runButton, animationGrid, gridAnimator]);
+  }, [toolBar, animationGrid, gridAnimator]);
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-theme-primary-4">
@@ -86,7 +88,7 @@ const useMouseController = (animationGrid: AnimationGrid) => {
         )
       ) {
         mouseDraggedNode.pickUpNodeFrom(animationGrid, pos);
-        toolBar.runButton.notifyObservers("ABORT_ALGORITHM");
+        toolBar.runButton.notifyObservers("CLEAR_ALGORITHM");
         return;
       }
 

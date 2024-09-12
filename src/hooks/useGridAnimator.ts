@@ -93,7 +93,7 @@ export default function useGridAnimator(
         case "RUN_ALGORITHM":
           runPathFindingAnimation();
           break;
-        case "ABORT_ALGORITHM":
+        case "CLEAR_ALGORITHM":
           asyncAnimator.stopAnimations();
           asyncClearGrid(asyncAnimator, animationGrid);
           asyncAnimator.animate();
