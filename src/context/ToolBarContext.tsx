@@ -7,18 +7,21 @@ import {
 } from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
-import { Extends } from "../util/types";
 import AStar from "../algorithms/Astar";
+import { Extends } from "../util/types";
 
 export const Provider = ({
   children,
 }: {
   children?: ReactNode | ReactNode[];
 }) => {
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState(AStar());
+
   return (
     <Context.Provider
       value={{
-        selectedAlgorithm: AStar(),
+        selectedAlgorithm,
+        setSelectedAlgorithm,
         runButton: RunAlgorithmButton(),
         clearButton: ClearAlgorithmButton(),
       }}
@@ -30,6 +33,7 @@ export const Provider = ({
 
 export const Context = createContext<{
   selectedAlgorithm: Algorithm;
+  setSelectedAlgorithm: React.Dispatch<React.SetStateAction<Algorithm>>;
   runButton: RunAlgorithmButton;
   clearButton: Observable;
 } | null>(null);
