@@ -33,9 +33,10 @@ export default function ToolBar() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 bg-red-500">
           {algorithms.map(
-            (algorithm) =>
+            (algorithm, key) =>
               algorithm.getName() !== toolBar.selectedAlgorithm.getName() && (
                 <DropdownMenuItem
+                  key={key}
                   onClick={() => toolBar.setSelectedAlgorithm(algorithm)}
                 >
                   {algorithm.getName()}
