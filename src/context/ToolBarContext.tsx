@@ -8,6 +8,7 @@ import {
 import Algorithm from "../algorithms/Algorithm";
 import Dijkstra from "../algorithms/Dijkstra";
 import { Extends } from "../util/types";
+import AStar from "../algorithms/Astar";
 
 export const Provider = ({
   children,
@@ -17,7 +18,7 @@ export const Provider = ({
   return (
     <Context.Provider
       value={{
-        selectedAlgorithm: Dijkstra(),
+        selectedAlgorithm: AStar(),
         runButton: RunAlgorithmButton(),
         clearButton: ClearAlgorithmButton(),
       }}

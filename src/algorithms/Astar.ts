@@ -40,7 +40,7 @@ const AStar = (): Algorithm => {
       const aStarGrid: AStarNode[][] = new Array(grid.length)
         .fill(null)
         .map(() =>
-          new Array(grid[0].length).map(() => ({
+          new Array(grid[0].length).fill(null).map(() => ({
             f: Number.MAX_VALUE,
             g: Number.MAX_VALUE,
             h: Number.MAX_VALUE,
@@ -91,10 +91,13 @@ const AStar = (): Algorithm => {
           }
 
           const gNew = aStarGrid[r][c].g + grid[rr][cc].weight;
-          const hNew = heuristic({ row: rr, col: cc }, { row: rr, col: cc });
+          const hNew = heuristic(
+            { row: rr, col: cc },
+            { row: end.row, col: end.col }
+          );
           const fNew = gNew + hNew;
 
-          if (aStarGrid[rr][cc].f >= fNew) {
+          if (aStarGrid[rr][cc].f > fNew) {
             // update neighbour node
             aStarGrid[rr][cc] = {
               f: fNew,
