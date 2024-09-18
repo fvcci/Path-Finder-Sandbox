@@ -9,16 +9,17 @@ import AStar from "@/algorithms/Astar";
 import BFS from "@/algorithms/BFS";
 import Dijkstra from "@/algorithms/Dijkstra";
 import Algorithm from "@/algorithms/Algorithm";
+import DFS from "@/algorithms/DFS";
 
 export default function ToolBar() {
   const toolBar = useToolBarContext();
 
-  const algorithms: Algorithm[] = [AStar(), BFS(), Dijkstra()];
+  const algorithms: Algorithm[] = [AStar(), DFS(), BFS(), Dijkstra()];
 
   const algorithmIsRunning =
     toolBar.runButton.algorithmEvent === "CLEAR_ALGORITHM";
 
-  const DropdownWidthAdjuster = () => (
+  const AlgorithmDropdownWidthAdjuster = () => (
     <>
       {algorithms.map((algorithm, key) => (
         <div key={key} className="text-red-500 h-0">
@@ -38,7 +39,7 @@ export default function ToolBar() {
               toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON");
             }}
           >
-            <DropdownWidthAdjuster />
+            <AlgorithmDropdownWidthAdjuster />
             {toolBar.selectedAlgorithm.getName()}
           </button>
         </DropdownMenuTrigger>
