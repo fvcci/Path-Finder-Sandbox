@@ -40,6 +40,11 @@ export default function useGridAnimator(
       ),
       "paths should not include destinations"
     );
+    assert(
+      visitedPath.length <=
+        animationGrid.gridForAnimation.length *
+          animationGrid.gridForAnimation[0].length
+    );
 
     if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
       asyncClearGrid(asyncAnimator, animationGrid);
