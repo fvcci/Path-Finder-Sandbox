@@ -18,24 +18,36 @@ export default function ToolBar() {
   const algorithmIsRunning =
     toolBar.runButton.algorithmEvent === "CLEAR_ALGORITHM";
 
+  const DropdownWidthAdjuster = () => (
+    <>
+      {algorithms.map((algorithm, key) => (
+        <div key={key} className="text-red-500 h-0">
+          {algorithm.getName()}
+        </div>
+      ))}
+    </>
+  );
+
   return (
     <div className="bg-theme-primary-3 flex flex-row gap-x-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="py-1 px-2 bg-red-500"
+            className="py-1 px-2 bg-red-500 flex flex-col"
             onClick={() => {
               toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON");
             }}
           >
+            <DropdownWidthAdjuster />
             {toolBar.selectedAlgorithm.getName()}
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56 bg-red-500">
+        <DropdownMenuContent className="py-1 bg-red-500">
           {algorithms.map(
             (algorithm, key) =>
               algorithm.getName() !== toolBar.selectedAlgorithm.getName() && (
                 <DropdownMenuItem
+                  className="px-1"
                   key={key}
                   onClick={() => toolBar.setSelectedAlgorithm(algorithm)}
                 >
