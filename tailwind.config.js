@@ -187,5 +187,4 @@ export default {
         "destination-node 0.3s ease 0s 1 normal forwards running",
     },
   },
-  plugins: [require("tailwindcss-animate")],
 };

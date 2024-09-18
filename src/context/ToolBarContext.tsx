@@ -6,7 +6,6 @@ import {
   Observer,
 } from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
-import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/Astar";
 import { Extends } from "../util/types";
 

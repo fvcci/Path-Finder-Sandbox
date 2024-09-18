@@ -52,7 +52,6 @@ const AStar = (): Algorithm => {
 
       aStarGrid[start.row][start.col] = { f: 0, g: 0, ...start };
 
-      // open list using priority queue of type F
       const openList = new PriorityQueue<AStarNode>(
         (a, b) => a.f < b.f || (a.f == b.f && a.g > b.g)
       );
@@ -66,19 +65,16 @@ const AStar = (): Algorithm => {
           traversalPath.push({ row, col });
         }
 
-        // use delta to find neighbours
         for (const [dr, dc] of DELTA) {
           const [rr, cc] = [row + dr, col + dc];
           const reachedEnd = rr === end.row && cc === end.col;
 
-          // Invalid if out of bounds or a wall or is already visited
           if (
             !inBounds(grid, { row: rr, col: cc }) ||
             grid[rr][cc].state === "WALL" ||
             visited[rr][cc]
           )
             continue;
-          // if destination cell is the same as current successor
           else if (reachedEnd) {
             parents[rr][cc] = { row, col };
             return {

@@ -43,7 +43,8 @@ export default function useGridAnimator(
     assert(
       visitedPath.length <=
         animationGrid.gridForAnimation.length *
-          animationGrid.gridForAnimation[0].length
+          animationGrid.gridForAnimation[0].length,
+      "The visited nodes should be less than the number of nodes in the grid"
     );
 
     if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
