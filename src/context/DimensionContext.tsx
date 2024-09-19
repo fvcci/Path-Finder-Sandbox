@@ -1,3 +1,4 @@
+import useToolBarContext from "@/hooks/useToolBarContext";
 import { ReactNode, createContext, useLayoutEffect, useState } from "react";
 
 export const Provider = ({
@@ -10,10 +11,15 @@ export const Provider = ({
   addend: number;
 }) => {
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
+  const toolBar = useToolBarContext();
 
   useLayoutEffect(() => {
     const handleResize = () => {
-      if (!window.innerWidth) {
+      if (
+        toolBar.runButton.isRunningAlgorithm() ||
+        !window.innerWidth ||
+        !window.innerHeight
+      ) {
         return;
       }
 
@@ -27,10 +33,14 @@ export const Provider = ({
       setDimensions(newDimensions);
     };
 
-    handleResize();
+    if (!dimensions) {
+      handleResize();
+      return;
+    }
+
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("reisze", handleResize);
-  }, [addend, compression]);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [toolBar, dimensions, addend, compression]);
 
   return <Context.Provider value={{ dimensions }}>{children}</Context.Provider>;
 };
