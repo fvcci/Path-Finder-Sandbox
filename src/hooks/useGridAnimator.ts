@@ -47,12 +47,14 @@ export default function useGridAnimator(
       "The visited nodes should be less than the number of nodes in the grid"
     );
 
-    if (isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
-      asyncClearGrid(asyncAnimator, animationGrid);
+    // Used because react asynchronously updates state
+    let gridForAnimationSyncronous = animationGrid.gridForAnimation;
+    if (isDisplayingAlgorithm(gridForAnimationSyncronous)) {
+      gridForAnimationSyncronous = asyncClearGrid(asyncAnimator, animationGrid);
     }
 
     const visitedPathAnimatedGrid = buildAnimationPath(
-      animationGrid.gridForAnimation,
+      gridForAnimationSyncronous,
       visitedPath,
       "VISITED_PATH",
       traversalPathSpeedFactorMilliSecs
@@ -113,14 +115,20 @@ const asyncClearGrid = (
   asyncAnimator: ReturnType<typeof useAsyncAnimator>,
   animationGrid: AnimationGrid
 ) => {
+  const clearedGrid = buildAnimationVanishedPath(
+    animationGrid.gridForAnimation!
+  );
   asyncAnimator.queueAnimation(
     "ANIMATE_VANISH_GRID",
     Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
-    () =>
-      animationGrid.setGridForAnimation(
-        buildAnimationVanishedPath(animationGrid.gridForAnimation!)
-      )
+    () => {
+      assert(animationGrid.gridForAnimation);
+      return animationGrid.setGridForAnimation(
+        buildAnimationVanishedPath(animationGrid.gridForAnimation)
+      );
+    }
   );
+  return clearedGrid;
 };
 
 const buildAnimationVanishedPath = (grid: NodeForAnimation[][]) =>
@@ -153,7 +161,7 @@ const buildAnimationPath = (
     assert(grid[node.row][node.col]);
     grid[node.row][node.col] = {
       ...grid[node.row][node.col],
-      state: state,
+      state,
       animationDelay: incrementalSpeedFactorMilliSecs * idx,
     };
   });
