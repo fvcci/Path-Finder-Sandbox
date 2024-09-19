@@ -5,12 +5,13 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import useToolBarContext from "../hooks/useToolBarContext";
-import AStar from "@/algorithms/Astar";
+import AStar from "@/algorithms/AStar";
 import BFS from "@/algorithms/BFS";
 import Dijkstra from "@/algorithms/Dijkstra";
 import Algorithm from "@/algorithms/Algorithm";
 import DFS from "@/algorithms/DFS";
 import MultiSourceBFS from "@/algorithms/MultiSourceBFS";
+import MultiSourceAStar from "@/algorithms/MultiSourceAStar";
 
 export default function ToolBar() {
   const toolBar = useToolBarContext();
@@ -21,6 +22,7 @@ export default function ToolBar() {
     BFS(),
     Dijkstra(),
     MultiSourceBFS(),
+    MultiSourceAStar(),
   ];
 
   const algorithmIsRunning =

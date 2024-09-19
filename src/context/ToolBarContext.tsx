@@ -6,15 +6,17 @@ import {
   Observer,
 } from "../util/Observer";
 import Algorithm from "../algorithms/Algorithm";
-import AStar from "../algorithms/Astar";
 import { Extends } from "../util/types";
+import MultiSourceAStar from "@/algorithms/MultiSourceAStar";
 
 export const Provider = ({
   children,
 }: {
   children?: ReactNode | ReactNode[];
 }) => {
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState(AStar());
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState(
+    MultiSourceAStar()
+  );
 
   return (
     <Context.Provider
