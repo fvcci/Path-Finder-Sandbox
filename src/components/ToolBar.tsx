@@ -10,11 +10,18 @@ import BFS from "@/algorithms/BFS";
 import Dijkstra from "@/algorithms/Dijkstra";
 import Algorithm from "@/algorithms/Algorithm";
 import DFS from "@/algorithms/DFS";
+import MultiSourceBFS from "@/algorithms/MultiSourceBFS";
 
 export default function ToolBar() {
   const toolBar = useToolBarContext();
 
-  const algorithms: Algorithm[] = [AStar(), DFS(), BFS(), Dijkstra()];
+  const algorithms: Algorithm[] = [
+    AStar(),
+    DFS(),
+    BFS(),
+    Dijkstra(),
+    MultiSourceBFS(),
+  ];
 
   const algorithmIsRunning =
     toolBar.runButton.algorithmEvent === "CLEAR_ALGORITHM";
@@ -22,7 +29,7 @@ export default function ToolBar() {
   const AlgorithmDropdownWidthAdjuster = () => (
     <>
       {algorithms.map((algorithm, key) => (
-        <div key={key} className="text-red-500 h-0">
+        <div key={key} className="text-transparent h-0">
           {algorithm.getName()}
         </div>
       ))}
