@@ -79,7 +79,7 @@ const AStar = (): Algorithm => {
             parents[rr][cc] = { row, col };
             return {
               visitedPath: traversalPath,
-              shortestPath: findShortestPath(parents, { row: rr, col: cc }),
+              shortestPath: findShortestPath(parents, end),
             };
           }
 
