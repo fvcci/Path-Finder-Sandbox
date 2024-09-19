@@ -49,7 +49,7 @@ export default function useGridAnimator(
 
     // Used because react asynchronously updates state
     let gridForAnimationSyncronous = animationGrid.gridForAnimation;
-    if (isDisplayingAlgorithm(gridForAnimationSyncronous)) {
+    if (toolBar.runButton.isDisplayingAlgorithm()) {
       gridForAnimationSyncronous = asyncClearGrid(asyncAnimator, animationGrid);
     }
 
@@ -168,6 +168,3 @@ const buildAnimationPath = (
 
   return grid;
 };
-
-export const isDisplayingAlgorithm = (grid: NodeForAnimation[][] | null) =>
-  grid && grid.some((row) => row.some((node) => Node.isPath(node.state)));

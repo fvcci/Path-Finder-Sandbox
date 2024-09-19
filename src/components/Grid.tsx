@@ -3,9 +3,7 @@ import * as Node from "../util/Node";
 import useToolBarContext from "../hooks/useToolBarContext";
 import useBrush from "../hooks/useBrush";
 import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
-import useGridAnimator, {
-  isDisplayingAlgorithm,
-} from "../hooks/useGridAnimator";
+import useGridAnimator from "../hooks/useGridAnimator";
 import useAnimationGrid, { AnimationGrid } from "../hooks/useAnimationGrid";
 import { assert } from "../util/asserts";
 
@@ -91,12 +89,12 @@ const useMouseController = (animationGrid: AnimationGrid) => {
         return;
       }
 
-      if (!isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
+      if (!toolBar.runButton.isDisplayingAlgorithm()) {
         brush.placeBrushDownOnto(animationGrid, pos);
       }
     },
     onMouseEnter: () => {
-      if (!isDisplayingAlgorithm(animationGrid.gridForAnimation)) {
+      if (!toolBar.runButton.isDisplayingAlgorithm()) {
         brush.drawOn(animationGrid, pos);
       }
 
