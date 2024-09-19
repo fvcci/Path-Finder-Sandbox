@@ -46,8 +46,11 @@ const BFS = (): Algorithm => {
             visited[nextRow][nextCol]
           )
             continue;
-          else if (grid[nextRow][nextCol].state === "END") {
-            parents[nextRow][nextCol] = prevNode;
+
+          visited[nextRow][nextCol] = true;
+          parents[nextRow][nextCol] = prevNode;
+
+          if (grid[nextRow][nextCol].state === "END") {
             return {
               visitedPath: traversalPath,
               shortestPath: findShortestPath(parents, {
@@ -56,9 +59,6 @@ const BFS = (): Algorithm => {
               }),
             };
           }
-
-          visited[nextRow][nextCol] = true;
-          parents[nextRow][nextCol] = prevNode;
 
           queue.push({ row: nextRow, col: nextCol });
         }

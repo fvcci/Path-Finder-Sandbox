@@ -44,30 +44,29 @@ const DFS = (): Algorithm => {
         }
 
         for (const [dr, dc] of DELTA) {
-          const [r, c] = [prevNode.row + dr, prevNode.col + dc];
-
-          const adjNode = grid[r]?.[c];
+          const [nextRow, nextCol] = [prevNode.row + dr, prevNode.col + dc];
 
           if (
-            !inBounds(grid, { row: r, col: c }) ||
-            adjNode.state === "WALL" ||
-            visited[r][c]
+            !inBounds(grid, { row: nextRow, col: nextCol }) ||
+            grid[nextRow][nextCol].state === "WALL" ||
+            visited[nextRow][nextCol]
           )
             continue;
 
-          visited[r][c] = true;
-          parents[r][c] = prevNode;
+          visited[nextRow][nextCol] = true;
+          parents[nextRow][nextCol] = prevNode;
 
-          stack.push({ row: r, col: c });
-
-          if (adjNode.state !== "END") {
-            stack.push({ row: r, col: c });
-          } else {
+          if (grid[nextRow][nextCol].state === "END") {
             return {
               visitedPath: traversalPath,
-              shortestPath: findShortestPath(parents, { row: r, col: c }),
+              shortestPath: findShortestPath(parents, {
+                row: nextRow,
+                col: nextCol,
+              }),
             };
           }
+
+          stack.push({ row: nextRow, col: nextCol });
         }
       }
 
