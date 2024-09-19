@@ -5,7 +5,7 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State } from "../util/Node";
+import { Node, Position, positionsEquals, State } from "../util/Node";
 import { assert } from "../util/asserts";
 
 const MultiSourceBFS = (): Algorithm => {
@@ -68,13 +68,22 @@ const MultiSourceBFS = (): Algorithm => {
               parents,
               nodeFromStart
             );
-            shortestPathStartHalf.push(nodeFromStart);
+            if (!positionsEquals(start, nodeFromStart)) {
+              shortestPathStartHalf.push(nodeFromStart);
+            }
 
             const shortestPathEndHalf = findShortestPath(parents, nodeFromEnd);
-            shortestPathEndHalf.push(nodeFromEnd);
+            if (!positionsEquals(end, nodeFromEnd)) {
+              shortestPathEndHalf.push(nodeFromEnd);
+            }
 
-            // Because traversalPath might not include nextNode
-            traversalPath.push(nextNode);
+            if (
+              !positionsEquals(start, nextNode) &&
+              !positionsEquals(end, nextNode)
+            ) {
+              traversalPath.push(nextNode);
+            }
+
             return {
               visitedPath: traversalPath,
               shortestPath: shortestPathStartHalf.concat(

@@ -55,7 +55,7 @@ const AStar = (): Algorithm => {
         const curNode = openList.pop();
         visited[curNode.row][curNode.col] = true;
 
-        if (positionsEquals(start, curNode)) {
+        if (!positionsEquals(start, curNode)) {
           traversalPath.push(curNode);
         }
 
