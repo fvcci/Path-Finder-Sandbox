@@ -46,6 +46,7 @@ const useRunAlgorithmButton = (): RunAlgorithmButton => {
     useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "CLEAR_ALGORITHM">>(
       "RUN_ALGORITHM"
     );
+  const [displaysAlgorithm, setDisplaysAlgorithm] = useState(false);
 
   return {
     ...observable,
@@ -58,12 +59,14 @@ const useRunAlgorithmButton = (): RunAlgorithmButton => {
               ? "CLEAR_ALGORITHM"
               : "RUN_ALGORITHM"
           );
+          setDisplaysAlgorithm(originalEvent === "RUN_ALGORITHM");
           observable.notifyObservers(originalEvent);
           break;
         }
         case "CLEAR_ALGORITHM": {
           observable.notifyObservers("CLEAR_ALGORITHM");
           setAlgorithmEvent("RUN_ALGORITHM");
+          setDisplaysAlgorithm(false);
           break;
         }
         case "ALGORITHM_FINISHED_RUNNING":
@@ -75,17 +78,20 @@ const useRunAlgorithmButton = (): RunAlgorithmButton => {
       switch (event) {
         case "CLEAR_ALGORITHM":
           setAlgorithmEvent("RUN_ALGORITHM");
+          setDisplaysAlgorithm(false);
           break;
       }
     },
     isRunningAlgorithm: () => algorithmEvent === "CLEAR_ALGORITHM",
-    algorithmEvent,
+    isDisplayingAlgorithm: () => displaysAlgorithm,
+    getAlgorithmEvent: () => algorithmEvent,
   };
 };
 
 interface RunAlgorithmButton extends Observable, Observer {
   isRunningAlgorithm: () => boolean;
-  algorithmEvent: ObservableEvent;
+  isDisplayingAlgorithm: () => boolean;
+  getAlgorithmEvent: () => ObservableEvent;
 }
 
 const ClearAlgorithmButton = (): Observable => {

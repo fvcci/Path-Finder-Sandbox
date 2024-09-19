@@ -59,7 +59,7 @@ export default function ToolBar() {
           toolBar.runButton.notifyObservers("TOGGLE_ALGORITHM_BUTTON");
         }}
       >
-        {toolBar.runButton.algorithmEvent == "CLEAR_ALGORITHM"
+        {toolBar.runButton.getAlgorithmEvent() == "CLEAR_ALGORITHM"
           ? "ABORT_ALGORITHM"
           : "RUN_ALGORITHM"}
       </button>
