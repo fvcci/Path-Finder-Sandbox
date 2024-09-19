@@ -76,10 +76,11 @@ const useRunAlgorithmButton = (): RunAlgorithmButton => {
     },
     update: (event: ObservableEvent) => {
       switch (event) {
-        case "CLEAR_ALGORITHM":
+        case "CLEAR_ALGORITHM": {
           setAlgorithmEvent("RUN_ALGORITHM");
           setDisplaysAlgorithm(false);
           break;
+        }
       }
     },
     isRunningAlgorithm: () => algorithmEvent === "CLEAR_ALGORITHM",
