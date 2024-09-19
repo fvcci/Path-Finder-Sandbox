@@ -3,32 +3,34 @@ import { ReactNode, createContext, useLayoutEffect, useState } from "react";
 export const Provider = ({
   children,
   compression,
-  dimensionsRef,
   addend,
 }: {
   children?: ReactNode | ReactNode[];
-  dimensionsRef?: React.RefObject<HTMLDivElement> | null;
   compression: number;
   addend: number;
 }) => {
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
 
   useLayoutEffect(() => {
-    if (!dimensionsRef?.current) {
-      return;
-    }
+    const handleResize = () => {
+      if (!window.innerWidth) {
+        return;
+      }
 
-    if (dimensions) {
-      return;
-    }
-
-    const { width, height } = dimensionsRef.current.getBoundingClientRect();
-    const newDimensions = {
-      rows: Math.max(Math.floor(height * compression) + addend, 2),
-      cols: Math.max(Math.floor(width * compression) + addend, 2),
+      const newDimensions = {
+        rows: Math.max(
+          Math.floor(window.innerHeight * compression) + addend,
+          2
+        ),
+        cols: Math.max(Math.floor(window.innerWidth * compression) + addend, 2),
+      };
+      setDimensions(newDimensions);
     };
-    setDimensions(newDimensions);
-  }, [dimensionsRef, dimensions, compression, addend]);
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("reisze", handleResize);
+  }, [addend, compression]);
 
   return <Context.Provider value={{ dimensions }}>{children}</Context.Provider>;
 };
