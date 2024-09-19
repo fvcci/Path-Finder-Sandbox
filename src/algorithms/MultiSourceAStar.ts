@@ -63,7 +63,6 @@ const MultiSourceAStar = (): Algorithm => {
       ]);
 
       while (!pq.isEmpty()) {
-        console.log(closestNodeFromDestMap);
         const curNode = pq.pop();
         if (
           !positionsEquals(start, curNode) &&

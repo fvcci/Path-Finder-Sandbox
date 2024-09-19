@@ -25,9 +25,6 @@ export default function ToolBar() {
     MultiSourceAStar(),
   ];
 
-  const algorithmIsRunning =
-    toolBar.runButton.algorithmEvent === "CLEAR_ALGORITHM";
-
   return (
     <div className="bg-theme-primary-3 flex flex-row gap-x-2">
       <DropdownMenu>
@@ -68,7 +65,7 @@ export default function ToolBar() {
       </button>
       <button
         className="py-1 px-2 bg-red-500 disabled:opacity-50"
-        disabled={algorithmIsRunning}
+        disabled={toolBar.runButton.isRunningAlgorithm()}
         onClick={() => {
           toolBar.clearButton.notifyObservers("CLEAR_ALGORITHM");
         }}

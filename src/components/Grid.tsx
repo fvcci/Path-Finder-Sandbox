@@ -29,7 +29,6 @@ export default function Grid() {
     if (animationGrid.gridForAnimation) {
       toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
       toolBar.clearButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
-      toolBar.clearButton.enlistToNotify("RUN_BUTTON", toolBar.runButton);
     }
   }, [toolBar, animationGrid, gridAnimator]);
 

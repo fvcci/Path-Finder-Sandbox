@@ -17,13 +17,14 @@ export const Provider = ({
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(
     MultiSourceAStar()
   );
+  const runButton = useRunAlgorithmButton();
 
   return (
     <Context.Provider
       value={{
         selectedAlgorithm,
         setSelectedAlgorithm,
-        runButton: RunAlgorithmButton(),
+        runButton,
         clearButton: ClearAlgorithmButton(),
       }}
     >
@@ -39,7 +40,7 @@ export const Context = createContext<{
   clearButton: Observable;
 } | null>(null);
 
-const RunAlgorithmButton = (): RunAlgorithmButton => {
+const useRunAlgorithmButton = (): RunAlgorithmButton => {
   const observable = ObservableEditable();
   const [algorithmEvent, setAlgorithmEvent] =
     useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "CLEAR_ALGORITHM">>(
@@ -77,11 +78,13 @@ const RunAlgorithmButton = (): RunAlgorithmButton => {
           break;
       }
     },
+    isRunningAlgorithm: () => algorithmEvent === "CLEAR_ALGORITHM",
     algorithmEvent,
   };
 };
 
 interface RunAlgorithmButton extends Observable, Observer {
+  isRunningAlgorithm: () => boolean;
   algorithmEvent: ObservableEvent;
 }
 
