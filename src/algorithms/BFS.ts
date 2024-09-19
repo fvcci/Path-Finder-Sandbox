@@ -17,19 +17,12 @@ const BFS = (): Algorithm => {
       }
 
       const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length);
-      const visited: boolean[][] = new Array(grid.length);
-
-      for (let i = 0; i < grid.length; i++) {
-        const parentsRow = new Array(grid[i].length);
-        const visitedRow = new Array(grid[i].length);
-        for (let j = 0; j < grid.length; j++) {
-          parentsRow[j] = null;
-          visitedRow[j] = false;
-        }
-        parents[i] = parentsRow;
-        visited[i] = visitedRow;
-      }
+      const parents: Position[][] = new Array(grid.length)
+        .fill(null)
+        .map(() => new Array(grid[0].length).fill(null));
+      const visited: boolean[][] = new Array(grid.length)
+        .fill(null)
+        .map(() => new Array(grid[0].length).fill(false));
 
       const start = findNodeFrom(grid, "START");
       assert(start);
@@ -45,30 +38,29 @@ const BFS = (): Algorithm => {
         }
 
         for (const [dr, dc] of DELTA) {
-          const [r, c] = [prevNode.row + dr, prevNode.col + dc];
-
-          const adjNode = grid[r]?.[c];
+          const [nextRow, nextCol] = [prevNode.row + dr, prevNode.col + dc];
 
           if (
-            !inBounds(grid, { row: r, col: c }) ||
-            adjNode.state === "WALL" ||
-            visited[r][c]
+            !inBounds(grid, { row: nextRow, col: nextCol }) ||
+            grid[nextRow][nextCol].state === "WALL" ||
+            visited[nextRow][nextCol]
           )
             continue;
-
-          visited[r][c] = true;
-          parents[r][c] = prevNode;
-
-          queue.push({ row: r, col: c });
-
-          if (adjNode.state !== "END") {
-            queue.push({ row: r, col: c });
-          } else {
+          else if (grid[nextRow][nextCol].state === "END") {
+            parents[nextRow][nextCol] = prevNode;
             return {
               visitedPath: traversalPath,
-              shortestPath: findShortestPath(parents, { row: r, col: c }),
+              shortestPath: findShortestPath(parents, {
+                row: nextRow,
+                col: nextCol,
+              }),
             };
           }
+
+          visited[nextRow][nextCol] = true;
+          parents[nextRow][nextCol] = prevNode;
+
+          queue.push({ row: nextRow, col: nextCol });
         }
       }
 
