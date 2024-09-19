@@ -10,6 +10,10 @@ export interface Position {
   col: number;
 }
 
+export const positionsEquals = (p1: Position, p2: Position) => {
+  return p1.row === p2.row && p1.col === p2.col;
+};
+
 export type State =
   | "START"
   | "END"

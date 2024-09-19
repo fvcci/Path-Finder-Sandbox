@@ -5,7 +5,7 @@ import Algorithm, {
   PriorityQueue,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State } from "../util/Node";
+import { Node, Position, positionsEquals, State } from "../util/Node";
 import { assert } from "../util/asserts";
 
 interface AStarNode extends Position {
@@ -14,10 +14,6 @@ interface AStarNode extends Position {
 }
 
 // measurement of how far node a is to node b
-const heuristic = (a: Position, b: Position) => {
-  return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
-};
-
 const AStar = (): Algorithm => {
   return {
     getName: () => "A*",
@@ -26,7 +22,11 @@ const AStar = (): Algorithm => {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      // Initialize the lists
+      const traversalPath: Position[] = [];
+      const parents: Position[][] = new Array(grid.length)
+        .fill(null)
+        .map(() => new Array(grid[0].length).fill(null));
+
       const visited: boolean[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(false));
@@ -36,16 +36,10 @@ const AStar = (): Algorithm => {
           new Array(grid[0].length).fill(null).map((_, col) => ({
             f: Number.MAX_VALUE,
             g: Number.MAX_VALUE,
-            h: Number.MAX_VALUE,
             row,
             col,
           }))
         );
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length)
-        .fill(null)
-        .map(() => new Array(grid[0].length).fill(null));
-
       const start = findNodeFrom(grid, "START");
       const end = findNodeFrom(grid, "END");
       assert(start && end);
@@ -58,25 +52,25 @@ const AStar = (): Algorithm => {
       openList.push(aStarGrid[start.row][start.col]);
 
       while (!openList.isEmpty()) {
-        const { row, col } = openList.pop();
-        visited[row][col] = true;
+        const curNode = openList.pop();
+        visited[curNode.row][curNode.col] = true;
 
-        if (start.row !== row || start.col !== col) {
-          traversalPath.push({ row, col });
+        if (positionsEquals(start, curNode)) {
+          traversalPath.push(curNode);
         }
 
         for (const [dr, dc] of DELTA) {
-          const [rr, cc] = [row + dr, col + dc];
-          const reachedEnd = rr === end.row && cc === end.col;
+          const nextNode = { row: curNode.row + dr, col: curNode.col + dc };
+          const reachedEnd = positionsEquals(end, nextNode);
 
           if (
-            !inBounds(grid, { row: rr, col: cc }) ||
-            grid[rr][cc].state === "WALL" ||
-            visited[rr][cc]
+            !inBounds(grid, nextNode) ||
+            grid[nextNode.row][nextNode.col].state === "WALL" ||
+            visited[nextNode.row][nextNode.col]
           )
             continue;
           else if (reachedEnd) {
-            parents[rr][cc] = { row, col };
+            parents[nextNode.row][nextNode.col] = curNode;
             return {
               visitedPath: traversalPath,
               shortestPath: findShortestPath(parents, end),
@@ -84,20 +78,22 @@ const AStar = (): Algorithm => {
           }
 
           // f = g + h
-          const gNew = aStarGrid[row][col].g + grid[rr][cc].weight;
-          const fNew = gNew + heuristic({ row: rr, col: cc }, end);
+          const gNew =
+            aStarGrid[curNode.row][curNode.col].g +
+            grid[nextNode.row][nextNode.col].weight;
+          const fNew = gNew + heuristic(nextNode, end);
 
-          if (aStarGrid[rr][cc].f <= fNew) {
+          if (aStarGrid[nextNode.row][nextNode.col].f <= fNew) {
             continue;
           }
 
-          aStarGrid[rr][cc] = {
-            ...aStarGrid[rr][cc],
+          aStarGrid[nextNode.row][nextNode.col] = {
+            ...nextNode,
             g: gNew,
             f: fNew,
           };
-          openList.push(aStarGrid[rr][cc]);
-          parents[rr][cc] = { row, col };
+          openList.push(aStarGrid[nextNode.row][nextNode.col]);
+          parents[nextNode.row][nextNode.col] = curNode;
         }
       }
 
@@ -107,3 +103,7 @@ const AStar = (): Algorithm => {
 };
 
 export default AStar;
+
+const heuristic = (a: Position, b: Position) => {
+  return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+};
