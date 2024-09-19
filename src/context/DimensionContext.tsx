@@ -1,5 +1,11 @@
 import useToolBarContext from "@/hooks/useToolBarContext";
-import { ReactNode, createContext, useLayoutEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 export const Provider = ({
   children,
@@ -13,26 +19,24 @@ export const Provider = ({
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
   const toolBar = useToolBarContext();
 
+  const newRows = Math.max(
+    Math.floor(window.innerHeight * compression) + addend,
+    2
+  );
+  const newCols = Math.max(
+    Math.floor(window.innerWidth * compression) + addend,
+    2
+  );
+  const handleResize = useCallback(() => {
+    if (toolBar.runButton.isDisplayingAlgorithm()) {
+      return;
+    }
+
+    toolBar.runButton.notifyObservers("CLEAR_ALGORITHM");
+    setDimensions({ rows: newRows, cols: newCols });
+  }, [toolBar, newRows, newCols]);
+
   useLayoutEffect(() => {
-    const handleResize = () => {
-      if (
-        toolBar.runButton.isRunningAlgorithm() ||
-        !window.innerWidth ||
-        !window.innerHeight
-      ) {
-        return;
-      }
-
-      const newDimensions = {
-        rows: Math.max(
-          Math.floor(window.innerHeight * compression) + addend,
-          2
-        ),
-        cols: Math.max(Math.floor(window.innerWidth * compression) + addend, 2),
-      };
-      setDimensions(newDimensions);
-    };
-
     if (!dimensions) {
       handleResize();
       return;
@@ -40,7 +44,7 @@ export const Provider = ({
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [toolBar, dimensions, addend, compression]);
+  }, [dimensions, handleResize]);
 
   return <Context.Provider value={{ dimensions }}>{children}</Context.Provider>;
 };
