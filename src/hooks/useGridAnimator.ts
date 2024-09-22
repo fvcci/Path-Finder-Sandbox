@@ -31,23 +31,6 @@ export default function useGridAnimator(
       return;
     }
 
-    assert(
-      [visitedPath, shortestPath].every((path) =>
-        path.every(
-          ({ row, col }) =>
-            Node.inBounds(animationGrid.gridForAnimation, { row, col }) &&
-            !Node.isDestination(animationGrid.gridForAnimation![row][col].state)
-        )
-      ),
-      "paths should not include destinations"
-    );
-    assert(
-      visitedPath.length <=
-        animationGrid.gridForAnimation.length *
-          animationGrid.gridForAnimation[0].length,
-      "The visited nodes should be less than the number of nodes in the grid"
-    );
-
     // Used because react asynchronously updates state
     let gridForAnimationSyncronous = animationGrid.gridForAnimation;
     if (toolBar.runButton.isDisplayingAlgorithm()) {

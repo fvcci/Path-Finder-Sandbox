@@ -1,4 +1,4 @@
-import { assert } from "console";
+import { assert } from "./asserts";
 import { Extends } from "./types";
 
 export interface Node<T extends State> {
@@ -119,6 +119,6 @@ export const assertValidPaths = (grid: Node<State>[][], path: Position[]) => {
 
   assert(
     path.length <= grid.length * grid[0].length,
-    "The visited nodes should be less than the number of nodes in the grid"
+    "The path length should be less than the number of nodes in the grid"
   );
 };
