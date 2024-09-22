@@ -18,6 +18,7 @@ export const Provider = ({
     MultiSourceAStar()
   );
   const runButton = useRunAlgorithmButton();
+  const clearButton = useClearAlgorithmButton();
 
   return (
     <Context.Provider
@@ -25,7 +26,7 @@ export const Provider = ({
         selectedAlgorithm,
         setSelectedAlgorithm,
         runButton,
-        clearButton: ClearAlgorithmButton(),
+        clearButton,
       }}
     >
       {children}
@@ -95,7 +96,7 @@ interface RunAlgorithmButton extends Observable, Observer {
   getAlgorithmEvent: () => ObservableEvent;
 }
 
-const ClearAlgorithmButton = (): Observable => {
+const useClearAlgorithmButton = (): Observable => {
   const observable = useObservable();
 
   return {
