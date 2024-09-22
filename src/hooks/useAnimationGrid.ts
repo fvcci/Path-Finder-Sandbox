@@ -19,17 +19,18 @@ export default function useAnimationGrid(
   const dimensions = useDimensionsContext();
 
   useEffect(() => {
-    if (dimensions.dimensions) {
-      setGrids(
-        initGridForAnimation(
-          dimensions.dimensions,
-          // startRatio and endRatio are new objects every few seconds (even though they're
-          // constants) so have to destructure them into their enumerables
-          { rows: startRatio.rows, cols: startRatio.cols },
-          { rows: endRatio.rows, cols: endRatio.cols }
-        )
-      );
+    if (!dimensions.dimensions) {
+      return;
     }
+    setGrids(
+      initGridForAnimation(
+        dimensions.dimensions,
+        // startRatio and endRatio are new objects every few seconds (even though they're
+        // constants) so have to destructure them into their enumerables
+        { rows: startRatio.rows, cols: startRatio.cols },
+        { rows: endRatio.rows, cols: endRatio.cols }
+      )
+    );
   }, [
     dimensions.dimensions,
     startRatio.rows,
