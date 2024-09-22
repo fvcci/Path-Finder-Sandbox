@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import * as Node from "../lib/Node";
-import useToolBarContext from "../hooks/useToolBarContext";
-import useBrush from "../hooks/useBrush";
-import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
-import useGridAnimator from "../hooks/useGridAnimator";
-import useAnimationGrid, { AnimationGrid } from "../hooks/useAnimationGrid";
-import { assert } from "../lib/asserts";
+import * as Node from "@/lib/Node";
+import useToolBarContext from "@/hooks/useToolBarContext";
+import useBrush from "@/hooks/useBrush";
+import useMouseDraggedNode from "@/hooks/useMouseDraggedNode";
+import useGridAnimator from "@/hooks/useGridAnimator";
+import useAnimationGrid, { AnimationGrid } from "@/hooks/useAnimationGrid";
+import { assert } from "@/lib/asserts";
 
 export default function Grid() {
   const animationGrid = useAnimationGrid(
@@ -24,11 +24,13 @@ export default function Grid() {
 
   const toolBar = useToolBarContext();
   useEffect(() => {
-    if (animationGrid.gridForAnimation) {
-      toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
-      toolBar.clearButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
-      toolBar.clearButton.enlistToNotify("RUN_BUTTON", toolBar.runButton);
+    if (!animationGrid.gridForAnimation) {
+      return;
     }
+
+    toolBar.runButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
+    toolBar.clearButton.enlistToNotify("ANIMATION_GRID", gridAnimator);
+    toolBar.clearButton.enlistToNotify("RUN_BUTTON", toolBar.runButton);
   }, [toolBar, animationGrid, gridAnimator]);
 
   return (
