@@ -1,6 +1,6 @@
 import { useContext } from "react";
+import { assert } from "../lib/asserts";
 import * as ToolBarContext from "../context/ToolBarContext";
-import assert from "assert";
 
 export default function useToolBarContext() {
   const toolBar = useContext(ToolBarContext.Context);

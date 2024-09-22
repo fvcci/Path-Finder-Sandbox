@@ -1,9 +1,10 @@
 import { useAsyncAnimator } from "./useAsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
+import { assert } from "../lib/asserts";
 import * as Node from "../lib/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
 import { ObservableEvent, Observer } from "./useObserver";
-import assert from "assert";
+import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(
   animationGrid: AnimationGrid,
@@ -28,6 +29,23 @@ export default function useGridAnimator(
       toolBar.runButton.notifyObservers("ALGORITHM_FINISHED_RUNNING");
       return;
     }
+
+    assert(
+      [visitedPath, shortestPath].every((path) =>
+        path.every(
+          ({ row, col }) =>
+            inBounds(animationGrid.gridForAnimation, { row, col }) &&
+            !Node.isDestination(animationGrid.gridForAnimation![row][col].state)
+        )
+      ),
+      "paths should not include destinations"
+    );
+    assert(
+      visitedPath.length <=
+        animationGrid.gridForAnimation.length *
+          animationGrid.gridForAnimation[0].length,
+      "The visited nodes should be less than the number of nodes in the grid"
+    );
 
     // Used because react asynchronously updates state
     let gridForAnimationSyncronous = animationGrid.gridForAnimation;
