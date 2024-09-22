@@ -3,7 +3,7 @@ import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 import Queue from "@/lib/Queue";
 
-const MultiSourceBFS = (): Algorithm => {
+export default function MultiSourceBFS(): Algorithm {
   return {
     getName: () => "Multi-Source Breadth First Search",
     run: (grid: Node.Node<Node.State>[][]) => {
@@ -97,6 +97,4 @@ const MultiSourceBFS = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
-
-export default MultiSourceBFS;
+}

@@ -2,7 +2,7 @@ import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
-const DFS = (): Algorithm => {
+export default function DFS(): Algorithm {
   return {
     getName: () => "Depth First Search",
     run: (grid: Node.Node<Node.State>[][]) => {
@@ -68,6 +68,4 @@ const DFS = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
-
-export default DFS;
+}

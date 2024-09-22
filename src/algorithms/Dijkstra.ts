@@ -3,7 +3,7 @@ import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 import PriorityQueue from "@/lib/PriorityQueue";
 
-const Dijkstra = (): Algorithm => {
+export default function Dijkstra(): Algorithm {
   return {
     getName: () => "Dijkstra's Algorithm",
     run: (grid) => {
@@ -72,6 +72,4 @@ const Dijkstra = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
-
-export default Dijkstra;
+}

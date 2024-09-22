@@ -8,7 +8,7 @@ interface AStarNode extends Node.Position {
   g: number;
 }
 
-const MultiSourceAStar = (): Algorithm => {
+export default function MultiSourceAStar(): Algorithm {
   return {
     getName: () => "Multi-Source A*",
     run: (grid) => {
@@ -149,9 +149,7 @@ const MultiSourceAStar = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
-
-export default MultiSourceAStar;
+}
 
 const heuristic = (a: Node.Position, b: Node.Position) => {
   return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);

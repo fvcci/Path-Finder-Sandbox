@@ -3,7 +3,7 @@ import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 import Queue from "@/lib/Queue";
 
-const BFS = (): Algorithm => {
+export default function BFS(): Algorithm {
   return {
     getName: () => "Breadth First Search",
     run: (grid) => {
@@ -62,6 +62,4 @@ const BFS = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
-
-export default BFS;
+}
