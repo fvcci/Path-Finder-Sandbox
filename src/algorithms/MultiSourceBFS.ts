@@ -4,22 +4,22 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
 const MultiSourceBFS = (): Algorithm => {
   return {
     getName: () => "Multi-Source Breadth First Search",
-    run: (grid: Node<State>[][]) => {
+    run: (grid: Node.Node<Node.State>[][]) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length)
+      const traversalPath: Node.Position[] = [];
+      const parents: Node.Position[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
-      const visited: State[][] = new Array(grid.length)
+      const visited: Node.State[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill("BASE"));
 
@@ -36,8 +36,8 @@ const MultiSourceBFS = (): Algorithm => {
       while (queue.size() > 0) {
         const curNode = queue.pop()!;
         if (
-          !positionsEquals(start, curNode) &&
-          !positionsEquals(end, curNode)
+          !Node.positionsEquals(start, curNode) &&
+          !Node.positionsEquals(end, curNode)
         ) {
           traversalPath.push(curNode);
         }
@@ -46,7 +46,7 @@ const MultiSourceBFS = (): Algorithm => {
           const nextNode = { row: curNode.row + dr, col: curNode.col + dc };
 
           if (
-            !inBounds(grid, nextNode) ||
+            !Node.inBounds(grid, nextNode) ||
             grid[nextNode.row][nextNode.col].state === "WALL" ||
             visited[curNode.row][curNode.col] ===
               visited[nextNode.row][nextNode.col]
@@ -67,18 +67,18 @@ const MultiSourceBFS = (): Algorithm => {
               parents,
               nodeFromStart
             );
-            if (!positionsEquals(start, nodeFromStart)) {
+            if (!Node.positionsEquals(start, nodeFromStart)) {
               shortestPathStartHalf.push(nodeFromStart);
             }
 
             const shortestPathEndHalf = findShortestPath(parents, nodeFromEnd);
-            if (!positionsEquals(end, nodeFromEnd)) {
+            if (!Node.positionsEquals(end, nodeFromEnd)) {
               shortestPathEndHalf.push(nodeFromEnd);
             }
 
             if (
-              !positionsEquals(start, nextNode) &&
-              !positionsEquals(end, nextNode)
+              !Node.positionsEquals(start, nextNode) &&
+              !Node.positionsEquals(end, nextNode)
             ) {
               traversalPath.push(nextNode);
             }

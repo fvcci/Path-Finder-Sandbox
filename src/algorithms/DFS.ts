@@ -1,17 +1,17 @@
 import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
-import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
 const DFS = (): Algorithm => {
   return {
     getName: () => "Depth First Search",
-    run: (grid: Node<State>[][]) => {
+    run: (grid: Node.Node<Node.State>[][]) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length);
+      const traversalPath: Node.Position[] = [];
+      const parents: Node.Position[][] = new Array(grid.length);
       const visited: boolean[][] = new Array(grid.length);
 
       for (let i = 0; i < grid.length; i++) {
@@ -28,13 +28,13 @@ const DFS = (): Algorithm => {
       const start = findNodeFrom(grid, "START");
       assert(start);
 
-      const stack: Position[] = [];
+      const stack: Node.Position[] = [];
       stack.push(start);
       visited[start.row][start.col] = true;
 
       while (stack.length > 0) {
         const prevNode = stack.pop()!;
-        if (!positionsEquals(start, prevNode)) {
+        if (!Node.positionsEquals(start, prevNode)) {
           traversalPath.push(prevNode);
         }
 
@@ -42,7 +42,7 @@ const DFS = (): Algorithm => {
           const [nextRow, nextCol] = [prevNode.row + dr, prevNode.col + dc];
 
           if (
-            !inBounds(grid, { row: nextRow, col: nextCol }) ||
+            !Node.inBounds(grid, { row: nextRow, col: nextCol }) ||
             grid[nextRow][nextCol].state === "WALL" ||
             visited[nextRow][nextCol]
           )

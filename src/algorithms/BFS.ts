@@ -4,19 +4,19 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State, inBounds, positionsEquals } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
 const BFS = (): Algorithm => {
   return {
     getName: () => "Breadth First Search",
-    run: (grid: Node<State>[][]) => {
+    run: (grid) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length)
+      const traversalPath: Node.Position[] = [];
+      const parents: Node.Position[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
       const visited: boolean[][] = new Array(grid.length)
@@ -32,7 +32,7 @@ const BFS = (): Algorithm => {
 
       while (queue.size() > 0) {
         const prevNode = queue.pop()!;
-        if (!positionsEquals(prevNode, start)) {
+        if (!Node.positionsEquals(prevNode, start)) {
           traversalPath.push(prevNode);
         }
 
@@ -40,7 +40,7 @@ const BFS = (): Algorithm => {
           const [nextRow, nextCol] = [prevNode.row + dr, prevNode.col + dc];
 
           if (
-            !inBounds(grid, { row: nextRow, col: nextCol }) ||
+            !Node.inBounds(grid, { row: nextRow, col: nextCol }) ||
             grid[nextRow][nextCol].state === "WALL" ||
             visited[nextRow][nextCol]
           )

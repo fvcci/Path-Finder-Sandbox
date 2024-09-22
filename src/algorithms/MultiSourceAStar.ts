@@ -4,10 +4,10 @@ import Algorithm, {
   findNodeFrom,
   PriorityQueue,
 } from "./Algorithm";
-import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
-interface AStarNode extends Position {
+interface AStarNode extends Node.Position {
   f: number;
   g: number;
 }
@@ -15,17 +15,17 @@ interface AStarNode extends Position {
 const MultiSourceAStar = (): Algorithm => {
   return {
     getName: () => "Multi-Source A*",
-    run: (grid: Node<State>[][]) => {
+    run: (grid) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length)
+      const traversalPath: Node.Position[] = [];
+      const parents: Node.Position[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
 
-      const visited: State[][] = new Array(grid.length)
+      const visited: Node.State[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill("BASE"));
 
@@ -56,7 +56,7 @@ const MultiSourceAStar = (): Algorithm => {
       pq.push(aStarGrid[start.row][start.col]);
       pq.push(aStarGrid[end.row][end.col]);
 
-      const closestNodeFromDestMap = new Map<State, AStarNode>([
+      const closestNodeFromDestMap = new Map<Node.State, AStarNode>([
         ["START", aStarGrid[start.row][start.col]],
         ["END", aStarGrid[end.row][end.col]],
       ]);
@@ -64,8 +64,8 @@ const MultiSourceAStar = (): Algorithm => {
       while (!pq.isEmpty()) {
         const curNode = pq.pop();
         if (
-          !positionsEquals(start, curNode) &&
-          !positionsEquals(end, curNode)
+          !Node.positionsEquals(start, curNode) &&
+          !Node.positionsEquals(end, curNode)
         ) {
           traversalPath.push(curNode);
         }
@@ -74,7 +74,7 @@ const MultiSourceAStar = (): Algorithm => {
           const nextNode = { row: curNode.row + dr, col: curNode.col + dc };
 
           if (
-            !inBounds(grid, nextNode) ||
+            !Node.inBounds(grid, nextNode) ||
             grid[nextNode.row][nextNode.col].state === "WALL" ||
             visited[curNode.row][curNode.col] ===
               visited[nextNode.row][nextNode.col]
@@ -84,8 +84,8 @@ const MultiSourceAStar = (): Algorithm => {
           const foundVisitedFromNextNode =
             visited[nextNode.row][nextNode.col] !== "BASE";
           if (foundVisitedFromNextNode) {
-            let nodeFromStart = curNode as Position;
-            let nodeFromEnd = nextNode as Position;
+            let nodeFromStart = curNode as Node.Position;
+            let nodeFromEnd = nextNode as Node.Position;
             if (visited[curNode.row][curNode.col] === "END") {
               nodeFromStart = nextNode;
               nodeFromEnd = curNode;
@@ -95,19 +95,19 @@ const MultiSourceAStar = (): Algorithm => {
               parents,
               nodeFromStart
             );
-            if (!positionsEquals(start, nodeFromStart)) {
+            if (!Node.positionsEquals(start, nodeFromStart)) {
               shortestPathStartHalf.push(nodeFromStart);
             }
 
             const shortestPathEndHalf = findShortestPath(parents, nodeFromEnd);
-            if (!positionsEquals(end, nodeFromEnd)) {
+            if (!Node.positionsEquals(end, nodeFromEnd)) {
               shortestPathEndHalf.push(nodeFromEnd);
             }
 
             // Because traversalPath might not include nextNode
             if (
-              !positionsEquals(start, nextNode) &&
-              !positionsEquals(end, nextNode)
+              !Node.positionsEquals(start, nextNode) &&
+              !Node.positionsEquals(end, nextNode)
             ) {
               traversalPath.push(nextNode);
             }
@@ -157,6 +157,6 @@ const MultiSourceAStar = (): Algorithm => {
 
 export default MultiSourceAStar;
 
-const heuristic = (a: Position, b: Position) => {
+const heuristic = (a: Node.Position, b: Node.Position) => {
   return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 };

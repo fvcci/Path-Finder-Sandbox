@@ -4,25 +4,25 @@ import Algorithm, {
   PriorityQueue,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, positionsEquals, State, inBounds } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
-interface AStarNode extends Position {
+interface AStarNode extends Node.Position {
   f: number;
   g: number;
 }
 
 // measurement of how far node a is to node b
-const AStar = (): Algorithm => {
+export default function AStar(): Algorithm {
   return {
     getName: () => "A*",
-    run: (grid: Node<State>[][]) => {
+    run: (grid) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: Position[][] = new Array(grid.length)
+      const traversalPath: Node.Position[] = [];
+      const parents: Node.Position[][] = new Array(grid.length)
         .fill(null)
         .map(() => new Array(grid[0].length).fill(null));
 
@@ -54,16 +54,16 @@ const AStar = (): Algorithm => {
         const curNode = openList.pop();
         visited[curNode.row][curNode.col] = true;
 
-        if (!positionsEquals(start, curNode)) {
+        if (!Node.positionsEquals(start, curNode)) {
           traversalPath.push(curNode);
         }
 
         for (const [dr, dc] of DELTA) {
           const nextNode = { row: curNode.row + dr, col: curNode.col + dc };
-          const reachedEnd = positionsEquals(end, nextNode);
+          const reachedEnd = Node.positionsEquals(end, nextNode);
 
           if (
-            !inBounds(grid, nextNode) ||
+            !Node.inBounds(grid, nextNode) ||
             grid[nextNode.row][nextNode.col].state === "WALL" ||
             visited[nextNode.row][nextNode.col]
           )
@@ -99,10 +99,8 @@ const AStar = (): Algorithm => {
       return { visitedPath: traversalPath, shortestPath: [] };
     },
   };
-};
+}
 
-export default AStar;
-
-const heuristic = (a: Position, b: Position) => {
+const heuristic = (a: Node.Position, b: Node.Position) => {
   return Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 };

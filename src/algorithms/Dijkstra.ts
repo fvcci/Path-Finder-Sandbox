@@ -4,19 +4,19 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
+import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
 
 const Dijkstra = (): Algorithm => {
   return {
     getName: () => "Dijkstra's Algorithm",
-    run: (grid: Node<State>[][]) => {
+    run: (grid) => {
       if (grid.length === 0) {
         return { visitedPath: [], shortestPath: [] };
       }
 
-      const traversalPath: Position[] = [];
-      const parents: (Position | null)[][] = new Array(grid.length)
+      const traversalPath: Node.Position[] = [];
+      const parents: (Node.Position | null)[][] = new Array(grid.length)
         .fill(undefined)
         .map(() => new Array(grid[0].length).fill(null));
 
@@ -25,7 +25,7 @@ const Dijkstra = (): Algorithm => {
         .map(() => new Array(grid[0].length).fill(Infinity));
 
       // Start fro the start node
-      const queue = new PriorityQueue<Node<State> & Position>(
+      const queue = new PriorityQueue<Node.Node<Node.State> & Node.Position>(
         (a, b) => a.weight < b.weight
       );
       const start = findNodeFrom(grid, "START");
@@ -36,7 +36,7 @@ const Dijkstra = (): Algorithm => {
 
       while (queue.size() > 0) {
         const prevNode = queue.pop();
-        if (!positionsEquals(prevNode, start)) {
+        if (!Node.positionsEquals(prevNode, start)) {
           traversalPath.push(prevNode);
         }
         for (const [dr, dc] of DELTA) {
@@ -45,7 +45,7 @@ const Dijkstra = (): Algorithm => {
           // Record all the visited nodes in the algorithm
           // Invalid if out of bounds or a wall or is already visited
           if (
-            !inBounds(grid, { row: r, col: c }) ||
+            !Node.inBounds(grid, { row: r, col: c }) ||
             grid[r][c].state === "WALL" ||
             dis[r][c] <= dis[prevNode.row][prevNode.col] + grid[r][c].weight
           ) {

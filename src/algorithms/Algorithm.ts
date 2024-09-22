@@ -1,10 +1,10 @@
-import { Node, Position, State } from "../lib/Node";
+import * as Node from "@/lib/Node";
 
 export default interface Algorithm {
   getName: () => string;
-  run: (grid: Node<State>[][]) => {
-    visitedPath: Position[];
-    shortestPath: Position[];
+  run: (grid: Node.Node<Node.State>[][]) => {
+    visitedPath: Node.Position[];
+    shortestPath: Node.Position[];
   };
 }
 
@@ -107,7 +107,7 @@ export class PriorityQueue<T> {
 }
 
 export class Queue {
-  _queue: Position[];
+  _queue: Node.Position[];
   constructor() {
     this._queue = [];
   }
@@ -124,7 +124,7 @@ export class Queue {
     return this._queue[0];
   }
 
-  push(...values: Position[]) {
+  push(...values: Node.Position[]) {
     values.forEach((value) => {
       this._queue.push(value);
     });
@@ -137,10 +137,10 @@ export class Queue {
 }
 
 export const findNodeFrom = (
-  grid: Node<State>[][],
-  state: State
-): Position | null => {
-  let pos: Position | null = null;
+  grid: Node.Node<Node.State>[][],
+  state: Node.State
+): Node.Position | null => {
+  let pos: Node.Position | null = null;
 
   grid.some((row, rowIdx) =>
     row.some((node, colIdx) => {
@@ -155,10 +155,10 @@ export const findNodeFrom = (
 };
 
 export const findShortestPath = (
-  parents: (Position | null)[][],
-  end: Position
-): Position[] => {
-  let current: Position | null = end;
+  parents: (Node.Position | null)[][],
+  end: Node.Position
+): Node.Position[] => {
+  let current: Node.Position | null = end;
   const shortestPath = [];
 
   // While current has a parent, go to its previousNode
