@@ -32,7 +32,7 @@ const BFS = (): Algorithm => {
 
       while (queue.size() > 0) {
         const prevNode = queue.pop()!;
-        if (positionsEquals(prevNode, start)) {
+        if (!positionsEquals(prevNode, start)) {
           traversalPath.push(prevNode);
         }
 
