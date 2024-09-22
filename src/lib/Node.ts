@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { Extends } from "./types";
 
 export interface Node<T extends State> {
@@ -92,8 +93,8 @@ export const isDestination = (state: State) => {
 export const VANISH_ANIMATION_DURATION_MILLI_SECS = 1500;
 export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;
 
-export const inBounds = (
-  grid: Node<State>[][] | null,
+export const inBounds = <T>(
+  grid: T[][] | null,
   position: Position | null
 ): boolean => {
   return (
@@ -104,5 +105,20 @@ export const inBounds = (
       position.row < grid.length &&
       0 <= position.col &&
       position.col < grid[0].length)
+  );
+};
+
+export const assertValidPaths = (grid: Node<State>[][], path: Position[]) => {
+  assert(
+    path.every(
+      ({ row, col }) =>
+        inBounds(grid, { row, col }) && !isDestination(grid[row][col].state)
+    ),
+    "paths should not include destinations"
+  );
+
+  assert(
+    path.length <= grid.length * grid[0].length,
+    "The visited nodes should be less than the number of nodes in the grid"
   );
 };

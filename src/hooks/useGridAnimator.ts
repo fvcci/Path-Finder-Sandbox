@@ -22,6 +22,8 @@ export default function useGridAnimator(
     const { visitedPath, shortestPath } = toolBar.selectedAlgorithm.run(
       animationGrid.gridState
     );
+    Node.assertValidPaths(animationGrid.gridState, visitedPath);
+    Node.assertValidPaths(animationGrid.gridState, shortestPath);
 
     if (visitedPath.length === 0) {
       assert(shortestPath.length === 0);
