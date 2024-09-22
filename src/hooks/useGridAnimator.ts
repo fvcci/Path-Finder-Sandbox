@@ -1,4 +1,4 @@
-import { useAsyncAnimator } from "./useAsyncAnimator";
+import useAsyncAnimator from "./useAsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
 import assert from "../lib/assert";
 import * as Node from "../lib/Node";

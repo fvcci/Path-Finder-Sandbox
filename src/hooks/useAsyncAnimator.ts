@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const useAsyncAnimator = () => {
+export default function useAsyncAnimator() {
   const [animations] = useState(
     new Map<
       AnimationID,
@@ -55,7 +55,7 @@ export const useAsyncAnimator = () => {
       animations.clear();
     },
   };
-};
+}
 
 type AnimationID =
   | "ANIMATE_VANISH_GRID"
