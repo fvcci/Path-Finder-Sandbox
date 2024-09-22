@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as Node from "../util/Node";
+import * as Node from "../lib/Node";
 import useDimensionsContext from "./useDimensionContext";
 import { Dimensions } from "../context/DimensionContext";
 

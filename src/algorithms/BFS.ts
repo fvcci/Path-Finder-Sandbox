@@ -5,8 +5,8 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State } from "../util/Node";
-import { assert } from "../util/asserts";
+import { Node, Position, State } from "../lib/Node";
+import { assert } from "../lib/asserts";
 
 const BFS = (): Algorithm => {
   return {

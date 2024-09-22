@@ -1,4 +1,4 @@
-import { Node, Position, State } from "../util/Node";
+import { Node, Position, State } from "../lib/Node";
 
 export default interface Algorithm {
   getName: () => string;

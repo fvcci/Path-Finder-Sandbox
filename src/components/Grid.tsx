@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import * as Node from "../util/Node";
+import * as Node from "../lib/Node";
 import useToolBarContext from "../hooks/useToolBarContext";
 import useBrush from "../hooks/useBrush";
 import useMouseDraggedNode from "../hooks/useMouseDraggedNode";
 import useGridAnimator from "../hooks/useGridAnimator";
 import useAnimationGrid, { AnimationGrid } from "../hooks/useAnimationGrid";
-import { assert } from "../util/asserts";
+import { assert } from "../lib/asserts";
 
 export default function Grid() {
   const animationGrid = useAnimationGrid(

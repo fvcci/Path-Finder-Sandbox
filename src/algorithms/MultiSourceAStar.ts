@@ -5,8 +5,8 @@ import Algorithm, {
   findNodeFrom,
   PriorityQueue,
 } from "./Algorithm";
-import { Node, Position, positionsEquals, State } from "../util/Node";
-import { assert } from "../util/asserts";
+import { Node, Position, positionsEquals, State } from "../lib/Node";
+import { assert } from "../lib/asserts";
 
 interface AStarNode extends Position {
   f: number;

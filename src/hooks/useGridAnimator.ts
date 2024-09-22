@@ -1,9 +1,9 @@
 import { useAsyncAnimator } from "./useAsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
-import { assert } from "../util/asserts";
-import * as Node from "../util/Node";
+import { assert } from "../lib/asserts";
+import * as Node from "../lib/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
-import { ObservableEvent, Observer } from "../util/Observer";
+import { ObservableEvent, Observer } from "../lib/Observer";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(

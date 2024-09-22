@@ -1,7 +1,7 @@
 import { useState } from "react";
-import * as Node from "../util/Node";
+import * as Node from "../lib/Node";
 import { AnimationGrid } from "./useAnimationGrid";
-import { assert } from "../util/asserts";
+import { assert } from "../lib/asserts";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useMouseDraggedNode() {

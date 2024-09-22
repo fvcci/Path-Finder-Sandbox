@@ -4,9 +4,9 @@ import {
   ObservableEditable,
   ObservableEvent,
   Observer,
-} from "../util/Observer";
+} from "../lib/Observer";
 import Algorithm from "../algorithms/Algorithm";
-import { Extends } from "../util/types";
+import { Extends } from "../lib/types";
 import MultiSourceAStar from "@/algorithms/MultiSourceAStar";
 
 export const Provider = ({

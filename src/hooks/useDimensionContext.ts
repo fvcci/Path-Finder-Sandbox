@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { assert } from "../util/asserts";
+import { assert } from "../lib/asserts";
 import * as DimensionsContext from "../context/DimensionContext";
 
 export default function useDimensionsContext() {
