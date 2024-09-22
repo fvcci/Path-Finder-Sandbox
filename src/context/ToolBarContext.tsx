@@ -1,8 +1,5 @@
 import { ReactNode, createContext, useState } from "react";
-import { Observable } from "../hooks/useObserver";
-import useRunAlgorithmButton, {
-  RunAlgorithmButton,
-} from "@/hooks/useRunAlgorithmButton";
+import useRunAlgorithmButton from "@/hooks/useRunAlgorithmButton";
 import useClearAlgorithmButton from "@/hooks/useClearAlgorithmButton";
 import { Algorithm, ALGORITHMS } from "@/algorithms";
 
@@ -32,6 +29,6 @@ export const Provider = ({
 export const Context = createContext<{
   selectedAlgorithm: Algorithm;
   setSelectedAlgorithm: React.Dispatch<React.SetStateAction<Algorithm>>;
-  runButton: RunAlgorithmButton;
-  clearButton: Observable;
+  runButton: ReturnType<typeof useRunAlgorithmButton>;
+  clearButton: ReturnType<typeof useClearAlgorithmButton>;
 } | null>(null);

@@ -7,7 +7,7 @@ import {
 } from "../hooks/useObserver";
 import { Extends } from "../lib/types";
 
-export interface RunAlgorithmButton extends Observable, Observer {
+interface RunAlgorithmButton extends Observable, Observer {
   isRunningAlgorithm: () => boolean;
   isDisplayingAlgorithm: () => boolean;
   getAlgorithmEvent: () => ObservableEvent;
