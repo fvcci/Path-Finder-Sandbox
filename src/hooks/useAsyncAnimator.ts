@@ -10,7 +10,7 @@ export const useAsyncAnimator = () => {
       }
     >()
   );
-  const [timeoutIDs] = useState(new Set<number>());
+  const [timeoutIDs] = useState(new Set<NodeJS.Timeout>());
 
   return {
     stopAnimations: () => {
