@@ -1,10 +1,10 @@
 import { ReactNode, createContext, useState } from "react";
 import {
   Observable,
-  ObservableEditable,
+  useObservable,
   ObservableEvent,
   Observer,
-} from "../lib/Observer";
+} from "../hooks/useObserver";
 import Algorithm from "../algorithms/Algorithm";
 import { Extends } from "../lib/types";
 import MultiSourceAStar from "@/algorithms/MultiSourceAStar";
@@ -41,7 +41,7 @@ export const Context = createContext<{
 } | null>(null);
 
 const useRunAlgorithmButton = (): RunAlgorithmButton => {
-  const observable = ObservableEditable();
+  const observable = useObservable();
   const [algorithmEvent, setAlgorithmEvent] =
     useState<Extends<ObservableEvent, "RUN_ALGORITHM" | "CLEAR_ALGORITHM">>(
       "RUN_ALGORITHM"
@@ -96,7 +96,7 @@ interface RunAlgorithmButton extends Observable, Observer {
 }
 
 const ClearAlgorithmButton = (): Observable => {
-  const observable = ObservableEditable();
+  const observable = useObservable();
 
   return {
     ...observable,

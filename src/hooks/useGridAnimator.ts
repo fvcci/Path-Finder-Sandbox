@@ -3,7 +3,7 @@ import useToolBarContext from "./useToolBarContext";
 import { assert } from "../lib/asserts";
 import * as Node from "../lib/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
-import { ObservableEvent, Observer } from "../lib/Observer";
+import { ObservableEvent, Observer } from "./useObserver";
 import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(

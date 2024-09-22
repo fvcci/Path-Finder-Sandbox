@@ -1,11 +1,13 @@
+import { useState } from "react";
+
 export interface Observer {
   update: (event: ObservableEvent) => void;
 }
 
-export type Observable = ReturnType<typeof ObservableEditable>;
+export type Observable = ReturnType<typeof useObservable>;
 
-export const ObservableEditable = () => {
-  const observers = new Map<string, Observer>();
+export const useObservable = () => {
+  const [observers] = useState(new Map<string, Observer>());
   return {
     notifyObservers: (event: ObservableEvent) => {
       observers.forEach((observer) => observer.update(event));
