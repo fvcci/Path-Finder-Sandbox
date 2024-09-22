@@ -1,11 +1,10 @@
 import Algorithm, {
   DELTA,
   Queue,
-  inBounds,
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State } from "../lib/Node";
+import { Node, Position, State, inBounds } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 const BFS = (): Algorithm => {

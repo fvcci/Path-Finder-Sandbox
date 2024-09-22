@@ -4,7 +4,6 @@ import { assert } from "../lib/asserts";
 import * as Node from "../lib/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
 import { ObservableEvent, Observer } from "./useObserver";
-import { inBounds } from "../algorithms/Algorithm";
 
 export default function useGridAnimator(
   animationGrid: AnimationGrid,
@@ -34,7 +33,7 @@ export default function useGridAnimator(
       [visitedPath, shortestPath].every((path) =>
         path.every(
           ({ row, col }) =>
-            inBounds(animationGrid.gridForAnimation, { row, col }) &&
+            Node.inBounds(animationGrid.gridForAnimation, { row, col }) &&
             !Node.isDestination(animationGrid.gridForAnimation![row][col].state)
         )
       ),

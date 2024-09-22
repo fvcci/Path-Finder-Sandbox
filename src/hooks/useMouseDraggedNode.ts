@@ -2,7 +2,6 @@ import { useState } from "react";
 import * as Node from "../lib/Node";
 import { AnimationGrid } from "./useAnimationGrid";
 import { assert } from "../lib/asserts";
-import { inBounds } from "../algorithms/Algorithm";
 
 export default function useMouseDraggedNode() {
   const [mouseDraggedNode, setMouseDraggedNode] = useState<
@@ -69,7 +68,7 @@ const buildMouseDraggedNodeOnto = (
   assert(
     animationGrid.gridForAnimation &&
       animationGrid.gridState &&
-      inBounds(animationGrid.gridForAnimation, mouseDraggedNode)
+      Node.inBounds(animationGrid.gridForAnimation, mouseDraggedNode)
   );
 
   const grid = animationGrid.gridForAnimation.map((row) =>

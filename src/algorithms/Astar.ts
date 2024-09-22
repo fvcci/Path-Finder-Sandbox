@@ -1,11 +1,10 @@
 import Algorithm, {
   DELTA,
-  inBounds,
   findShortestPath,
   PriorityQueue,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, positionsEquals, State } from "../lib/Node";
+import { Node, Position, positionsEquals, State, inBounds } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 interface AStarNode extends Position {

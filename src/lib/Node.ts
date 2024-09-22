@@ -91,3 +91,18 @@ export const isDestination = (state: State) => {
 
 export const VANISH_ANIMATION_DURATION_MILLI_SECS = 1500;
 export const APPEAR_ANIMATION_DURATION_MILLI_SECS = 2000;
+
+export const inBounds = (
+  grid: Node<State>[][] | null,
+  position: Position | null
+): boolean => {
+  return (
+    !position ||
+    !grid ||
+    (grid.length !== 0 &&
+      0 <= position.row &&
+      position.row < grid.length &&
+      0 <= position.col &&
+      position.col < grid[0].length)
+  );
+};

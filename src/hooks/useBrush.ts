@@ -2,7 +2,6 @@ import { useState } from "react";
 import * as Node from "../lib/Node";
 import { AnimationGrid } from "./useAnimationGrid";
 import { assert } from "../lib/asserts";
-import { inBounds } from "../algorithms/Algorithm";
 
 export default function useBrush() {
   const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);
@@ -34,7 +33,7 @@ const buildBrushOn = (
 ) => {
   assert(
     animationGrid.gridForAnimation &&
-      inBounds(animationGrid.gridForAnimation, pos)
+      Node.inBounds(animationGrid.gridForAnimation, pos)
   );
 
   const grid = animationGrid.gridForAnimation.map((row) =>

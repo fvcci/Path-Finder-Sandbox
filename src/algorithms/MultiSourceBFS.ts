@@ -1,11 +1,10 @@
 import Algorithm, {
   DELTA,
   Queue,
-  inBounds,
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, positionsEquals, State } from "../lib/Node";
+import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 const MultiSourceBFS = (): Algorithm => {
