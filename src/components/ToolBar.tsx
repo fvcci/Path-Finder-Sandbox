@@ -5,25 +5,10 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import useToolBarContext from "../hooks/useToolBarContext";
-import AStar from "@/algorithms/AStar";
-import BFS from "@/algorithms/BFS";
-import Dijkstra from "@/algorithms/Dijkstra";
-import Algorithm from "@/algorithms/Algorithm";
-import DFS from "@/algorithms/DFS";
-import MultiSourceBFS from "@/algorithms/MultiSourceBFS";
-import MultiSourceAStar from "@/algorithms/MultiSourceAStar";
+import { ALGORITHMS } from "@/algorithms";
 
 export default function ToolBar() {
   const toolBar = useToolBarContext();
-
-  const algorithms: Algorithm[] = [
-    AStar(),
-    DFS(),
-    BFS(),
-    Dijkstra(),
-    MultiSourceBFS(),
-    MultiSourceAStar(),
-  ];
 
   return (
     <div className="bg-theme-primary-3 flex flex-row gap-x-2">
@@ -39,7 +24,7 @@ export default function ToolBar() {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="py-1 bg-red-500">
-          {algorithms.map(
+          {ALGORITHMS.map(
             (algorithm, key) =>
               algorithm.getName() !== toolBar.selectedAlgorithm.getName() && (
                 <DropdownMenuItem
