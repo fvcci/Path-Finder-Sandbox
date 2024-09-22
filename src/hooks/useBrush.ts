@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as Node from "../lib/Node";
 import { AnimationGrid } from "./useAnimationGrid";
-import { assert } from "../lib/asserts";
+import assert from "../lib/assert";
 
 export default function useBrush() {
   const [brush, setBrush] = useState<Node.Node<Node.Obstruction> | null>(null);

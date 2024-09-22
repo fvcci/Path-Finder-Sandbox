@@ -2,7 +2,7 @@ import * as Node from "@/lib/Node";
 import useToolBarContext from "@/hooks/useToolBarContext";
 import useBrush from "@/hooks/useBrush";
 import useMouseDraggedNode from "@/hooks/useMouseDraggedNode";
-import { assert } from "@/lib/asserts";
+import assert from "@/lib/assert";
 import { AnimationGrid } from "@/hooks/useAnimationGrid";
 
 export default function useMouseController(animationGrid: AnimationGrid) {

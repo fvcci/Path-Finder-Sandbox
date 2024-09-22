@@ -1,6 +1,6 @@
 import { useAsyncAnimator } from "./useAsyncAnimator";
 import useToolBarContext from "./useToolBarContext";
-import { assert } from "../lib/asserts";
+import assert from "../lib/assert";
 import * as Node from "../lib/Node";
 import { AnimationGrid, NodeForAnimation } from "./useAnimationGrid";
 import { ObservableEvent, Observer } from "./useObserver";

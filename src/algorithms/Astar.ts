@@ -5,7 +5,7 @@ import Algorithm, {
   findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, positionsEquals, State, inBounds } from "../lib/Node";
-import { assert } from "../lib/asserts";
+import assert from "../lib/assert";
 
 interface AStarNode extends Position {
   f: number;

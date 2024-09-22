@@ -5,7 +5,7 @@ import Algorithm, {
   findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, State, inBounds, positionsEquals } from "../lib/Node";
-import { assert } from "../lib/asserts";
+import assert from "../lib/assert";
 
 const BFS = (): Algorithm => {
   return {

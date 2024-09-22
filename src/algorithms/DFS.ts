@@ -1,6 +1,6 @@
 import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
-import { assert } from "../lib/asserts";
+import assert from "../lib/assert";
 
 const DFS = (): Algorithm => {
   return {

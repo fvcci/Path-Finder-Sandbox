@@ -1,4 +1,4 @@
-import { assert } from "./asserts";
+import assert from "./assert";
 import { Extends } from "./types";
 
 export interface Node<T extends State> {
