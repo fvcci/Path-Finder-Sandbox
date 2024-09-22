@@ -1,11 +1,7 @@
-import Algorithm, {
-  DELTA,
-  findShortestPath,
-  findNodeFrom,
-  PriorityQueue,
-} from "./Algorithm";
+import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
+import PriorityQueue from "@/lib/PriorityQueue";
 
 interface AStarNode extends Node.Position {
   f: number;

@@ -1,11 +1,7 @@
-import Algorithm, {
-  DELTA,
-  Queue,
-  findShortestPath,
-  findNodeFrom,
-} from "./Algorithm";
+import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
+import Queue from "@/lib/Queue";
 
 const BFS = (): Algorithm => {
   return {
@@ -26,7 +22,7 @@ const BFS = (): Algorithm => {
       const start = findNodeFrom(grid, "START");
       assert(start);
 
-      const queue = new Queue();
+      const queue = new Queue<Node.Position>();
       queue.push(start);
       visited[start.row][start.col] = true;
 

@@ -1,11 +1,7 @@
-import Algorithm, {
-  DELTA,
-  PriorityQueue,
-  findShortestPath,
-  findNodeFrom,
-} from "./Algorithm";
+import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
+import PriorityQueue from "@/lib/PriorityQueue";
 
 const Dijkstra = (): Algorithm => {
   return {

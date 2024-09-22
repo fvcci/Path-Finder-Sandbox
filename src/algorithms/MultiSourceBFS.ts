@@ -1,11 +1,7 @@
-import Algorithm, {
-  DELTA,
-  Queue,
-  findShortestPath,
-  findNodeFrom,
-} from "./Algorithm";
+import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
 import * as Node from "@/lib/Node";
 import assert from "../lib/assert";
+import Queue from "@/lib/Queue";
 
 const MultiSourceBFS = (): Algorithm => {
   return {
@@ -27,7 +23,7 @@ const MultiSourceBFS = (): Algorithm => {
       const end = findNodeFrom(grid, "END");
       assert(start && end);
 
-      const queue = new Queue();
+      const queue = new Queue<Node.Position>();
       queue.push(start);
       queue.push(end);
       visited[start.row][start.col] = "START";
