@@ -1,5 +1,5 @@
 import Algorithm, { DELTA, findShortestPath, findNodeFrom } from "./Algorithm";
-import { inBounds, Node, Position, State } from "../lib/Node";
+import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 const DFS = (): Algorithm => {
@@ -34,7 +34,7 @@ const DFS = (): Algorithm => {
 
       while (stack.length > 0) {
         const prevNode = stack.pop()!;
-        if (prevNode !== start) {
+        if (!positionsEquals(start, prevNode)) {
           traversalPath.push(prevNode);
         }
 

@@ -36,8 +36,8 @@ const MultiSourceBFS = (): Algorithm => {
       while (queue.size() > 0) {
         const curNode = queue.pop()!;
         if (
-          (start.row !== curNode.row || start.col !== curNode.col) &&
-          (end.row !== curNode.row || end.col !== curNode.col)
+          !positionsEquals(start, curNode) &&
+          !positionsEquals(end, curNode)
         ) {
           traversalPath.push(curNode);
         }

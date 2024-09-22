@@ -4,7 +4,7 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { inBounds, Node, Position, State } from "../lib/Node";
+import { inBounds, Node, Position, positionsEquals, State } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 const Dijkstra = (): Algorithm => {
@@ -36,7 +36,7 @@ const Dijkstra = (): Algorithm => {
 
       while (queue.size() > 0) {
         const prevNode = queue.pop();
-        if (prevNode.row !== start.row || prevNode.col !== start.col) {
+        if (!positionsEquals(prevNode, start)) {
           traversalPath.push(prevNode);
         }
         for (const [dr, dc] of DELTA) {

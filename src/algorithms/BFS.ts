@@ -4,7 +4,7 @@ import Algorithm, {
   findShortestPath,
   findNodeFrom,
 } from "./Algorithm";
-import { Node, Position, State, inBounds } from "../lib/Node";
+import { Node, Position, State, inBounds, positionsEquals } from "../lib/Node";
 import { assert } from "../lib/asserts";
 
 const BFS = (): Algorithm => {
@@ -32,7 +32,7 @@ const BFS = (): Algorithm => {
 
       while (queue.size() > 0) {
         const prevNode = queue.pop()!;
-        if (prevNode !== start) {
+        if (positionsEquals(prevNode, start)) {
           traversalPath.push(prevNode);
         }
 
