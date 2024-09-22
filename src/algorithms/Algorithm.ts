@@ -1,4 +1,5 @@
-import { Node, Position, State } from "../lib/Node";
+import assert from "assert";
+import { isDestination, Node, Position, State } from "../lib/Node";
 
 export default interface Algorithm {
   getName: () => string;
@@ -186,4 +187,24 @@ export const findShortestPath = (
   shortestPath.reverse();
   shortestPath.pop();
   return shortestPath;
+};
+
+export const assertValidPaths = (
+  grid: Node<State>[][],
+  visitedPath: Position[],
+  shortestPath: Position[]
+) => {
+  assert(
+    [visitedPath, shortestPath].every((path) =>
+      path.every(
+        ({ row, col }) =>
+          inBounds(grid, { row, col }) && !isDestination(grid[row][col].state)
+      )
+    ),
+    "paths should not include destinations"
+  );
+  assert(
+    visitedPath.length <= grid.length * grid[0].length,
+    "The visited nodes should be less than the number of nodes in the grid"
+  );
 };

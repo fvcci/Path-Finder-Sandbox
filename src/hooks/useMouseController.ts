@@ -2,8 +2,8 @@ import * as Node from "@/lib/Node";
 import useToolBarContext from "@/hooks/useToolBarContext";
 import useBrush from "@/hooks/useBrush";
 import useMouseDraggedNode from "@/hooks/useMouseDraggedNode";
-import { assert } from "@/lib/asserts";
 import { AnimationGrid } from "@/hooks/useAnimationGrid";
+import assert from "assert";
 
 export default function useMouseController(animationGrid: AnimationGrid) {
   const brush = useBrush();

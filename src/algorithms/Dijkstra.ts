@@ -6,7 +6,7 @@ import Algorithm, {
   findNodeFrom,
 } from "./Algorithm";
 import { Node, Position, State } from "../lib/Node";
-import { assert } from "../lib/asserts";
+import assert from "assert";
 
 const Dijkstra = (): Algorithm => {
   return {
