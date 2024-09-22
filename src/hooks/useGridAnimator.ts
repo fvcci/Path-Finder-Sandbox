@@ -123,9 +123,7 @@ const asyncClearGrid = (
     Node.VANISH_ANIMATION_DURATION_MILLI_SECS,
     () => {
       assert(animationGrid.gridForAnimation);
-      return animationGrid.setGridForAnimation(
-        buildAnimationVanishedPath(animationGrid.gridForAnimation)
-      );
+      return animationGrid.setGridForAnimation(clearedGrid);
     }
   );
   return clearedGrid;
