@@ -1,5 +1,5 @@
 import Algorithm from "./Algorithm";
-import AStar from "@/algorithms/AStar";
+import AStar from "@/algorithms/AStar.ts";
 import BFS from "./BFS";
 import DFS from "./DFS";
 import Dijkstra from "./Dijkstra";
